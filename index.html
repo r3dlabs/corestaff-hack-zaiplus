@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png">
-    <title>Start-up Staff | Founder Edition</title>
+    <title>Startup Staff | Founder Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -368,7 +368,7 @@
     <div id="startup-modal" class="modal-overlay">
         <div class="modal-box">
             <div style="margin-bottom:24px;">
-                <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;font-family:'Geist Mono',monospace;">Start-up Staff</p>
+                <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;font-family:'Geist Mono',monospace;">Startup Staff</p>
                 <h1 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Initialize Core Team</h1>
                 <p style="font-size:13px;color:var(--text-secondary);">Enter your details to brief the team.</p>
             </div>
@@ -485,15 +485,15 @@
                 <!-- Header -->
                 <div style="margin-bottom:20px;">
                     <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;font-family:'Geist Mono',monospace;">About</p>
-                    <h2 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Start-up Staff</h2>
+                    <h2 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Startup Staff</h2>
                     <p style="font-size:13px;color:var(--text-secondary);">AI-powered boardroom for founders and builders.</p>
                 </div>
                 <hr class="divider" style="margin:0 0 20px;">
 
                 <!-- What it is -->
                 <div style="margin-bottom:20px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-family:'Geist Mono',monospace;">What is Start-up Staff?</p>
-                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Start-up Staff is an agentic AI-powered solution designed to give founders instant access to a cross-functional core team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before Soleil, your Chief of Staff, synthesises a unified strategic response.</p>
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-family:'Geist Mono',monospace;">What is Startup Staff?</p>
+                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Startup Staff is an agentic AI-powered solution designed to give founders instant access to a cross-functional core team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before Soleil, your Chief of Staff, synthesises a unified strategic response.</p>
                 </div>
 
                 <!-- The Core Team -->
@@ -641,8 +641,8 @@
     <!-- ── HEADER ──────────────────────────────────────────── -->
     <header>
         <div style="display:flex;align-items:center;gap:10px;">
-            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" alt="Start-up Staff" style="width:28px;height:28px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">
-            <span style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Start-up Staff</span>
+            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" alt="Startup Staff" style="width:28px;height:28px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">
+            <span style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Startup Staff</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
             <button id="btn-edit-startup" class="btn-icon">
@@ -959,7 +959,7 @@ async function generateDocx(rawDocBlock, filename) {
     const titleLine = lines.find(l => l.startsWith('TITLE:'));
     const docTitle = titleLine ? titleLine.replace('TITLE:','').trim() : filename.replace('.docx','');
     children.push(new Paragraph({ text: docTitle, heading: HeadingLevel.TITLE, alignment: AlignmentType.CENTER, spacing: { after: 400 } }));
-    children.push(new Paragraph({ children: [new TextRun({ text: `Generated by Start-up Staff  •  ${new Date().toLocaleDateString('en-SG',{year:'numeric',month:'long',day:'numeric'})}`, italics: true, color:'888888', size:20 })], alignment: AlignmentType.CENTER, spacing: { after: 600 } }));
+    children.push(new Paragraph({ children: [new TextRun({ text: `Generated by Startup Staff  •  ${new Date().toLocaleDateString('en-SG',{year:'numeric',month:'long',day:'numeric'})}`, italics: true, color:'888888', size:20 })], alignment: AlignmentType.CENTER, spacing: { after: 600 } }));
     let inSection = false;
     for (const line of lines) {
         if (line.startsWith('TITLE:')) continue;
@@ -975,7 +975,7 @@ async function generateDocx(rawDocBlock, filename) {
     }
     children.push(new Paragraph({ children: [new TextRun({ text:`— Confidential. Prepared by Soleil, Chief of Staff —`, italics:true, color:'999999', size:18 })], alignment: AlignmentType.CENTER, spacing: { before:600 } }));
     const doc = new Document({
-        creator:'Start-up Staff', title: docTitle,
+        creator:'Startup Staff', title: docTitle,
         styles: {
             default: { document: { run: { font:'Arial', size:24 } } },
             paragraphStyles: [
