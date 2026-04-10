@@ -109,14 +109,48 @@
     </header>
 
     <!-- API Config Modal -->
-    <div id="api-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
-        <div class="bg-gray-900 p-6 rounded-lg border border-gray-700 w-96 shadow-xl">
-            <h2 class="text-lg font-bold mb-4 text-cyan-400">GMI API Configuration</h2>
-            <label class="block text-sm font-medium text-gray-400 mb-2">Bearer Token</label>
-            <input type="password" id="input-api-key" class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-500 mb-4" placeholder="Enter GMI API Key">
-            <div class="flex justify-end gap-2">
+    <div id="api-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 w-[520px] shadow-2xl">
+            <h2 class="text-lg font-bold mb-1 text-cyan-400">⚙️ GMI API Configuration</h2>
+            <p class="text-xs text-gray-500 mb-5">Configure your API key and select the model powering the boardroom.</p>
+
+            <!-- API Key -->
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Bearer Token</label>
+            <div class="flex gap-2 mb-5">
+                <input type="password" id="input-api-key"
+                    class="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500"
+                    placeholder="Enter GMI API Key">
+                <button id="btn-fetch-models"
+                    class="bg-cyan-700 hover:bg-cyan-600 text-white text-xs font-bold px-4 py-2 rounded transition whitespace-nowrap">
+                    FETCH MODELS
+                </button>
+            </div>
+
+            <!-- Model selector -->
+            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Active Model</label>
+
+            <!-- Loading / error states -->
+            <div id="models-loading" class="hidden text-xs text-cyan-400 mb-3 flex items-center gap-2">
+                <svg class="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                Fetching available models…
+            </div>
+            <div id="models-error" class="hidden text-xs text-red-400 mb-3"></div>
+
+            <!-- Model list (scrollable card grid) -->
+            <div id="model-list" class="space-y-2 max-h-64 overflow-y-auto pr-1 mb-5">
+                <!-- Populated by JS -->
+                <div class="text-xs text-gray-600 italic">Enter your API key and click FETCH MODELS.</div>
+            </div>
+
+            <!-- Currently selected display -->
+            <div class="bg-gray-800 border border-gray-700 rounded px-3 py-2 mb-5 flex items-center justify-between">
+                <span class="text-xs text-gray-400">Selected model:</span>
+                <span id="selected-model-display" class="text-xs font-mono text-cyan-300 truncate max-w-[300px]">—</span>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-4 border-t border-gray-800">
                 <button id="btn-close-api" class="px-4 py-2 text-sm text-gray-400 hover:text-white">Cancel</button>
-                <button id="btn-save-config" class="px-4 py-2 text-sm bg-cyan-600 hover:bg-cyan-500 text-white rounded">Save Configuration</button>
+                <button id="btn-save-config" class="px-4 py-2 text-sm bg-cyan-600 hover:bg-cyan-500 text-white rounded font-bold">Save & Apply</button>
             </div>
         </div>
     </div>
@@ -257,15 +291,18 @@
 
     <script>
         // ─── CONFIGURATION & STATE ───────────────────────────────────────────────
-        const API_ENDPOINT = 'https://api.gmi-serving.com/v1/chat/completions';
-        const MODEL_NAME   = 'zai-org/GLM-5.1-FP8';
-        let API_KEY        = localStorage.getItem('gmi_api_key') || '';
-        let chatHistory    = [];
-        let apiErrorCount  = 0;
-        let founderName    = localStorage.getItem('founder_name') || '';
-        let startupDesc    = localStorage.getItem('startup_desc') || '';
-        let kbUrls         = '';
-        let kbFiles        = [];
+        const API_ENDPOINT    = 'https://api.gmi-serving.com/v1/chat/completions';
+        const MODELS_ENDPOINT = 'https://api.gmi-serving.com/v1/models';
+        let MODEL_NAME  = localStorage.getItem('gmi_model') || '';
+        let API_KEY     = localStorage.getItem('gmi_api_key') || '';
+        let chatHistory = [];
+        let apiErrorCount = 0;
+        let founderName = localStorage.getItem('founder_name') || '';
+        let startupDesc = localStorage.getItem('startup_desc') || '';
+        let kbUrls      = '';
+        let kbFiles     = [];
+        let availableModels = [];
+        let selectedModelInModal = MODEL_NAME;
 
         // ─── DOM ─────────────────────────────────────────────────────────────────
         const chatWindow    = document.getElementById('chat-window');
@@ -278,6 +315,11 @@
         const btnSaveConfig = document.getElementById('btn-save-config');
         const apiModal      = document.getElementById('api-modal');
         const inputApiKey   = document.getElementById('input-api-key');
+        const btnFetchModels       = document.getElementById('btn-fetch-models');
+        const modelsLoading        = document.getElementById('models-loading');
+        const modelsError          = document.getElementById('models-error');
+        const modelList            = document.getElementById('model-list');
+        const selectedModelDisplay = document.getElementById('selected-model-display');
         const btnKb         = document.getElementById('btn-kb');
         const btnCloseKb    = document.getElementById('btn-close-kb');
         const btnSaveKb     = document.getElementById('btn-save-kb');
@@ -786,6 +828,11 @@ The Specialists are:
                 apiModal.classList.remove('hidden');
                 return;
             }
+            if (!MODEL_NAME) {
+                appendMessage('Soleil', 'No model selected. Please open ⚙️ API Config, fetch models, and choose one.');
+                apiModal.classList.remove('hidden');
+                return;
+            }
 
             // Detect document request
             const docReq = detectDocRequest(userText);
@@ -907,13 +954,107 @@ The Specialists are:
             document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
         });
 
-        btnApiConfig.addEventListener('click', () => { inputApiKey.value = API_KEY; apiModal.classList.remove('hidden'); });
+        // ─── MODEL FETCH & RENDER ─────────────────────────────────────────────
+        function renderModelList(models) {
+            modelList.innerHTML = '';
+            if (!models || !models.length) {
+                modelList.innerHTML = '<div class="text-xs text-gray-500 italic">No models returned.</div>';
+                return;
+            }
+            models.forEach(m => {
+                const id = m.id || m;
+                const isSelected = id === selectedModelInModal;
+                const label = id.split('/').pop();
+                const owner = id.includes('/') ? id.split('/')[0] : '';
+                const card = document.createElement('div');
+                card.className = [
+                    'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all',
+                    isSelected
+                        ? 'border-cyan-500 bg-cyan-900/30'
+                        : 'border-gray-700 bg-gray-800/50 hover:border-gray-500 hover:bg-gray-800'
+                ].join(' ');
+                card.innerHTML = `
+                    <div class="w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center
+                        ${isSelected ? 'border-cyan-400 bg-cyan-400' : 'border-gray-500'}">
+                        ${isSelected ? '<div class="w-2 h-2 rounded-full bg-gray-900"></div>' : ''}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-semibold text-gray-100 truncate">${label}</div>
+                        ${owner ? `<div class="text-xs text-gray-500 truncate">${owner}</div>` : ''}
+                    </div>
+                    ${isSelected ? '<span class="text-xs text-cyan-400 font-bold">ACTIVE</span>' : ''}
+                `;
+                card.addEventListener('click', () => {
+                    selectedModelInModal = id;
+                    selectedModelDisplay.textContent = id;
+                    renderModelList(availableModels);
+                });
+                modelList.appendChild(card);
+            });
+            selectedModelDisplay.textContent = selectedModelInModal || '—';
+        }
+
+        async function fetchModels() {
+            const key = inputApiKey.value.trim() || API_KEY;
+            if (!key) {
+                modelsError.textContent = 'Enter your API key first.';
+                modelsError.classList.remove('hidden');
+                return;
+            }
+            modelsError.classList.add('hidden');
+            modelsLoading.classList.remove('hidden');
+            modelList.innerHTML = '';
+            btnFetchModels.disabled = true;
+            btnFetchModels.textContent = '…';
+            try {
+                const res = await fetch(MODELS_ENDPOINT, {
+                    headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' }
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status + ': ' + res.statusText);
+                const data = await res.json();
+                availableModels = data.data || data.models || (Array.isArray(data) ? data : []);
+                if (!availableModels.length) throw new Error('Empty model list returned.');
+                renderModelList(availableModels);
+                logTrace('Model list fetched — ' + availableModels.length + ' models available.', true);
+            } catch (err) {
+                modelsError.textContent = '⚠ ' + err.message;
+                modelsError.classList.remove('hidden');
+                modelList.innerHTML = '<div class="text-xs text-gray-500 italic">Could not load models. Check your API key.</div>';
+                logTrace('Model fetch error: ' + err.message);
+            } finally {
+                modelsLoading.classList.add('hidden');
+                btnFetchModels.disabled = false;
+                btnFetchModels.textContent = 'FETCH MODELS';
+            }
+        }
+
+        function updateModelBadge() {
+            // Show active model in the header area (trace log is fine)
+        }
+
+        // API Config Modal
+        btnApiConfig.addEventListener('click', () => {
+            inputApiKey.value = API_KEY;
+            selectedModelInModal = MODEL_NAME;
+            selectedModelDisplay.textContent = MODEL_NAME || '— none selected —';
+            if (availableModels.length) {
+                renderModelList(availableModels);
+            } else {
+                modelList.innerHTML = '<div class="text-xs text-gray-600 italic">Enter your API key and click FETCH MODELS to load available models.</div>';
+            }
+            apiModal.classList.remove('hidden');
+        });
         btnCloseApi.addEventListener('click', () => apiModal.classList.add('hidden'));
+        btnFetchModels.addEventListener('click', fetchModels);
         btnSaveConfig.addEventListener('click', () => {
-            API_KEY = inputApiKey.value.trim();
-            localStorage.setItem('gmi_api_key', API_KEY);
+            const newKey = inputApiKey.value.trim();
+            if (newKey) { API_KEY = newKey; localStorage.setItem('gmi_api_key', API_KEY); }
+            if (selectedModelInModal) {
+                MODEL_NAME = selectedModelInModal;
+                localStorage.setItem('gmi_model', MODEL_NAME);
+            }
             apiModal.classList.add('hidden');
-            logTrace('API Configuration saved.');
+            logTrace('Config saved — Key: ' + (API_KEY ? '✓ set' : '✗ missing') + ' | Model: ' + (MODEL_NAME || 'none'), true);
         });
 
         btnKb.addEventListener('click', () => { kbUrlsInput.value = kbUrls; renderKbFileList(); kbModal.classList.remove('hidden'); });
