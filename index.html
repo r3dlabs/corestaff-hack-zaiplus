@@ -512,7 +512,7 @@
                             <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/elon.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ef4444;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">E</div>
                             <div>
                                 <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:2px;">Elon <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Engineering</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">First-principles thinker. Technical architecture, product feasibility, and build vs. buy decisions.</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">First-principles thinker. Technical engineering, product feasibility, deployment strategy, and build vs. buy decisions. Works closely with Leonardo to ensure design and build are harmonious.</div>
                             </div>
                         </div>
 
@@ -544,7 +544,7 @@
                             <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/leonardo.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#a855f7;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">L</div>
                             <div>
                                 <div style="font-size:12px;font-weight:600;color:#a855f7;margin-bottom:2px;">Leonardo <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Architecture</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Systems and scale. Infrastructure design, technical debt, and long-term platform thinking.</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Systems design and architecture. Technical architecture, infrastructure planning, technical debt, and long-term platform thinking. Works closely with Elon to ensure design and build are harmonious.</div>
                             </div>
                         </div>
 
@@ -643,10 +643,22 @@
             <span style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Start-up Staff</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-            <button id="btn-edit-startup" class="btn-icon">✏ Profile</button>
-            <button id="btn-kb" class="btn-icon">⊞ Knowledge Base</button>
-            <button id="btn-api-config" class="btn-icon">⚙ API Config</button>
-            <button id="btn-about" class="btn-icon">ℹ About</button>
+            <button id="btn-edit-startup" class="btn-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
+                Business Profile
+            </button>
+            <button id="btn-kb" class="btn-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+                Knowledge Base
+            </button>
+            <button id="btn-api-config" class="btn-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                API Config
+            </button>
+            <button id="btn-about" class="btn-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                About
+            </button>
 
             <!-- Theme toggle -->
             <div class="theme-toggle">
@@ -1078,11 +1090,11 @@ Name: Their insight. 2-4 sentences.
 Soleil: Your synthesis. Short paragraphs, bullet action items. Direct.
 
 Specialists:
-- Elon (Engineering): First principles, blunt, technical.
+- Elon (Engineering): First-principles, blunt, technical. Owns engineering execution, deployment, product feasibility, and build vs. buy decisions. Works hand-in-hand with Leonardo — never duplicates architecture concerns, but always ensures buildability.
 - Isaac (Finance): Burn-rate obsessed, ROI-focused, conservative.
 - Steve (Marketing): Narrative-driven, growth-hacker.
 - Harvey (Legal): Precise, risk-averse, equity-protective.
-- Leonardo (Architecture): Systems thinker, scale-focused.
+- Leonardo (Architecture): Owns technical architecture, systems design, infrastructure planning, and long-term platform thinking. Works hand-in-hand with Elon — never duplicates engineering concerns, but ensures design and build are always harmonious.
 - Donna (HR): Empathetic, culture and compliance focused.`;
 
 function buildSystemPrompt(extra='') {
