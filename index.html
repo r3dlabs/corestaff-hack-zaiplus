@@ -476,19 +476,112 @@
         </div>
     </div>
 
+    <!-- ── ABOUT MODAL ───────────────────────────────────────── -->
+    <div id="about-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-box modal-box-lg" style="max-width:560px;max-height:85vh;display:flex;flex-direction:column;">
+            <div style="flex:1;overflow-y:auto;">
+                <!-- Header -->
+                <div style="margin-bottom:24px;">
+                    <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;font-family:'Geist Mono',monospace;">About</p>
+                    <h2 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Start-up Staff</h2>
+                    <p style="font-size:13px;color:var(--text-secondary);">AI-powered boardroom for founders and builders.</p>
+                </div>
+
+                <!-- Divider -->
+                <hr class="divider" style="margin:0 0 20px;">
+
+                <!-- What it is -->
+                <div style="margin-bottom:20px;">
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-family:'Geist Mono',monospace;">What is Start-up Staff?</p>
+                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Start-up Staff is an AI-powered virtual boardroom designed to give founders and operators instant access to a cross-functional advisory team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before Soleil, your Chief of Staff, synthesises a unified strategic response.</p>
+                </div>
+
+                <!-- The Team -->
+                <div style="margin-bottom:20px;">
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">The Core Team</p>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        ${[
+                            ['Soleil', 'Chief of Staff', 'Orchestrates the boardroom. Routes queries, synthesises insights, and delivers unified strategic recommendations.', 'var(--text-primary)'],
+                            ['Elon', 'Engineering', 'First-principles thinker. Technical architecture, product feasibility, and build vs. buy decisions.', '#ef4444'],
+                            ['Isaac', 'Finance', 'Burn-rate focused. Financial modelling, ROI analysis, fundraising strategy, and unit economics.', '#22c55e'],
+                            ['Steve', 'Marketing', 'Narrative and growth. Go-to-market strategy, brand positioning, and customer acquisition.', '#3b82f6'],
+                            ['Harvey', 'Legal', 'Risk and compliance. Contracts, equity structure, IP protection, and regulatory considerations.', '#eab308'],
+                            ['Leonardo', 'Architecture', 'Systems and scale. Infrastructure design, technical debt, and long-term platform thinking.', '#a855f7'],
+                            ['Donna', 'Human Resources', 'People and culture. Hiring strategy, team structure, compensation, and compliance.', '#ec4899'],
+                        ].map(([name, role, desc, color]) => `
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <div style="width:32px;height:32px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">${name[0]}</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:${color};margin-bottom:1px;">${name} <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">${role}</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${desc}</div>
+                            </div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+
+                <!-- How to use -->
+                <div style="margin-bottom:20px;">
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">How to Use</p>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        ${[
+                            ['1', 'Configure your API', 'Click ⚙ API Config, select a provider (GMI, Claude, ChatGPT, DeepSeek, or Mistral), enter your API key, and select a model.'],
+                            ['2', 'Set your Startup Profile', 'Click ✏ Profile to enter your name and a brief description of your startup. This context is injected into every query.'],
+                            ['3', 'Ask anything', 'Type a strategic question in the Soleil Interface. The team will consult, deliberate, and respond with a synthesised recommendation.'],
+                            ['4', 'Generate documents', 'Prefix your request with "generate a document:", "create a spreadsheet:", or "build an HTML page:" to produce downloadable files.'],
+                            ['5', 'Add context', 'Use ⊞ Knowledge Base to upload internal documents or reference URLs the team will consult before responding.'],
+                        ].map(([num, title, desc]) => `
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
+                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">${num}</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">${title}</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${desc}</div>
+                            </div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+
+                <!-- Credits -->
+                <div style="margin-bottom:8px;">
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">Credits</p>
+                    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+                        <div>
+                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Created by</div>
+                            <div style="font-size:12px;color:var(--text-secondary);">Modular Technology Solutions Pte Ltd<br><span style="color:var(--text-muted);font-size:11px;">Singapore</span></div>
+                        </div>
+                        <hr class="divider" style="margin:0;">
+                        <div>
+                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Icons</div>
+                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
+                                Agent avatar icons sourced from Flaticon.<br>
+                                <a href="https://www.flaticon.com/free-icons/person" title="person icons" target="_blank" style="color:var(--text-primary);text-decoration:underline;font-size:11px;">Person icons created by Freepik – Flaticon</a>
+                            </div>
+                        </div>
+                        <hr class="divider" style="margin:0;">
+                        <div>
+                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Built with</div>
+                            <div style="font-size:12px;color:var(--text-secondary);">HTML · CSS · Vanilla JS · docx.js · SheetJS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="divider">
+            <div style="display:flex;justify-content:flex-end;">
+                <button id="btn-close-about" class="btn-primary" style="padding:9px 24px;">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ── HEADER ──────────────────────────────────────────── -->
     <header>
         <div style="display:flex;align-items:center;gap:16px;">
             <span style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Start-up Staff</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-            <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;">
-                <span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Model</span>
-                <span id="active-model-badge" style="font-size:11px;font-family:'Geist Mono',monospace;color:var(--text-secondary);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
-            </div>
             <button id="btn-edit-startup" class="btn-icon">✏ Profile</button>
             <button id="btn-kb" class="btn-icon">⊞ Knowledge Base</button>
             <button id="btn-api-config" class="btn-icon">⚙ API Config</button>
+            <button id="btn-about" class="btn-icon">ℹ About</button>
 
             <!-- Theme toggle -->
             <div class="theme-toggle">
@@ -1340,10 +1433,21 @@ function initializeBoardroom() {
 }
 
 function updateModelBadge() {
-    const prov = PROVIDERS[ACTIVE_PROVIDER]?.name.split(' ')[0] || '';
-    const model = MODEL_NAME ? MODEL_NAME.split('/').pop() : '';
-    document.getElementById('active-model-badge').textContent = model ? `${prov} · ${model}` : '— none —';
+    // Badge removed from header — no-op kept for compatibility
 }
+
+// About modal
+document.getElementById('btn-about').addEventListener('click', () => {
+    document.getElementById('about-modal').style.display = 'flex';
+});
+document.getElementById('btn-close-about').addEventListener('click', () => {
+    document.getElementById('about-modal').style.display = 'none';
+});
+// Close on overlay click
+document.getElementById('about-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('about-modal'))
+        document.getElementById('about-modal').style.display = 'none';
+});
 
 // ─── EVENT LISTENERS ─────────────────────────────────────────────────────────
 btnSend.addEventListener('click',sendChat);
