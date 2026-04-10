@@ -479,15 +479,14 @@
     <!-- ── ABOUT MODAL ───────────────────────────────────────── -->
     <div id="about-modal" class="modal-overlay" style="display:none;">
         <div class="modal-box modal-box-lg" style="max-width:560px;max-height:85vh;display:flex;flex-direction:column;">
-            <div style="flex:1;overflow-y:auto;">
+            <div style="flex:1;overflow-y:auto;padding-right:4px;">
+
                 <!-- Header -->
-                <div style="margin-bottom:24px;">
+                <div style="margin-bottom:20px;">
                     <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;font-family:'Geist Mono',monospace;">About</p>
                     <h2 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Start-up Staff</h2>
                     <p style="font-size:13px;color:var(--text-secondary);">AI-powered boardroom for founders and builders.</p>
                 </div>
-
-                <!-- Divider -->
                 <hr class="divider" style="margin:0 0 20px;">
 
                 <!-- What it is -->
@@ -496,47 +495,115 @@
                     <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Start-up Staff is an AI-powered virtual boardroom designed to give founders and operators instant access to a cross-functional advisory team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before Soleil, your Chief of Staff, synthesises a unified strategic response.</p>
                 </div>
 
-                <!-- The Team -->
+                <!-- The Core Team -->
                 <div style="margin-bottom:20px;">
                     <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">The Core Team</p>
                     <div style="display:flex;flex-direction:column;gap:8px;">
-                        ${[
-                            ['Soleil', 'Chief of Staff', 'Orchestrates the boardroom. Routes queries, synthesises insights, and delivers unified strategic recommendations.', 'var(--text-primary)'],
-                            ['Elon', 'Engineering', 'First-principles thinker. Technical architecture, product feasibility, and build vs. buy decisions.', '#ef4444'],
-                            ['Isaac', 'Finance', 'Burn-rate focused. Financial modelling, ROI analysis, fundraising strategy, and unit economics.', '#22c55e'],
-                            ['Steve', 'Marketing', 'Narrative and growth. Go-to-market strategy, brand positioning, and customer acquisition.', '#3b82f6'],
-                            ['Harvey', 'Legal', 'Risk and compliance. Contracts, equity structure, IP protection, and regulatory considerations.', '#eab308'],
-                            ['Leonardo', 'Architecture', 'Systems and scale. Infrastructure design, technical debt, and long-term platform thinking.', '#a855f7'],
-                            ['Donna', 'Human Resources', 'People and culture. Hiring strategy, team structure, compensation, and compliance.', '#ec4899'],
-                        ].map(([name, role, desc, color]) => `
+
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <div style="width:32px;height:32px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">${name[0]}</div>
+                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:var(--text-primary);display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--bg-base);flex-shrink:0;">S</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:${color};margin-bottom:1px;">${name} <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">${role}</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${desc}</div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Soleil <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Chief of Staff</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Orchestrates the boardroom. Routes queries, synthesises insights, and delivers unified strategic recommendations.</div>
                             </div>
-                        </div>`).join('')}
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/elon.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ef4444;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">E</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:2px;">Elon <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Engineering</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">First-principles thinker. Technical architecture, product feasibility, and build vs. buy decisions.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/isaac.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#22c55e;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">I</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#22c55e;margin-bottom:2px;">Isaac <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Finance</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Burn-rate focused. Financial modelling, ROI analysis, fundraising strategy, and unit economics.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/steve.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#3b82f6;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">S</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#3b82f6;margin-bottom:2px;">Steve <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Marketing</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Narrative and growth. Go-to-market strategy, brand positioning, and customer acquisition.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/harvey.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#eab308;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">H</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#eab308;margin-bottom:2px;">Harvey <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Legal</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Risk and compliance. Contracts, equity structure, IP protection, and regulatory considerations.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/leonardo.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#a855f7;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">L</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#a855f7;margin-bottom:2px;">Leonardo <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Architecture</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Systems and scale. Infrastructure design, technical debt, and long-term platform thinking.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ec4899;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">D</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:#ec4899;margin-bottom:2px;">Donna <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Human Resources</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">People and culture. Hiring strategy, team structure, compensation, and compliance.</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- How to use -->
+                <!-- How to Use -->
                 <div style="margin-bottom:20px;">
                     <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">How to Use</p>
                     <div style="display:flex;flex-direction:column;gap:6px;">
-                        ${[
-                            ['1', 'Configure your API', 'Click ⚙ API Config, select a provider (GMI, Claude, ChatGPT, DeepSeek, or Mistral), enter your API key, and select a model.'],
-                            ['2', 'Set your Startup Profile', 'Click ✏ Profile to enter your name and a brief description of your startup. This context is injected into every query.'],
-                            ['3', 'Ask anything', 'Type a strategic question in the Soleil Interface. The team will consult, deliberate, and respond with a synthesised recommendation.'],
-                            ['4', 'Generate documents', 'Prefix your request with "generate a document:", "create a spreadsheet:", or "build an HTML page:" to produce downloadable files.'],
-                            ['5', 'Add context', 'Use ⊞ Knowledge Base to upload internal documents or reference URLs the team will consult before responding.'],
-                        ].map(([num, title, desc]) => `
+
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">${num}</div>
+                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">1</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">${title}</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${desc}</div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Configure your API</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Click ⚙ API Config, select a provider (GMI, Claude, ChatGPT, DeepSeek, or Mistral), enter your API key, and select a model.</div>
                             </div>
-                        </div>`).join('')}
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
+                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">2</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Set your Startup Profile</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Click ✏ Profile to enter your name and a brief description of your startup. This context is injected into every query.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
+                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">3</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Ask anything</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Type a strategic question in the Soleil Interface. The team will consult, deliberate, and respond with a synthesised recommendation.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
+                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">4</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Generate documents</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Prefix your request with "generate a document:", "create a spreadsheet:", or "build an HTML page:" to produce downloadable files.</div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
+                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">5</div>
+                            <div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Add context</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Use ⊞ Knowledge Base to upload internal documents or reference URLs the team will consult before responding.</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -545,26 +612,26 @@
                     <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">Credits</p>
                     <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
                         <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Created by</div>
-                            <div style="font-size:12px;color:var(--text-secondary);">Modular Technology Solutions Pte Ltd<br><span style="color:var(--text-muted);font-size:11px;">Singapore</span></div>
+                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Created by</div>
+                            <div style="font-size:13px;color:var(--text-secondary);font-weight:500;">Modular Technology Solutions Pte Ltd</div>
+                            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Singapore</div>
                         </div>
                         <hr class="divider" style="margin:0;">
                         <div>
                             <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Icons</div>
-                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
-                                Agent avatar icons sourced from Flaticon.<br>
-                                <a href="https://www.flaticon.com/free-icons/person" title="person icons" target="_blank" style="color:var(--text-primary);text-decoration:underline;font-size:11px;">Person icons created by Freepik – Flaticon</a>
+                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">Agent avatar icons sourced from Flaticon.<br>
+                                <a href="https://www.flaticon.com/free-icons/person" title="person icons" target="_blank" style="color:var(--text-primary);text-decoration:underline;font-size:12px;">Person icons created by Freepik – Flaticon</a>
                             </div>
                         </div>
                         <hr class="divider" style="margin:0;">
                         <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Built with</div>
+                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Built with</div>
                             <div style="font-size:12px;color:var(--text-secondary);">HTML · CSS · Vanilla JS · docx.js · SheetJS</div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
             <hr class="divider">
             <div style="display:flex;justify-content:flex-end;">
                 <button id="btn-close-about" class="btn-primary" style="padding:9px 24px;">Close</button>
@@ -1073,8 +1140,16 @@ function appendMessage(sender, text) {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `display:flex;justify-content:${sender==='User'?'flex-end':'flex-start'};`;
     const avatar = document.createElement('div');
-    avatar.style.cssText = `width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);`;
-    avatar.textContent = sender==='User'?'U':'S';
+    avatar.style.cssText = `width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);overflow:hidden;`;
+    if (sender === 'User') {
+        avatar.textContent = 'U';
+    } else {
+        const img = document.createElement('img');
+        img.src = 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+        img.onerror = () => { avatar.removeChild(img); avatar.textContent = 'S'; };
+        avatar.appendChild(img);
+    }
     const bubble = document.createElement('div');
     if (sender==='User') {
         bubble.className = 'chat-bubble-user';
@@ -1386,8 +1461,12 @@ function initializeBoardroom() {
     const wrapper=document.createElement('div');
     wrapper.style.cssText='display:flex;justify-content:flex-start;';
     const avatar=document.createElement('div');
-    avatar.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);';
-    avatar.textContent='S';
+    avatar.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);overflow:hidden;';
+    const soleilImg=document.createElement('img');
+    soleilImg.src='https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png';
+    soleilImg.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;';
+    soleilImg.onerror=()=>{ avatar.removeChild(soleilImg); avatar.textContent='S'; };
+    avatar.appendChild(soleilImg);
 
     const card=document.createElement('div');
     card.className='chat-bubble-ai';
@@ -1419,12 +1498,7 @@ function initializeBoardroom() {
             ${rosterHTML}
         </div>
         <div style="border-top:1px solid var(--border);padding-top:12px;">
-            <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">Generate files directly:</p>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;">
-                <span class="tag-pill">📄 generate a document: …</span>
-                <span class="tag-pill">📊 create a spreadsheet: …</span>
-                <span class="tag-pill">🌐 build an HTML page: …</span>
-            </div>
+            <p style="font-size:12px;color:var(--text-secondary);">Ask me anything about your startup — strategy, legal, finance, engineering, marketing, or HR.</p>
         </div>`;
 
     wrapper.appendChild(avatar); wrapper.appendChild(card);
