@@ -1118,7 +1118,9 @@ function buildSystemPrompt(extra='') {
 // ─── UTILITIES ───────────────────────────────────────────────────────────────
 function logTrace(msg, highlight=false) {
     const p = document.createElement('div');
-    p.textContent = '> '+msg;
+    const now = new Date();
+    const ts = now.toLocaleTimeString('en-SG', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+    p.innerHTML = `<span style="color:var(--text-muted);margin-right:8px;user-select:none;">${ts}</span>> ${msg}`;
     if (highlight) p.classList.add('highlight');
     traceWindow.appendChild(p);
     traceWindow.scrollTop = traceWindow.scrollHeight;
