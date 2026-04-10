@@ -101,6 +101,10 @@
             <span id="startup-badge" class="text-xs bg-cyan-900/50 text-cyan-400 px-2 py-1 rounded border border-cyan-800 hidden">FOUNDER EDITION</span>
         </div>
         <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 bg-gray-800 border border-gray-700 rounded px-3 py-1">
+                <span class="text-xs text-gray-500">MODEL</span>
+                <span id="active-model-badge" class="text-xs font-mono text-cyan-300 truncate max-w-[160px]">—</span>
+            </div>
             <button id="btn-edit-startup" class="text-sm text-gray-400 hover:text-white transition">✏️ Startup Profile</button>
             <button id="btn-kb" class="text-sm text-gray-400 hover:text-white transition">📚 Knowledge Base</button>
             <button id="btn-api-config" class="text-sm text-gray-400 hover:text-white transition">⚙️ API Config</button>
@@ -849,6 +853,7 @@ The Specialists are:
                 const finalSystemPrompt = buildSystemPrompt(extraInstruction);
 
                 if (docReq.type) logTrace(`📁 Document request detected: ${docReq.type.toUpperCase()} — "${docReq.topic}"`, true);
+                logTrace(`🚀 Sending to model: ${MODEL_NAME}`, true);
 
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
@@ -862,8 +867,12 @@ The Specialists are:
                 });
 
                 if (!response.ok) {
-                    const err = await response.json().catch(() => ({}));
-                    throw new Error(`API Error ${response.status}: ${err.error?.message || response.statusText}`);
+                    let errBody = {};
+                    try { errBody = await response.json(); } catch(e) {}
+                    const errMsg = errBody.error?.message || errBody.message || response.statusText;
+                    const errType = errBody.error?.type || errBody.error?.code || '';
+                    logTrace(`❌ RAW ERROR ${response.status}: ${JSON.stringify(errBody)}`, true);
+                    throw new Error(`API Error ${response.status}${errType ? ' ['+errType+']' : ''}: ${errMsg}`);
                 }
 
                 const data = await response.json();
@@ -1029,7 +1038,8 @@ The Specialists are:
         }
 
         function updateModelBadge() {
-            // Show active model in the header area (trace log is fine)
+            const badge = document.getElementById('active-model-badge');
+            if (badge) badge.textContent = MODEL_NAME ? MODEL_NAME.split('/').pop() : '— none —';
         }
 
         // API Config Modal
@@ -1087,6 +1097,10 @@ The Specialists are:
         });
 
         window.onload = () => {
+            updateModelBadge();
+            if (!MODEL_NAME) {
+                logTrace('⚠️ No model configured. Open ⚙️ API Config to fetch and select a model.', true);
+            }
             if (!founderName || !startupDesc) startupModal.classList.remove('hidden');
             else initializeBoardroom();
         };
