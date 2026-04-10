@@ -676,25 +676,31 @@ Make it a beautiful, complete, standalone HTML page with embedded CSS. Use a pro
         }
 
         // ─── SYSTEM PROMPT ────────────────────────────────────────────────────────
-        const BASE_SYSTEM_PROMPT = `You are Soleil, the Chief of Staff for a high-stakes startup. You are diplomatic, strategic, and an orchestrator. 
-You manage a boardroom of 6 specialists. When the user asks a question, you MUST consult the relevant specialists by outputting the exact format: [CONSULT: Name]. You can consult multiple specialists. 
+        const BASE_SYSTEM_PROMPT = `You are Soleil, the Chief of Staff for a high-stakes startup. You are diplomatic, strategic, and an orchestrator.
+You manage a boardroom of 6 specialists. When the user asks a question, you MUST consult the relevant specialists using the exact format: [CONSULT: Name].
 
-You MUST format your response strictly as follows to ensure readability and sourcing:
+STRICT FORMATTING RULES — follow these exactly:
+1. NEVER use markdown tables (no pipes |, no |---|---| rows).
+2. NEVER use horizontal rules (no ---).
+3. Use plain bullet points starting with "- " for lists.
+4. Use **bold** only for key terms or emphasis, not for entire sentences.
+5. Keep responses concise and professional. No emojis unless they add clear value.
+6. Do NOT introduce yourself or list the team roster in responses — the UI already shows this.
 
+RESPONSE FORMAT:
 [CONSULT: Name]
-Name: Their specific insight or advice.
-[Source: URL] (Provide a real or highly plausible reference URL. If none, omit).
+Name: Their insight. Keep it to 2-4 sentences.
+[Source: URL] (real or plausible URL, omit if none)
 
-After all consultations, provide your synthesis:
-Soleil: The final strategic recommendation. Use line breaks and paragraphs. Use bullet points (- or *) for action items.
+Soleil: Your synthesis. Use short paragraphs and bullet points for action items. Be direct.
 
-The Specialists are:
-- Elon (Engineering): Hardcore, first principles, blunt, technical.
+Specialists:
+- Elon (Engineering): First principles, blunt, technical.
 - Isaac (Finance): Burn-rate obsessed, ROI-focused, conservative.
-- Steve (Marketing): Narrative-driven, growth-hacker, viral strategy.
-- Harvey (Legal): Precise, risk-averse, protective of equity.
-- Leonardo (Architecture): Systems thinker, focused on scale and structure.
-- Donna (HR): Empathetic, culture-focused, compliance, talent retention.`;
+- Steve (Marketing): Narrative-driven, growth-hacker.
+- Harvey (Legal): Precise, risk-averse, equity-protective.
+- Leonardo (Architecture): Systems thinker, scale-focused.
+- Donna (HR): Empathetic, culture and compliance focused.`;
 
         function buildSystemPrompt(extraInstruction = '') {
             let prompt = BASE_SYSTEM_PROMPT;
@@ -731,20 +737,50 @@ The Specialists are:
 
         function formatTextToHtml(text) {
             if (!text) return '';
-            let f = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Strip markdown table rows (lines with | col | col |)
+            let f = text.replace(/^\|.*\|\s*$/gm, '');
+            // Strip table separator lines (|---|---|)
+            f = f.replace(/^\|[-| :]+\|\s*$/gm, '');
+            // Strip bare --- dividers
+            f = f.replace(/^---+\s*$/gm, '<hr class="border-gray-700 my-2">');
+            // Bold and italic
+            f = f.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             f = f.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Inline code
+            f = f.replace(/`([^`]+)`/g, '<code class="bg-gray-700 text-cyan-300 px-1 rounded text-xs">$1</code>');
+
+            // Split into blocks on double newlines
             return f.split(/\n\n+/).map(block => {
                 const b = block.trim();
-                if (!b) return '';
-                if (b.match(/^[-*]\s/gm)) {
+                if (!b || b === '<hr class="border-gray-700 my-2">') return b;
+
+                // Bullet list block
+                if (b.match(/^[-*]\s/m)) {
                     const items = b.split(/\n/).map(item => {
-                        const c = item.replace(/^[-*]\s/, '').trim();
-                        return c ? `<li class="ml-4 list-disc">${c}</li>` : '';
-                    }).join('');
-                    return `<ul class="my-2 space-y-1">${items}</ul>`;
+                        const c = item.replace(/^[-*]\s+/, '').trim();
+                        return c ? `<li>${c}</li>` : '';
+                    }).filter(Boolean).join('');
+                    return `<ul class="my-2 space-y-1 list-disc list-inside text-sm">${items}</ul>`;
                 }
-                return `<p class="mb-2 last:mb-0">${b.replace(/\n/g, '<br>')}</p>`;
-            }).join('');
+
+                // Numbered list block
+                if (b.match(/^\d+\.\s/m)) {
+                    const items = b.split(/\n/).map(item => {
+                        const c = item.replace(/^\d+\.\s+/, '').trim();
+                        return c ? `<li>${c}</li>` : '';
+                    }).filter(Boolean).join('');
+                    return `<ol class="my-2 space-y-1 list-decimal list-inside text-sm">${items}</ol>`;
+                }
+
+                // Heading lines (### or ##)
+                if (b.startsWith('### ')) return `<p class="font-bold text-cyan-300 text-sm mt-2">${b.replace(/^### /, '')}</p>`;
+                if (b.startsWith('## '))  return `<p class="font-bold text-cyan-200 text-sm mt-2">${b.replace(/^## /, '')}</p>`;
+
+                // Normal paragraph — replace single newlines with space (not <br>)
+                const clean = b.replace(/\n/g, ' ').trim();
+                return clean ? `<p class="mb-1 last:mb-0 leading-relaxed">${clean}</p>` : '';
+            }).filter(Boolean).join('');
         }
 
         function appendMessage(sender, text) {
@@ -935,16 +971,69 @@ The Specialists are:
         // ─── STARTUP ONBOARDING ───────────────────────────────────────────────────
         function initializeBoardroom() {
             chatWindow.innerHTML = '';
+
+            const name = founderName || 'Founder';
+            const company = startupDesc ? startupDesc.split(',')[0] : null;
+
             if (founderName && startupDesc) {
-                startupBadge.textContent = startupDesc.split(',')[0] || startupDesc.substring(0, 20);
+                startupBadge.textContent = company || startupDesc.substring(0, 20);
                 startupBadge.classList.remove('hidden');
-                appendMessage('Soleil', `Good morning, ${founderName}. The board is assembled and fully briefed on ${startupDesc}. We are standing by to execute your strategic vision.\n\nYou can ask me to **generate a document**, **create a spreadsheet**, or **build an HTML page** — just describe what you need and I'll have the team draft it for you.`);
                 logTrace(`Startup profile loaded: ${founderName} at ${startupDesc.split(',')[0]}`);
             } else {
                 startupBadge.textContent = 'FOUNDER EDITION';
                 startupBadge.classList.remove('hidden');
-                appendMessage('Soleil', 'Good morning, Founder. The board is assembled. How are we steering the ship today?\n\nTip: You can ask me to **generate a document**, **create a spreadsheet**, or **build an HTML page**.');
             }
+
+            // Inject a clean structured greeting card instead of a text bubble
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('flex', 'justify-start');
+
+            const avatar = document.createElement('div');
+            avatar.className = 'w-8 h-8 rounded-full flex items-center justify-center text-xs mr-3 flex-shrink-0 bg-cyan-700 text-white';
+            avatar.textContent = 'S';
+
+            const card = document.createElement('div');
+            card.className = 'bg-gray-800 border border-gray-700 rounded-xl p-5 max-w-lg space-y-4';
+
+            const specialists = [
+                { name: 'Elon',     role: 'Engineering',   color: 'text-red-400',    border: 'border-red-500'    },
+                { name: 'Isaac',    role: 'Finance',       color: 'text-green-400',  border: 'border-green-500'  },
+                { name: 'Steve',    role: 'Marketing',     color: 'text-blue-400',   border: 'border-blue-500'   },
+                { name: 'Harvey',   role: 'Legal',         color: 'text-yellow-400', border: 'border-yellow-500' },
+                { name: 'Leonardo', role: 'Architecture',  color: 'text-purple-400', border: 'border-purple-500' },
+                { name: 'Donna',    role: 'HR',            color: 'text-pink-400',   border: 'border-pink-500'   },
+            ];
+
+            const rosterHTML = specialists.map(s => `
+                <div class="flex items-center gap-2">
+                    <div class="w-1.5 h-1.5 rounded-full bg-current ${s.color}"></div>
+                    <span class="font-bold text-xs ${s.color}">${s.name}</span>
+                    <span class="text-xs text-gray-500">${s.role}</span>
+                </div>
+            `).join('');
+
+            card.innerHTML = `
+                <div>
+                    <p class="text-gray-100 font-semibold text-sm mb-1">Good morning, ${name}. The boardroom is live.</p>
+                    ${company ? `<p class="text-xs text-gray-400">Briefed on <span class="text-cyan-400 font-medium">${company}</span>. Ready to execute.</p>` : ''}
+                </div>
+                <div class="grid grid-cols-2 gap-x-6 gap-y-1.5 bg-gray-900/60 rounded-lg p-3">
+                    ${rosterHTML}
+                </div>
+                <div class="border-t border-gray-700 pt-3 space-y-1">
+                    <p class="text-xs text-gray-400">You can also ask me to generate files directly:</p>
+                    <div class="flex flex-wrap gap-2 mt-1">
+                        <span class="text-xs bg-blue-900/40 border border-blue-700 text-blue-300 px-2 py-1 rounded">📄 generate a document: …</span>
+                        <span class="text-xs bg-green-900/40 border border-green-700 text-green-300 px-2 py-1 rounded">📊 create a spreadsheet: …</span>
+                        <span class="text-xs bg-orange-900/40 border border-orange-700 text-orange-300 px-2 py-1 rounded">🌐 build an HTML page: …</span>
+                    </div>
+                </div>
+            `;
+
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(card);
+            chatWindow.appendChild(wrapper);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
         // ─── EVENT LISTENERS ──────────────────────────────────────────────────────
