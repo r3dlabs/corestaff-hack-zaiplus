@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -44,7 +43,8 @@
             --svg-node-bg:   #ffffff;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { box-sizing: border-box; }
 
         body {
             font-family: 'Geist', system-ui, sans-serif;
@@ -57,7 +57,10 @@
             transition: background 0.2s, color 0.2s;
         }
 
-        /* ── Scrollbars ── */
+        h1, h2, h3, h4, h5, h6, p, ul, ol { margin: 0; padding: 0; }
+        button { cursor: pointer; font-family: inherit; }
+        input, textarea, select { font-family: inherit; }
+        img { display: block; max-width: 100%; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
@@ -509,7 +512,7 @@
     </div>
 
     <!-- ── STARTUP MODAL ───────────────────────────────────── -->
-    <div id="startup-modal" class="modal-overlay">
+    <div id="startup-modal" class="modal-overlay" style="display:none;">
         <div class="modal-box">
             <div style="margin-bottom:24px;">
                 <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;font-family:'Geist Mono',monospace;">Startup Staff</p>
