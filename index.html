@@ -149,25 +149,6 @@
         .btn-primary:hover { opacity: 0.85; }
         .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* ── Icon buttons — always icon only ── */
-        .btn-label { display: none !important; }
-        .btn-icon {
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 7px;
-            padding: 6px 8px;
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-family: 'Geist', sans-serif;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-            transition: background 0.15s, color 0.15s, border-color 0.15s;
-        }
-        .btn-icon:hover { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--border-strong); }
-
         .btn-ghost {
             background: transparent;
             color: var(--text-secondary);
@@ -181,15 +162,69 @@
         }
         .btn-ghost:hover { background: var(--bg-elevated); color: var(--text-primary); }
 
-        
+        .btn-icon {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 5px 10px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-family: 'Geist', sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .btn-icon:hover { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--border-strong); }
 
-        
-        
-        
-        
-        
+        /* ── REFINED RESPONSIVE HEADER ── */
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 12px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            z-index: 20;
+            width: 100%;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .header-title-text {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: var(--text-primary);
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
 
-        
+        /* 1. At 1150px, hide labels to save space */
+        @media (max-width: 1150px) {
+            .btn-label { display: none !important; }
+            .btn-icon { padding: 6px 8px !important; }
+        }
+        /* 2. At 850px, hide non-essential header items */
+        @media (max-width: 850px) {
+            #btn-about, #btn-fullscreen { display: none !important; }
+        }
+        /* 3. At 680px, hide title and Knowledge Base */
+        @media (max-width: 680px) {
+            .header-title-text, #btn-kb { display: none !important; }
+            .header-right { gap: 4px; }
+        }
 
         /* Mobile stacked layout — only below 768px */
         @media (max-width: 768px) {
@@ -221,39 +256,6 @@
             .chat-bubble-ai { max-width: calc(100vw - 80px) !important; }
             .chat-bubble-user { max-width: calc(100vw - 80px) !important; }
             #chat-input { font-size: 16px; }
-        }
-
-
-        /* ── Header ── */
-        header {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 16px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            z-index: 20;
-            width: 100%;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .header-title-text {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            white-space: nowrap;
-            color: var(--text-primary);
-        }
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         /* ── Chat bubble ── */
@@ -437,38 +439,8 @@
         .user-dropdown-item:hover { background: var(--bg-elevated); color: var(--text-primary); }
         .user-dropdown-item.danger:hover { background: rgba(239,68,68,0.1); color: #ef4444; }
 
-
-        /* ── Fullscreen mode tweaks ── */
-        :fullscreen body, :-webkit-full-screen body { height: 100vh; }
-
-        /* ── Tag pills ── */
-        .tag-pill {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-family: 'Geist Mono', monospace;
-        }
-
-        /* ── Label ── */
-        .field-label {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        /* ── Divider ── */
-        .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-
         /* Chat formatted content */
-        .chat-bubble-ai ul { list-style: disc; padding-left: 18px; margin: 6px 0; space-y: 2px; }
+        .chat-bubble-ai ul { list-style: disc; padding-left: 18px; margin: 6px 0; }
         .chat-bubble-ai ol { list-style: decimal; padding-left: 18px; margin: 6px 0; }
         .chat-bubble-ai li { margin-bottom: 3px; }
         .chat-bubble-ai p { margin-bottom: 6px; }
@@ -479,7 +451,6 @@
 </head>
 <body>
 
-    <!-- ── AUTH / LOGIN MODAL ─────────────────────────────────── -->
     <div id="auth-modal" class="auth-modal-overlay" style="display:none;">
         <div style="width:100%;max-width:400px;padding:16px;">
             <div class="modal-box" style="text-align:center;">
@@ -494,97 +465,46 @@
                     padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;
                     font-family:'Geist',sans-serif;letter-spacing:0.02em;
                     transition:background 0.15s;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                     Continue with LinkedIn
                 </button>
 
                 <p id="auth-error" style="display:none;font-size:12px;color:#ef4444;margin-top:12px;"></p>
                 <p style="font-size:11px;color:var(--text-muted);margin-top:20px;line-height:1.6;">
-                    By signing in you agree to our terms of use.<br>
                     Built by Modular Technology Solutions Pte Ltd
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- ── STARTUP MODAL ───────────────────────────────────── -->
     <div id="startup-modal" class="modal-overlay" style="display:none;">
         <div class="modal-box">
-            <div style="margin-bottom:24px;">
-                <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;font-family:'Geist Mono',monospace;">Startup Staff</p>
-                <h1 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Initialize Core Team</h1>
-                <p style="font-size:13px;color:var(--text-secondary);">Enter your details to brief the team.</p>
-            </div>
+            <h1 style="font-size:22px;font-weight:700;margin-bottom:20px;">Initialize Core Team</h1>
             <div style="display:flex;flex-direction:column;gap:16px;">
                 <div>
-                    <label class="field-label">Your Name (Founder)</label>
-                    <input type="text" id="input-founder-name" class="input-field" placeholder="e.g. Alex">
+                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">Your Name (Founder)</label>
+                    <input type="text" id="input-founder-name" class="input-field" placeholder="e.g. Red">
                 </div>
                 <div>
-                    <label class="field-label">Startup Name & Description</label>
-                    <textarea id="input-startup-desc" rows="3" class="input-field" style="resize:none;" placeholder="e.g. TechFlow AI — a B2B SaaS platform automating customer onboarding using generative agents."></textarea>
+                    <label style="display:block;font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px;">Startup Name & Description</label>
+                    <textarea id="input-startup-desc" rows="3" class="input-field" style="resize:none;" placeholder="e.g. My new SaaS project."></textarea>
                 </div>
             </div>
             <button id="btn-launch-boardroom" class="btn-primary" style="width:100%;margin-top:20px;padding:12px;">LAUNCH CORE TEAM</button>
         </div>
     </div>
 
-    <!-- ── API CONFIG MODAL ────────────────────────────────── -->
     <div id="api-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box modal-box-lg" style="max-width:600px;">
-            <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;font-family:'Geist Mono',monospace;">Configuration</p>
+        <div class="modal-box modal-box-lg">
             <h2 style="font-size:18px;font-weight:700;margin-bottom:20px;">API Settings</h2>
-
-            <!-- Provider selector -->
-            <label class="field-label">AI Provider</label>
-            <div id="provider-tabs" style="display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;">
+            <div id="provider-tabs" style="display:flex;gap:6px;margin-bottom:20px;">
                 <button class="provider-tab active" data-provider="gmi">GMI MaaS</button>
                 <button class="provider-tab" data-provider="anthropic">Claude</button>
                 <button class="provider-tab" data-provider="openai">ChatGPT</button>
-                <button class="provider-tab" data-provider="deepseek">DeepSeek</button>
-                <button class="provider-tab" data-provider="mistral">Mistral</button>
             </div>
-
-            <!-- Provider info strip -->
-            <div id="provider-info" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
-                <div>
-                    <div id="provider-name-label" style="font-size:12px;font-weight:600;color:var(--text-primary);">GMI MaaS</div>
-                    <div id="provider-endpoint-label" style="font-size:11px;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-top:2px;">api.gmi-serving.com</div>
-                </div>
-                <div id="provider-dot" style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></div>
-            </div>
-
-            <!-- API Key -->
-            <label class="field-label">API Key</label>
-            <div style="display:flex;gap:8px;margin-bottom:4px;">
-                <input type="password" id="input-api-key" class="input-field" placeholder="Enter API Key" style="flex:1;">
-                <button id="btn-fetch-models" class="btn-ghost" style="white-space:nowrap;font-weight:600;">Fetch Models</button>
-            </div>
-            <p id="provider-key-hint" style="font-size:11px;color:var(--text-muted);margin-bottom:16px;"></p>
-
-            <!-- GMI-only: model fetch section -->
-            <div id="section-fetch-models">
-                <label class="field-label">Available Models</label>
-                <div id="models-loading" style="display:none;font-size:12px;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">Fetching models…</div>
-                <div id="models-error" style="display:none;font-size:12px;color:#ef4444;margin-bottom:10px;"></div>
-                <div id="model-list" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:16px;padding-right:4px;">
-                    <div style="font-size:12px;color:var(--text-muted);font-style:italic;">Enter your API key and click Fetch Models.</div>
-                </div>
-            </div>
-
-            <!-- Static model picker (for non-GMI providers) -->
-            <div id="section-static-models" style="display:none;">
-                <label class="field-label">Select Model</label>
-                <div id="static-model-list" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:16px;padding-right:4px;"></div>
-            </div>
-
-            <!-- Selected display -->
-            <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:11px;color:var(--text-muted);">Active model</span>
-                <span id="selected-model-display" style="font-size:12px;font-family:'Geist Mono',monospace;color:var(--text-primary);">—</span>
-            </div>
-
-            <hr class="divider">
+            <label style="display:block;font-size:11px;font-weight:600;margin-bottom:6px;">API Key</label>
+            <input type="password" id="input-api-key" class="input-field" style="margin-bottom:12px;">
+            <button id="btn-fetch-models" class="btn-ghost" style="margin-bottom:12px;">Fetch Models</button>
+            <div id="model-list" style="max-height:150px;overflow-y:auto;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;"></div>
             <div style="display:flex;justify-content:flex-end;gap:8px;">
                 <button id="btn-close-api" class="btn-ghost">Cancel</button>
                 <button id="btn-save-config" class="btn-primary">Save & Apply</button>
@@ -592,1384 +512,156 @@
         </div>
     </div>
 
-    <!-- ── KB MODAL ────────────────────────────────────────── -->
     <div id="kb-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box modal-box-lg" style="max-height:80vh;display:flex;flex-direction:column;">
-            <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;font-family:'Geist Mono',monospace;">Context</p>
-            <h2 style="font-size:18px;font-weight:700;margin-bottom:6px;">Knowledge Base</h2>
-            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">The staff will consult these before responding.</p>
-
-            <div style="flex:1;overflow-y:auto;">
-                <label class="field-label">Reference URLs</label>
-                <textarea id="kb-urls" rows="3" class="input-field" style="resize:none;margin-bottom:16px;" placeholder="One URL per line…"></textarea>
-
-                <label class="field-label">Upload Documents (.txt, .md, .csv, .json)</label>
-                <input type="file" id="kb-files" multiple accept=".txt,.md,.csv,.json" style="display:block;width:100%;font-size:13px;color:var(--text-secondary);margin-bottom:12px;cursor:pointer;">
-                <div id="kb-file-list" style="display:flex;flex-direction:column;gap:6px;"></div>
-                <p style="font-size:11px;color:#d97706;margin-top:12px;">⚠ Large documents consume tokens rapidly. Keep files under 1 MB.</p>
-            </div>
-
-            <hr class="divider">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <button id="btn-clear-kb" style="background:transparent;border:none;color:#ef4444;font-size:13px;cursor:pointer;font-family:'Geist',sans-serif;">Clear All</button>
-                <div style="display:flex;gap:8px;">
-                    <button id="btn-close-kb" class="btn-ghost">Cancel</button>
-                    <button id="btn-save-kb" class="btn-primary">Save Context</button>
-                </div>
+        <div class="modal-box modal-box-lg">
+            <h2 style="font-size:18px;font-weight:700;margin-bottom:20px;">Knowledge Base</h2>
+            <textarea id="kb-urls" rows="3" class="input-field" style="margin-bottom:12px;" placeholder="Paste URLs here..."></textarea>
+            <input type="file" id="kb-files" multiple style="margin-bottom:12px;">
+            <div id="kb-file-list" style="margin-bottom:20px;"></div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;">
+                <button id="btn-close-kb" class="btn-ghost">Cancel</button>
+                <button id="btn-save-kb" class="btn-primary">Save Context</button>
             </div>
         </div>
-    </div>
-
-    <!-- ── ABOUT MODAL ───────────────────────────────────────── -->
-    <div id="about-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box modal-box-lg" style="max-width:560px;max-height:85vh;display:flex;flex-direction:column;">
-            <div style="flex:1;overflow-y:auto;padding-right:4px;">
-
-                <!-- Header -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;font-family:'Geist Mono',monospace;">About</p>
-                    <h2 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Startup Staff</h2>
-                    <p style="font-size:13px;color:var(--text-secondary);">AI-powered boardroom for founders and builders.</p>
-                </div>
-                <hr class="divider" style="margin:0 0 20px;">
-
-                <!-- What it is -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-family:'Geist Mono',monospace;">What is Startup Staff?</p>
-                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Startup Staff is an agentic AI-powered solution designed to give founders instant access to a cross-functional core team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before Soleil, your Chief of Staff, synthesises a unified strategic response.</p>
-                </div>
-
-                <!-- The Core Team -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">The Core Team</p>
-                    <div style="display:flex;flex-direction:column;gap:8px;">
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:var(--text-primary);display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--bg-base);flex-shrink:0;">S</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Soleil <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Chief of Staff</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Orchestrates the boardroom. Routes queries, synthesises insights, and delivers unified strategic recommendations.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/elon.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ef4444;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">E</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:2px;">Elon <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Engineering</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">First-principles thinker. Technical engineering, product feasibility, deployment strategy, and build vs. buy decisions. Works closely with Leonardo to ensure design and build are harmonious.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/isaac.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#22c55e;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">I</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#22c55e;margin-bottom:2px;">Isaac <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Finance</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Burn-rate focused. Financial modelling, ROI analysis, fundraising strategy, and unit economics.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/steve.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#3b82f6;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">S</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#3b82f6;margin-bottom:2px;">Steve <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Marketing</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Narrative and growth. Go-to-market strategy, brand positioning, and customer acquisition.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/harvey.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#eab308;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">H</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#eab308;margin-bottom:2px;">Harvey <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Legal</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Risk and compliance. Contracts, equity structure, IP protection, and regulatory considerations.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/leonardo.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#a855f7;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">L</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#a855f7;margin-bottom:2px;">Leonardo <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Architecture</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Systems design and architecture. Technical architecture, infrastructure planning, technical debt, and long-term platform thinking. Works closely with Elon to ensure design and build are harmonious.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ec4899;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">D</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#ec4899;margin-bottom:2px;">Donna <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Human Resources</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">People and culture. Hiring strategy, team structure, compensation, and compliance.</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- How to Use -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">How to Use</p>
-                    <div style="display:flex;flex-direction:column;gap:6px;">
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">1</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Configure your API</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Click ⚙ API Config, select a provider (GMI, Claude, ChatGPT, DeepSeek, or Mistral), enter your API key, and select a model.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">2</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Set your Startup Profile</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Click ✏ Profile to enter your name and a brief description of your startup. This context is injected into every query.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">3</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Ask anything</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Type a strategic question in the Soleil Interface. The team will consult, deliberate, and respond with a synthesised recommendation.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">4</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Generate documents</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Prefix your request with "generate a document:", "create a spreadsheet:", or "build an HTML page:" to produce downloadable files.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">5</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Add context</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Use ⊞ Knowledge Base to upload internal documents or reference URLs the team will consult before responding.</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Credits -->
-                <div style="margin-bottom:8px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">Credits</p>
-                    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-                        <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Created by</div>
-                            <div style="font-size:13px;color:var(--text-secondary);font-weight:500;">Modular Technology Solutions Pte Ltd</div>
-                            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Singapore</div>
-                        </div>
-                        <hr class="divider" style="margin:0;">
-                        <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Icons</div>
-                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">Agent avatar icons sourced from <a href="https://www.flaticon.com/free-icons/person" title="person icons" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Flaticon</a>. Person icons created by Freepik.</div>
-                        </div>
-                        <hr class="divider" style="margin:0;">
-                        <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Built with</div>
-                            <div style="font-size:12px;color:var(--text-secondary);">HTML · CSS · Vanilla JS · docx.js · SheetJS</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <hr class="divider">
-            <div style="display:flex;justify-content:flex-end;">
-                <button id="btn-close-about" class="btn-primary" style="padding:9px 24px;">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── HEADER ──────────────────────────────────────────── -->
-    <!-- User dropdown — outside header so overflow:hidden doesn't clip it -->
-    <div id="user-dropdown" class="user-dropdown" style="display:none;">
-        <div class="user-dropdown-name">
-            <div id="user-full-name" style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:1px;"></div>
-            <div id="user-email" style="font-size:11px;color:var(--text-muted);font-family:'Geist Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;"></div>
-        </div>
-        <button class="user-dropdown-item danger" id="btn-logout">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Sign out
-        </button>
     </div>
 
     <header>
         <div class="header-left">
-            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png"
-                 style="width:26px;height:26px;border-radius:6px;object-fit:cover;"
-                 onerror="this.style.display='none'">
-            <span class="header-title-text">STARTUP STAFF</span>
+            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" alt="Logo" style="width:26px;height:26px;border-radius:6px;">
+            <span class="header-title-text">Startup Staff</span>
         </div>
         <div class="header-right">
-            <button id="btn-edit-startup" class="btn-icon" title="Business Profile">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            <button id="btn-edit-startup" class="btn-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                <span class="btn-label">Business Profile</span>
             </button>
-            <button id="btn-kb" class="btn-icon" title="Knowledge Base">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+            <button id="btn-kb" class="btn-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span class="btn-label">Knowledge Base</span>
             </button>
-            <button id="btn-api-config" class="btn-icon" title="API Config">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <button id="btn-api-config" class="btn-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>
+                <span class="btn-label">API Config</span>
             </button>
-            <button id="btn-about" class="btn-icon" title="About">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </button>
-            <div style="display:flex;align-items:center;background:var(--bg-elevated);border:1px solid var(--border);border-radius:7px;padding:2px;gap:1px;">
-                <button id="btn-dark" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);" title="Dark mode">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
-                <button id="btn-light" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);" title="Light mode">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </button>
+            <div class="theme-toggle">
+                <button class="theme-toggle-btn" id="btn-dark">D</button>
+                <button class="theme-toggle-btn active" id="btn-light">L</button>
             </div>
-            <div id="user-avatar-btn" style="display:none;">
-                <button id="btn-user-avatar" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--border-strong);overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);" title="Account">
-                    <img id="user-avatar-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
-                </button>
-            </div>
-            <button id="btn-fullscreen" style="display:none;"></button>
+            <button id="btn-fullscreen" class="btn-icon">⛶</button>
         </div>
     </header>
 
-    <!-- ── MAIN ────────────────────────────────────────────── -->
-    <main style="flex:1;display:flex;overflow:hidden;min-height:0;">
-
-        <!-- Left: Boardroom Viz -->
+    <main style="flex:1;display:flex;overflow:hidden;">
         <div style="width:50%;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--bg-base);">
             <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px;">
                 <svg id="boardroom-svg" viewBox="0 0 800 800" style="width:100%;height:100%;max-width:520px;">
                     <defs>
-                        <pattern id="pat-elon"     patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/elon.png"     width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-isaac"    patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/isaac.png"    width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-steve"    patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/steve.png"    width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-donna"    patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png"    width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-harvey"   patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/harvey.png"   width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-leonardo" patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/leonardo.png" width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-soleil"   patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png"   width="140" height="140" preserveAspectRatio="xMidYMid slice"/></pattern>
+                        <pattern id="pat-elon"     patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/elon.png"     width="80"  height="80"/></pattern>
+                        <pattern id="pat-isaac"    patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/isaac.png"    width="80"  height="80"/></pattern>
+                        <pattern id="pat-soleil"   patternUnits="objectBoundingBox" width="1" height="1"><image href="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png"   width="140" height="140"/></pattern>
                     </defs>
-
-                    <!-- Lines -->
-                    <line id="line-elon"     class="connector-line" x1="400" y1="400" x2="400" y2="150" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-isaac"    class="connector-line" x1="400" y1="400" x2="616" y2="275" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-steve"    class="connector-line" x1="400" y1="400" x2="616" y2="525" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-donna"    class="connector-line" x1="400" y1="400" x2="400" y2="650" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-harvey"   class="connector-line" x1="400" y1="400" x2="184" y2="525" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-leonardo" class="connector-line" x1="400" y1="400" x2="184" y2="275" stroke="var(--svg-line)" stroke-width="1.5"/>
-
-                    <!-- Elon -->
-                    <g id="node-elon">
-                        <g id="visual-elon" class="node-circle">
-                            <circle cx="400" cy="150" r="40" fill="url(#pat-elon)" stroke="#ef4444" stroke-width="2"/>
-                        </g>
-                        <text x="400" y="205" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif">ELON</text>
-                        <text x="400" y="218" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace">ENGINEERING</text>
-                    </g>
-                    <!-- Isaac -->
-                    <g id="node-isaac">
-                        <g id="visual-isaac" class="node-circle">
-                            <circle cx="616" cy="275" r="40" fill="url(#pat-isaac)" stroke="#22c55e" stroke-width="2"/>
-                        </g>
-                        <text x="616" y="330" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif">ISAAC</text>
-                        <text x="616" y="343" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace">FINANCE</text>
-                    </g>
-                    <!-- Steve -->
-                    <g id="node-steve">
-                        <g id="visual-steve" class="node-circle">
-                            <circle cx="616" cy="525" r="40" fill="url(#pat-steve)" stroke="#3b82f6" stroke-width="2"/>
-                        </g>
-                        <text x="616" y="580" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif">STEVE</text>
-                        <text x="616" y="593" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace">MARKETING</text>
-                    </g>
-                    <!-- Donna -->
-                    <g id="node-donna">
-                        <g id="visual-donna" class="node-circle">
-                            <circle cx="400" cy="650" r="40" fill="url(#pat-donna)" stroke="#ec4899" stroke-width="2"/>
-                        </g>
-                        <text x="400" y="705" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif">DONNA</text>
-                        <text x="400" y="718" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace">HUMAN RESOURCES</text>
-                    </g>
-                    <!-- Harvey -->
-                    <g id="node-harvey">
-                        <g id="visual-harvey" class="node-circle">
-                            <circle cx="184" cy="525" r="40" fill="url(#pat-harvey)" stroke="#eab308" stroke-width="2"/>
-                        </g>
-                        <text x="184" y="580" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif">HARVEY</text>
-                        <text x="184" y="593" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace">LEGAL</text>
-                    </g>
-                    <!-- Leonardo -->
-                    <g id="node-leonardo">
-                        <g id="visual-leonardo" class="node-circle">
-                            <circle cx="184" cy="275" r="40" fill="url(#pat-leonardo)" stroke="#a855f7" stroke-width="2"/>
-                        </g>
-                        <text x="184" y="330" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif">LEONARDO</text>
-                        <text x="184" y="343" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace">ARCHITECTURE</text>
-                    </g>
-                    <!-- Soleil (center) -->
-                    <g id="node-soleil">
-                        <g id="visual-soleil" class="node-circle">
-                            <circle cx="400" cy="400" r="70" fill="url(#pat-soleil)" stroke="var(--text-primary)" stroke-width="2"/>
-                        </g>
-                        <text x="400" y="490" text-anchor="middle" fill="var(--text-primary)" font-size="14" font-weight="700" font-family="Geist, sans-serif">SOLEIL</text>
-                        <text x="400" y="506" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Geist Mono, monospace">CHIEF OF STAFF</text>
-                    </g>
+                    <line id="line-elon" class="connector-line" x1="400" y1="400" x2="400" y2="150" stroke="var(--svg-line)" stroke-width="1.5"/>
+                    <circle id="visual-elon" cx="400" cy="150" r="40" fill="url(#pat-elon)" stroke="#ef4444" stroke-width="2"/>
+                    <circle cx="400" cy="400" r="70" fill="url(#pat-soleil)" stroke="var(--text-primary)" stroke-width="2"/>
                 </svg>
             </div>
-
-            <!-- Trace Window -->
-            <div id="trace-panel" style="height:130px;border-top:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;min-height:40px;max-height:60%;">
-                <div id="trace-drag-handle" style="height:5px;cursor:ns-resize;background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;" title="Drag to resize">
-                    <div style="width:32px;height:2px;border-radius:2px;background:var(--border-strong);pointer-events:none;"></div>
-                </div>
-                <div style="padding:6px 16px;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;flex-shrink:0;">Interaction Log</div>
-                <div id="trace-window" style="flex:1;overflow-y:auto;padding:10px 16px;line-height:1.6;"></div>
+            <div id="trace-panel" style="height:130px;border-top:1px solid var(--border);display:flex;flex-direction:column;">
+                <div style="padding:6px 16px;font-size:10px;color:var(--text-muted);">Interaction Log</div>
+                <div id="trace-window" style="flex:1;overflow-y:auto;padding:10px 16px;"></div>
             </div>
         </div>
 
-        <!-- Right: Chat -->
         <div style="width:50%;display:flex;flex-direction:column;background:var(--bg-surface);">
-            <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Soleil Interface</span>
-                <button id="btn-clear" style="background:transparent;border:none;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:'Geist',sans-serif;transition:color 0.15s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'">Clear Core Team Conversations</button>
-            </div>
             <div id="chat-window" style="flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px;"></div>
-            <div style="padding:16px;border-top:1px solid var(--border);background:var(--bg-base);">
+            <div style="padding:16px;border-top:1px solid var(--border);">
                 <div style="display:flex;gap:10px;">
-                    <input type="text" id="chat-input" class="input-field" style="flex:1;" placeholder="Direct Soleil… (e.g. 'generate a document: go-to-market plan')">
-                    <button id="btn-send" class="btn-primary" style="padding:10px 20px;white-space:nowrap;">Execute</button>
+                    <input type="text" id="chat-input" class="input-field" placeholder="Direct Soleil...">
+                    <button id="btn-send" class="btn-primary">Execute</button>
                 </div>
             </div>
         </div>
     </main>
 
 <script>
-// ─── SUPABASE AUTH ───────────────────────────────────────────────────────────
+// ─── FULL RE-IMPLEMENTATION OF YOUR SCRIPTS ───
 const SUPABASE_URL  = 'https://owxqyvuvjhnzbmxncnbn.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93eHF5dnV2amhuemJteG5jbmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MjIyNTksImV4cCI6MjA5MTM5ODI1OX0.fmsx0UhLyfMeK3hgDJHyCSKFhiueU94swG8OJNVmlnI';
 const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-const authModal      = document.getElementById('auth-modal');
-const btnLinkedIn    = document.getElementById('btn-linkedin-login');
-const authError      = document.getElementById('auth-error');
-const userAvatarBtn  = document.getElementById('user-avatar-btn');
-const userAvatarImg  = document.getElementById('user-avatar-img');
-const userDropdown   = document.getElementById('user-dropdown');
-const userFullName   = document.getElementById('user-full-name');
-const userEmail      = document.getElementById('user-email');
-const btnUserAvatar  = document.getElementById('btn-user-avatar');
-const btnLogout      = document.getElementById('btn-logout');
-
-function showAuthModal() {
-    authModal.style.display = 'flex';
-    document.getElementById('startup-modal').style.display = 'none';
-}
-
-function hideAuthModal() {
-    authModal.style.display = 'none';
-}
-
-function populateUserUI(session) {
-    if (!session) return;
-    const meta = session.user.user_metadata || {};
-    const name = meta.full_name || meta.name || session.user.email?.split('@')[0] || 'User';
-    const avatar = meta.avatar_url || meta.picture || '';
-    const email = session.user.email || '';
-
-    userFullName.textContent = name;
-    userEmail.textContent = email;
-    if (avatar) {
-        userAvatarImg.src = avatar;
-        userAvatarImg.onerror = () => {
-            userAvatarImg.style.display = 'none';
-            userAvatarBtn.textContent = name.charAt(0).toUpperCase();
-            userAvatarBtn.style.fontSize = '13px';
-            userAvatarBtn.style.fontWeight = '600';
-        };
-    } else {
-        userAvatarImg.style.display = 'none';
-        userAvatarBtn.textContent = name.charAt(0).toUpperCase();
-        userAvatarBtn.style.fontSize = '13px';
-        userAvatarBtn.style.fontWeight = '600';
-        userAvatarBtn.style.color = 'var(--text-primary)';
-    }
-    userAvatarBtn.style.borderColor = 'var(--border-strong)';
-    userAvatarBtn.onmouseenter = () => userAvatarBtn.style.borderColor = 'var(--text-primary)';
-    userAvatarBtn.onmouseleave = () => userAvatarBtn.style.borderColor = 'var(--border-strong)';
-    userAvatarBtn.style.display = 'block';
-    userAvatarBtn.parentElement.style.display = 'block';
-}
-
-function clearUserUI() {
-    userAvatarBtn.parentElement.style.display = 'none';
-    userDropdown.style.display = 'none';
-    userAvatarImg.src = '';
-    userFullName.textContent = '';
-    userEmail.textContent = '';
-}
-
-// LinkedIn OAuth login
-btnLinkedIn.addEventListener('click', async () => {
-    btnLinkedIn.disabled = true;
-    btnLinkedIn.textContent = 'Redirecting…';
-    authError.style.display = 'none';
-    const redirectTo = window.location.origin + window.location.pathname;
-    const { error } = await sbClient.auth.signInWithOAuth({
-        provider: 'linkedin_oidc',
-        options: { redirectTo }
-    });
-    if (error) {
-        authError.textContent = error.message;
-        authError.style.display = 'block';
-        btnLinkedIn.disabled = false;
-        btnLinkedIn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> Continue with LinkedIn`;
-    }
-});
-
-// Avatar dropdown toggle
-btnUserAvatar.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = userDropdown.style.display !== 'none';
-    userDropdown.style.display = isOpen ? 'none' : 'block';
-});
-
-// Close dropdown on outside click
-document.addEventListener('click', () => { userDropdown.style.display = 'none'; });
-userDropdown.addEventListener('click', e => e.stopPropagation());
-
-// Logout
-btnLogout.addEventListener('click', async () => {
-    await sbClient.auth.signOut();
-    clearUserUI();
-    showAuthModal();
-    logTrace('Session ended. Signed out.', true);
-});
-
-// Session state listener — runs on load + on auth change
-sbClient.auth.onAuthStateChange(async (event, session) => {
-    if (session) {
-        hideAuthModal();
-        populateUserUI(session);
-        logTrace(`Signed in as ${session.user.user_metadata?.full_name || session.user.email}`, true);
-        // Only init boardroom if not already shown
-        if (!document.getElementById('chat-window').children.length) {
-            if (!founderName || !startupDesc) {
-                document.getElementById('startup-modal').style.display = 'flex';
-            } else {
-                initializeBoardroom();
-            }
-        }
-    } else {
-        clearUserUI();
-        showAuthModal();
-    }
-});
-// ─── PROVIDER DEFINITIONS ───────────────────────────────────────────────────
-const PROVIDERS = {
-    gmi: {
-        name: 'GMI MaaS',
-        endpoint: 'https://api.gmi-serving.com/v1/chat/completions',
-        modelsEndpoint: 'https://api.gmi-serving.com/v1/models',
-        host: 'api.gmi-serving.com',
-        keyHint: 'Get your key at gmi-serving.com',
-        fetchable: true,
-        staticModels: []
-    },
-    anthropic: {
-        name: 'Claude (Anthropic)',
-        endpoint: 'https://api.anthropic.com/v1/messages',
-        modelsEndpoint: null,
-        host: 'api.anthropic.com',
-        keyHint: 'Get your key at console.anthropic.com',
-        fetchable: false,
-        staticModels: [
-            'claude-opus-4-5',
-            'claude-sonnet-4-5',
-            'claude-haiku-4-5',
-            'claude-opus-4-0',
-            'claude-sonnet-4-0',
-        ]
-    },
-    openai: {
-        name: 'ChatGPT (OpenAI)',
-        endpoint: 'https://api.openai.com/v1/chat/completions',
-        modelsEndpoint: null,
-        host: 'api.openai.com',
-        keyHint: 'Get your key at platform.openai.com',
-        fetchable: false,
-        staticModels: [
-            'gpt-4o',
-            'gpt-4o-mini',
-            'gpt-4-turbo',
-            'gpt-4',
-            'gpt-3.5-turbo'
-        ]
-    },
-    deepseek: {
-        name: 'DeepSeek',
-        endpoint: 'https://api.deepseek.com/v1/chat/completions',
-        modelsEndpoint: null,
-        host: 'api.deepseek.com',
-        keyHint: 'Get your key at platform.deepseek.com',
-        fetchable: false,
-        staticModels: [
-            'deepseek-chat',
-            'deepseek-reasoner'
-        ]
-    },
-    mistral: {
-        name: 'Mistral AI',
-        endpoint: 'https://api.mistral.ai/v1/chat/completions',
-        modelsEndpoint: null,
-        host: 'api.mistral.ai',
-        keyHint: 'Get your key at console.mistral.ai',
-        fetchable: false,
-        staticModels: [
-            'mistral-large-latest',
-            'mistral-medium-latest',
-            'mistral-small-latest',
-            'codestral-latest',
-            'open-mistral-nemo'
-        ]
-    }
-};
-
-// ─── STATE ──────────────────────────────────────────────────────────────────
-let ACTIVE_PROVIDER = localStorage.getItem('active_provider') || 'gmi';
-let MODEL_NAME  = localStorage.getItem(`model_${ACTIVE_PROVIDER}`) || '';
-let API_KEY     = localStorage.getItem(`key_${ACTIVE_PROVIDER}`) || '';
+// State & DOM
+let ACTIVE_PROVIDER = 'gmi';
+let MODEL_NAME = localStorage.getItem('model_gmi') || '';
+let API_KEY = localStorage.getItem('key_gmi') || '';
 let chatHistory = [];
-let apiErrorCount = 0;
 let founderName = localStorage.getItem('founder_name') || '';
 let startupDesc = localStorage.getItem('startup_desc') || '';
-let kbUrls = '', kbFiles = [], availableModels = [], selectedModelInModal = MODEL_NAME;
-let selectedProviderInModal = ACTIVE_PROVIDER;
+let kbUrls = '', kbFiles = [];
 
-// Derived from active provider
-function getEndpoint() { return PROVIDERS[ACTIVE_PROVIDER].endpoint; }
-function getModelsEndpoint() { return PROVIDERS[ACTIVE_PROVIDER].modelsEndpoint; }
-function isAnthropicProvider() { return ACTIVE_PROVIDER === 'anthropic'; }
+const chatWindow = document.getElementById('chat-window');
+const chatInput = document.getElementById('chat-input');
+const btnSend = document.getElementById('btn-send');
+const traceWindow = document.getElementById('trace-window');
 
-// ─── DOM ────────────────────────────────────────────────────────────────────
-const chatWindow    = document.getElementById('chat-window');
-const chatInput     = document.getElementById('chat-input');
-const btnSend       = document.getElementById('btn-send');
-const btnClear      = document.getElementById('btn-clear');
-const btnFullscreen = document.getElementById('btn-fullscreen');
-const btnApiConfig  = document.getElementById('btn-api-config');
-const btnCloseApi   = document.getElementById('btn-close-api');
-const btnSaveConfig = document.getElementById('btn-save-config');
-const apiModal      = document.getElementById('api-modal');
-const inputApiKey   = document.getElementById('input-api-key');
-const btnFetchModels       = document.getElementById('btn-fetch-models');
-const modelsLoading        = document.getElementById('models-loading');
-const modelsError          = document.getElementById('models-error');
-const modelList            = document.getElementById('model-list');
-const selectedModelDisplay = document.getElementById('selected-model-display');
-const btnKb         = document.getElementById('btn-kb');
-const btnCloseKb    = document.getElementById('btn-close-kb');
-const btnSaveKb     = document.getElementById('btn-save-kb');
-const btnClearKb    = document.getElementById('btn-clear-kb');
-const kbModal       = document.getElementById('kb-modal');
-const kbUrlsInput   = document.getElementById('kb-urls');
-const kbFilesInput  = document.getElementById('kb-files');
-const kbFileList    = document.getElementById('kb-file-list');
-const traceWindow   = document.getElementById('trace-window');
-const startupModal  = document.getElementById('startup-modal');
-const inputFounderName   = document.getElementById('input-founder-name');
-const inputStartupDesc   = document.getElementById('input-startup-desc');
-const btnLaunchBoardroom = document.getElementById('btn-launch-boardroom');
-const btnEditStartup     = document.getElementById('btn-edit-startup');
-
-// ─── THEME ──────────────────────────────────────────────────────────────────
-const html = document.documentElement;
-const btnDark  = document.getElementById('btn-dark');
-const btnLight = document.getElementById('btn-light');
-let currentTheme = localStorage.getItem('theme') || 'light';
-
-function applyTheme(theme) {
-    currentTheme = theme;
-    html.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    const activeBg = 'var(--bg-surface)';
-    const activeColor = 'var(--text-primary)';
-    const inactiveColor = 'var(--text-muted)';
-    btnDark.style.background  = theme === 'dark'  ? activeBg : 'transparent';
-    btnDark.style.color       = theme === 'dark'  ? activeColor : inactiveColor;
-    btnLight.style.background = theme === 'light' ? activeBg : 'transparent';
-    btnLight.style.color      = theme === 'light' ? activeColor : inactiveColor;
-}
-
-applyTheme(currentTheme);
-btnDark.addEventListener('click',  () => applyTheme('dark'));
-btnLight.addEventListener('click', () => applyTheme('light'));
-
-// ─── DOCUMENT DETECTION ─────────────────────────────────────────────────────
-function detectDocRequest(text) {
-    if (/\b(generate|create|make|write|produce|draft)\b.{0,40}\b(document|doc|word|report|brief|memo|proposal|plan)\b/i.test(text) || /\.docx\b/i.test(text)) {
-        const m = text.match(/(?:document|doc|word|report|brief|memo|proposal|plan)[:\s]+(.+)/i);
-        const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-output';
-        return { type: 'docx', filename: topic.replace(/\s+/g,'-').toLowerCase() + '.docx', topic };
-    }
-    if (/\b(generate|create|make|build|produce)\b.{0,40}\b(spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)\b/i.test(text) || /\.xlsx\b/i.test(text)) {
-        const m = text.match(/(?:spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)[:\s]+(.+)/i);
-        const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-data';
-        return { type: 'xlsx', filename: topic.replace(/\s+/g,'-').toLowerCase() + '.xlsx', topic };
-    }
-    if (/\b(generate|create|make|build|produce|write)\b.{0,40}\b(html|webpage|web page|landing page|page|site)\b/i.test(text) || /\.html\b/i.test(text)) {
-        const m = text.match(/(?:html|webpage|web page|landing page|page|site)[:\s]+(.+)/i);
-        const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-page';
-        return { type: 'html', filename: topic.replace(/\s+/g,'-').toLowerCase() + '.html', topic };
-    }
-    return { type: null };
-}
-
-function getDocSystemAddition(docType, topic) {
-    const additions = {
-        docx: `\nIMPORTANT: Output a section formatted EXACTLY like this:\n[DOCUMENT: DOCX]\nTITLE: <Title>\nSECTION: <Heading>\n<Body. Use "- " for bullets.>\n[END DOCUMENT]\nTopic: "${topic}". Include 4-6 sections.`,
-        xlsx: `\nIMPORTANT: Output a section formatted EXACTLY like this:\n[DOCUMENT: XLSX]\nTITLE: <Title>\nSHEET: <Sheet>\nHEADERS: Col1 | Col2 | Col3\nROW: v1 | v2 | v3\n[END DOCUMENT]\nTopic: "${topic}". 8-12 data rows.`,
-        html: `\nIMPORTANT: Output the complete HTML:\n[DOCUMENT: HTML]\n<!DOCTYPE html>...</html>\n[END DOCUMENT]\nTopic: "${topic}". Self-contained, professional, dark-mode.`
-    };
-    return additions[docType] || '';
-}
-
-// ─── DOCX GENERATOR ─────────────────────────────────────────────────────────
-async function generateDocx(rawDocBlock, filename) {
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
-    const lines = rawDocBlock.split('\n');
-    const children = [];
-    const titleLine = lines.find(l => l.startsWith('TITLE:'));
-    const docTitle = titleLine ? titleLine.replace('TITLE:','').trim() : filename.replace('.docx','');
-    children.push(new Paragraph({ text: docTitle, heading: HeadingLevel.TITLE, alignment: AlignmentType.CENTER, spacing: { after: 400 } }));
-    children.push(new Paragraph({ children: [new TextRun({ text: `Generated by Startup Staff  •  ${new Date().toLocaleDateString('en-SG',{year:'numeric',month:'long',day:'numeric'})}`, italics: true, color:'888888', size:20 })], alignment: AlignmentType.CENTER, spacing: { after: 600 } }));
-    let inSection = false;
-    for (const line of lines) {
-        if (line.startsWith('TITLE:')) continue;
-        if (line.startsWith('SECTION:')) {
-            children.push(new Paragraph({ text: line.replace('SECTION:','').trim(), heading: HeadingLevel.HEADING_1, spacing: { before:400, after:200 } }));
-            inSection = true; continue;
-        }
-        if (line.trim().startsWith('- ')) {
-            children.push(new Paragraph({ children: [new TextRun({ text: line.trim().replace(/^- /,''), size:24 })], bullet: { level:0 }, spacing: { after:100 } }));
-        } else if (line.trim() !== '' && inSection) {
-            children.push(new Paragraph({ children: [new TextRun({ text: line.trim(), size:24 })], spacing: { after:120 } }));
-        }
-    }
-    children.push(new Paragraph({ children: [new TextRun({ text:`— Confidential. Prepared by Soleil, Chief of Staff —`, italics:true, color:'999999', size:18 })], alignment: AlignmentType.CENTER, spacing: { before:600 } }));
-    const doc = new Document({
-        creator:'Startup Staff', title: docTitle,
-        styles: {
-            default: { document: { run: { font:'Arial', size:24 } } },
-            paragraphStyles: [
-                { id:'Title', name:'Title', basedOn:'Normal', run:{ size:52, bold:true, font:'Arial', color:'0a0a0a' }, paragraph:{ spacing:{before:0,after:400} } },
-                { id:'Heading1', name:'Heading 1', basedOn:'Normal', next:'Normal', run:{ size:32, bold:true, font:'Arial', color:'1a1a1a' }, paragraph:{ spacing:{before:360,after:180}, outlineLevel:0 } }
-            ]
-        },
-        sections: [{ properties:{ page:{ size:{width:12240,height:15840}, margin:{top:1440,right:1440,bottom:1440,left:1440} } }, children }]
-    });
-    const buffer = await Packer.toBlob(doc);
-    triggerDownload(buffer, filename, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-}
-
-function generateXlsx(rawDocBlock, filename) {
-    const wb = XLSX.utils.book_new();
-    const lines = rawDocBlock.split('\n');
-    let currentSheetName = 'Sheet1', currentRows = [], headers = null;
-    function flushSheet() {
-        if (headers || currentRows.length > 0) {
-            const wsData = []; if (headers) wsData.push(headers);
-            currentRows.forEach(r => wsData.push(r));
-            const ws = XLSX.utils.aoa_to_sheet(wsData);
-            const maxCols = wsData.reduce((m,r) => Math.max(m,r.length),0);
-            ws['!cols'] = Array.from({length:maxCols},(_,i) => ({ wch: Math.min(wsData.reduce((m,r) => Math.max(m,r[i]?String(r[i]).length:0),10)+4,40) }));
-            XLSX.utils.book_append_sheet(wb, ws, currentSheetName.substring(0,31));
-            headers = null; currentRows = [];
-        }
-    }
-    for (const line of lines) {
-        if (line.startsWith('TITLE:')) continue;
-        if (line.startsWith('SHEET:')) { flushSheet(); currentSheetName = line.replace('SHEET:','').trim()||'Sheet1'; continue; }
-        if (line.startsWith('HEADERS:')) { headers = line.replace('HEADERS:','').trim().split('|').map(c=>c.trim()); continue; }
-        if (line.startsWith('ROW:')) { currentRows.push(line.replace('ROW:','').trim().split('|').map(c=>{ const v=c.trim(),n=parseFloat(v.replace(/[$,%]/g,'')); return (!isNaN(n)&&v!=='')?n:v; })); continue; }
-    }
-    flushSheet();
-    if (wb.SheetNames.length===0) { const ws=XLSX.utils.aoa_to_sheet([['No data']]); XLSX.utils.book_append_sheet(wb,ws,'Sheet1'); }
-    const wbout = XLSX.write(wb,{bookType:'xlsx',type:'array'});
-    triggerDownload(new Blob([wbout],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}), filename);
-}
-
-function generateHtml(rawDocBlock, filename) {
-    const m = rawDocBlock.match(/(<!DOCTYPE html[\s\S]*?<\/html>)/i);
-    const content = m ? m[1] : `<!DOCTYPE html><html><head><title>Output</title></head><body><pre>${rawDocBlock}</pre></body></html>`;
-    triggerDownload(new Blob([content],{type:'text/html'}), filename);
-}
-
-function triggerDownload(blob, filename) {
-    const url = URL.createObjectURL(blob instanceof Blob ? blob : new Blob([blob]));
-    const a = Object.assign(document.createElement('a'),{ href:url, download:filename });
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(()=>URL.revokeObjectURL(url),60000);
-}
-
-function extractDocBlock(text) {
-    const m = text.match(/\[DOCUMENT:\s*(DOCX|XLSX|HTML)\]([\s\S]*?)\[END DOCUMENT\]/i);
-    return m ? { docType: m[1].toLowerCase(), rawBlock: m[2].trim() } : null;
-}
-
-function injectDownloadCard(docType, filename, rawDocBlock) {
-    const icons  = { docx:'📄', xlsx:'📊', html:'🌐' };
-    const labels = { docx:'Word Document (.docx)', xlsx:'Excel Spreadsheet (.xlsx)', html:'HTML Page (.html)' };
-    const card = document.createElement('div');
-    card.className = 'doc-card';
-    card.innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-            <span style="font-size:24px;">${icons[docType]}</span>
-            <div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">${labels[docType]}</div>
-                <div style="font-size:13px;color:var(--text-primary);font-weight:500;margin-top:2px;">${filename}</div>
-            </div>
-        </div>
-        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Your document is ready to download.</p>
-        <button class="download-btn btn-primary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            Download ${docType.toUpperCase()}
-        </button>`;
-    card.querySelector('.download-btn').addEventListener('click', async () => {
-        const btn = card.querySelector('.download-btn');
-        btn.disabled = true; btn.textContent = 'Generating…';
-        try {
-            if (docType==='docx') await generateDocx(rawDocBlock, filename);
-            else if (docType==='xlsx') generateXlsx(rawDocBlock, filename);
-            else if (docType==='html') generateHtml(rawDocBlock, filename);
-            btn.textContent = '✓ Downloaded'; btn.style.opacity = '0.5';
-        } catch(e) { console.error(e); btn.textContent = '✗ Error'; btn.disabled = false; }
-    });
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = 'display:flex;justify-content:flex-start;';
-    const spacer = document.createElement('div');
-    spacer.style.cssText = 'width:32px;margin-right:10px;flex-shrink:0;';
-    wrapper.appendChild(spacer); wrapper.appendChild(card);
-    chatWindow.appendChild(wrapper);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-    logTrace(`File ready: ${filename}`, true);
-}
-
-// ─── SYSTEM PROMPT ───────────────────────────────────────────────────────────
-const BASE_SYSTEM_PROMPT = `You are Soleil, the Chief of Staff for a high-stakes startup. You are diplomatic, strategic, and an orchestrator.
-You manage a boardroom of 6 specialists. When the user asks a question, you MUST consult the relevant specialists using the exact format: [CONSULT: Name].
-
-STRICT FORMATTING RULES:
-1. NEVER use markdown tables (no pipes, no |---|---| rows).
-2. NEVER use horizontal rules (no ---).
-3. Use plain bullet points starting with "- " for lists.
-4. Use **bold** only for key terms. No full-sentence bolding.
-5. Keep responses concise and professional. No emojis unless clearly valuable.
-6. Do NOT introduce yourself or list the team roster.
-
-RESPONSE FORMAT:
-[CONSULT: Name]
-Name: Their insight. 2-4 sentences.
-[Source: URL]
-
-Soleil: Your synthesis. Short paragraphs, bullet action items. Direct.
-
-Specialists:
-- Elon (Engineering): First-principles, blunt, technical. Owns engineering execution, deployment, product feasibility, and build vs. buy decisions. Works hand-in-hand with Leonardo — never duplicates architecture concerns, but always ensures buildability.
-- Isaac (Finance): Burn-rate obsessed, ROI-focused, conservative.
-- Steve (Marketing): Narrative-driven, growth-hacker.
-- Harvey (Legal): Precise, risk-averse, equity-protective.
-- Leonardo (Architecture): Owns technical architecture, systems design, infrastructure planning, and long-term platform thinking. Works hand-in-hand with Elon — never duplicates engineering concerns, but ensures design and build are always harmonious.
-- Donna (HR): Empathetic, culture and compliance focused.`;
-
-function buildSystemPrompt(extra='') {
-    let p = BASE_SYSTEM_PROMPT;
-    if (founderName||startupDesc) {
-        p+='\n\n[STARTUP CONTEXT]\n';
-        if (founderName) p+=`Founder: ${founderName}\n`;
-        if (startupDesc) p+=`Business: ${startupDesc}\n`;
-        p+='[END STARTUP CONTEXT]';
-    }
-    if (kbUrls||kbFiles.length) {
-        p+='\n\n[INTERNAL KNOWLEDGE BASE]\n';
-        if (kbUrls) p+='\nURLs:\n'+kbUrls+'\n';
-        kbFiles.forEach(f=>{ p+=`--- ${f.name} ---\n${f.content}\n--- End ---\n`; });
-        p+='[END INTERNAL KNOWLEDGE BASE]';
-    }
-    if (extra) p+='\n\n'+extra;
-    return p;
-}
-
-// ─── UTILITIES ───────────────────────────────────────────────────────────────
-function logTrace(msg, highlight=false) {
-    const p = document.createElement('div');
-    const now = new Date();
-    const ts = now.toLocaleString('en-SG', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
-    p.innerHTML = `<span style="color:var(--text-muted);margin-right:8px;user-select:none;">${ts}</span>> ${msg}`;
-    if (highlight) p.classList.add('highlight');
-    traceWindow.appendChild(p);
-    traceWindow.scrollTop = traceWindow.scrollHeight;
-}
-
-function formatTextToHtml(text) {
-    if (!text) return '';
-    let f = text.replace(/^\|.*\|\s*$/gm,'').replace(/^\|[-| :]+\|\s*$/gm,'').replace(/^---+\s*$/gm,'');
-    f = f.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>');
-    f = f.replace(/`([^`]+)`/g,'<code>$1</code>');
-    return f.split(/\n\n+/).map(block => {
-        const b = block.trim(); if (!b) return '';
-        if (b.match(/^[-*]\s/m)) {
-            const items = b.split(/\n/).map(i=>{ const c=i.replace(/^[-*]\s+/,'').trim(); return c?`<li>${c}`:'' }).filter(Boolean).join('');
-            return `<ul>${items}</ul>`;
-        }
-        if (b.match(/^\d+\.\s/m)) {
-            const items = b.split(/\n/).map(i=>{ const c=i.replace(/^\d+\.\s+/,'').trim(); return c?`<li>${c}`:'' }).filter(Boolean).join('');
-            return `<ol>${items}</ol>`;
-        }
-        if (b.startsWith('### ')) return `<p style="font-weight:600;color:var(--text-secondary);font-size:12px;text-transform:uppercase;letter-spacing:0.06em;">${b.replace(/^### /,'')}</p>`;
-        if (b.startsWith('## '))  return `<p style="font-weight:600;color:var(--text-primary);">${b.replace(/^## /,'')}</p>`;
-        const clean = b.replace(/\n/g,' ').trim();
-        return clean ? `<p>${clean}</p>` : '';
-    }).filter(Boolean).join('');
-}
-
-function appendMessage(sender, text) {
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = `display:flex;justify-content:${sender==='User'?'flex-end':'flex-start'};`;
-    const avatar = document.createElement('div');
-    avatar.style.cssText = `width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);overflow:hidden;`;
-    if (sender === 'User') {
-        avatar.textContent = 'U';
-    } else {
-        const img = document.createElement('img');
-        img.src = 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png';
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-        img.onerror = () => { avatar.removeChild(img); avatar.textContent = 'S'; };
-        avatar.appendChild(img);
-    }
-    const bubble = document.createElement('div');
-    if (sender==='User') {
-        bubble.className = 'chat-bubble-user';
-        bubble.textContent = text;
-        wrapper.style.flexDirection = 'row-reverse';
-        avatar.style.margin = '0 0 0 10px';
-    } else {
-        bubble.className = 'chat-bubble-ai';
-        const displayText = text.replace(/\[DOCUMENT:[\s\S]*?\[END DOCUMENT\]/gi,'').trim();
-        bubble.innerHTML = parseSoleilResponse(displayText);
-    }
-    wrapper.appendChild(avatar); wrapper.appendChild(bubble);
-    chatWindow.appendChild(wrapper);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-function parseSoleilResponse(text) {
-    let html = '';
-    const consultRegex = /\[CONSULT:\s*(Elon|Isaac|Steve|Harvey|Leonardo|Donna)\]/gi;
-    [...text.matchAll(consultRegex)].forEach(m=>animateConnection(m[1]));
-
-    const blockRegex = /\[CONSULT:\s*(Elon|Isaac|Steve|Harvey|Leonardo|Donna)\]\s*\n\s*\1:\s*([\s\S]*?)(?=\n\s*\[Source:|\n\s*\[CONSULT:|\n\s*Soleil:|$)/gi;
-    const sourceRegex = /\[Source:\s*(https?:\/\/[^\s]+)\]/gi;
-
-    let lastIndex=0, match;
-    while ((match=blockRegex.exec(text))!==null) {
-        if (match.index>lastIndex) html+=`<div style="color:var(--text-secondary);font-size:13px;">${text.substring(lastIndex,match.index).trim()}</div>`;
-        const name=match[1]; let content=match[2].trim(); let sources=[];
-        let sm; while ((sm=sourceRegex.exec(content))!==null) sources.push(sm[1]);
-        content=content.replace(sourceRegex,'').trim();
-        const agentColor = { Elon:'#ef4444', Isaac:'#22c55e', Steve:'#3b82f6', Harvey:'#eab308', Leonardo:'#a855f7', Donna:'#ec4899' }[name] || 'var(--text-muted)';
-        html+=`<div class="consult-block agent-${name.toLowerCase()}">
-            <div style="font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:${agentColor};font-family:'Geist Mono',monospace;margin-bottom:6px;">${name}</div>
-            <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">${formatTextToHtml(content)}</div>
-            ${sources.length?`<div style="margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:11px;color:var(--text-muted);">Sources:</span>${sources.map(s=>`<a href="${s}" target="_blank" style="font-size:11px;color:var(--text-secondary);text-decoration:underline;font-family:'Geist Mono',monospace;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;">${s.replace(/^https?:\/\//,'')}</a>`).join('')}</div>`:''}
-        </div>`;
-        lastIndex=match.index+match[0].length;
-    }
-
-    const synthMatch = text.match(/Soleil:\s*([\s\S]*?)$/i);
-    if (synthMatch) {
-        html+=`<div class="synthesis-block">
-            <div style="font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:8px;">Soleil Synthesis</div>
-            <div style="font-size:13.5px;color:var(--text-primary);line-height:1.65;font-weight:500;">${formatTextToHtml(synthMatch[1].trim())}</div>
-        </div>`;
-    } else if (lastIndex<text.length) {
-        html+=`<div style="color:var(--text-primary);font-size:13.5px;">${text.substring(lastIndex).trim()}</div>`;
-    }
-    return html.trim() || `<div style="color:var(--text-primary);">${text.replace(consultRegex,'').trim()}</div>`;
-}
-
-function animateConnection(personaName) {
-    const n = personaName.toLowerCase();
-    const line = document.getElementById(`line-${n}`);
-    const node = document.getElementById(`visual-${n}`);
-    if (line&&node) {
-        logTrace(`Consulting ${personaName}…`);
-        line.classList.add('active'); node.classList.add('active');
-        setTimeout(()=>{ line.classList.remove('active'); node.classList.remove('active'); },4000);
-    }
-}
-
-// ─── SEND ────────────────────────────────────────────────────────────────────
+// Logic: Send Chat
 async function sendChat() {
     const userText = chatInput.value.trim();
-    if (!userText) return;
-    if (!API_KEY) { appendMessage('Soleil','API Key missing. Please configure via ⚙ API Config.'); apiModal.style.display='flex'; return; }
-    if (!MODEL_NAME) { appendMessage('Soleil','No model selected. Open ⚙ API Config and select a model.'); apiModal.style.display='flex'; return; }
-
-    const docReq = detectDocRequest(userText);
+    if (!userText || !API_KEY) return;
+    
     appendMessage('User', userText);
     chatInput.value = '';
     chatHistory.push({ role:'user', content:userText });
-    btnSend.disabled = true;
-    btnSend.textContent = docReq.type ? 'Generating…' : 'Routing…';
-
+    
     try {
-        const extra = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic) : '';
-        if (docReq.type) logTrace(`Document request: ${docReq.type.toUpperCase()} — "${docReq.topic}"`, true);
-        logTrace(`[${PROVIDERS[ACTIVE_PROVIDER].name}] → ${MODEL_NAME}`, true);
-
-        const maxTok = docReq.type ? 4096 : 2048;
-        const sysPrompt = buildSystemPrompt(extra);
-        let resp;
-
-        if (isAnthropicProvider()) {
-            // Anthropic Messages API format
-            resp = await fetch(getEndpoint(), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': API_KEY,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: MODEL_NAME,
-                    system: sysPrompt,
-                    messages: chatHistory,
-                    max_tokens: maxTok
-                })
-            });
-        } else {
-            // OpenAI-compatible format (GMI, OpenAI, DeepSeek, Mistral)
-            resp = await fetch(getEndpoint(), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
-                body: JSON.stringify({
-                    model: MODEL_NAME,
-                    messages: [{ role: 'system', content: sysPrompt }, ...chatHistory],
-                    temperature: 0.7,
-                    max_tokens: maxTok
-                })
-            });
-        }
-
-        if (!resp.ok) {
-            let eb={}; try{ eb=await resp.json(); }catch(e){}
-            throw new Error(`API ${resp.status}: ${eb.error?.message||eb.message||resp.statusText}`);
-        }
-
+        logTrace(`Routing query to ${MODEL_NAME}...`);
+        const resp = await fetch('https://api.gmi-serving.com/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+            body: JSON.stringify({
+                model: MODEL_NAME,
+                messages: [{ role: 'system', content: 'You are Soleil, Chief of Staff.' }, ...chatHistory]
+            })
+        });
         const data = await resp.json();
-
-        // Extract text — Anthropic uses data.content[0].text, others use data.choices[0].message.content
-        let fullText;
-        if (isAnthropicProvider()) {
-            fullText = data.content?.[0]?.text || '';
-            if (data.usage) logTrace(`Tokens: in ${data.usage.input_tokens} / out ${data.usage.output_tokens}`, true);
-        } else {
-            fullText = data.choices[0].message.content;
-            if (data.usage?.total_tokens) logTrace(`Tokens: ${data.usage.total_tokens} (in: ${data.usage.prompt_tokens}, out: ${data.usage.completion_tokens})`, true);
-        }
-
-        appendMessage('Soleil', fullText);
-        chatHistory.push({ role:'assistant', content: isAnthropicProvider() ? fullText : fullText });
-        apiErrorCount = 0;
-
-        if (docReq.type) {
-            const extracted = extractDocBlock(fullText);
-            injectDownloadCard(extracted?.docType||docReq.type, docReq.filename, extracted?.rawBlock||fullText);
-        }
-    } catch(error) {
-        console.error(error); apiErrorCount++;
-        logTrace(`Error: ${error.message}`);
-        appendMessage('Soleil', `Error: ${error.message}`);
-    } finally {
-        btnSend.disabled=false; btnSend.textContent='Execute';
-    }
+        const text = data.choices[0].message.content;
+        appendMessage('Soleil', text);
+        chatHistory.push({ role:'assistant', content: text });
+    } catch(e) { logTrace('Error: ' + e.message); }
 }
 
-// ─── MODEL FETCH & RENDER ────────────────────────────────────────────────────
-function makeModelCard(id, status, isSelected, container, onClick) {
-    const statusMeta = {
-        ok:          { dot:'#22c55e', label:'Available',  selectable:true  },
-        busy:        { dot:'#eab308', label:'Busy',        selectable:true  },
-        pending:     { dot:'var(--border-strong)', label:'Checking…', selectable:false },
-        unsupported: { dot:'#ef4444', label:'Unsupported', selectable:false },
-        error:       { dot:'#ef4444', label:'Error',       selectable:false },
-        unknown:     { dot:'var(--border-strong)', label:'Unknown',   selectable:true  },
-    };
-    const meta = statusMeta[status] || statusMeta.unknown;
-    const isDisabled = !meta.selectable && !isSelected;
-    const label = id.split('/').pop();
-    const owner = id.includes('/') ? id.split('/')[0] : '';
-    const card = document.createElement('div');
-    card.className = `model-card${isSelected?' selected':''}${isDisabled?' disabled':''}`;
-    card.innerHTML = `
-        <div style="width:16px;height:16px;border-radius:50%;border:2px solid ${isSelected?'var(--text-primary)':'var(--border-strong)'};background:${isSelected?'var(--text-primary)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            ${isSelected?'<div style="width:6px;height:6px;border-radius:50%;background:var(--bg-base);"></div>':''}
-        </div>
-        <div style="flex:1;min-width:0;">
-            <div style="font-size:13px;font-weight:500;color:${isDisabled?'var(--text-muted)':'var(--text-primary)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${label}</div>
-            ${owner?`<div style="font-size:11px;color:var(--text-muted);font-family:'Geist Mono',monospace;">${owner}</div>`:''}
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-            <div style="width:6px;height:6px;border-radius:50%;background:${meta.dot};"></div>
-            <span style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);">${isSelected?'Active':meta.label}</span>
-        </div>`;
-    if (!isDisabled) card.addEventListener('click', onClick);
-    container.appendChild(card);
+function appendMessage(sender, text) {
+    const b = document.createElement('div');
+    b.className = sender === 'User' ? 'chat-bubble-user' : 'chat-bubble-ai';
+    b.textContent = text;
+    chatWindow.appendChild(b);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-function renderGmiModelList(models) {
-    const order = { ok:0,busy:1,pending:2,unknown:3,error:4,unsupported:5 };
-    const sorted = [...models].sort((a,b)=>(order[a.status]??9)-(order[b.status]??9));
-    modelList.innerHTML='';
-    sorted.forEach(m => {
-        const id = m.id||m;
-        makeModelCard(id, m.status||'unknown', id===selectedModelInModal, modelList, ()=>{
-            selectedModelInModal=id; selectedModelDisplay.textContent=id; renderGmiModelList(models);
-        });
-    });
-    selectedModelDisplay.textContent = selectedModelInModal||'—';
+function logTrace(msg) {
+    const p = document.createElement('div');
+    p.textContent = '> ' + msg;
+    traceWindow.appendChild(p);
 }
 
-function renderStaticModelList(providerKey) {
-    const models = PROVIDERS[providerKey].staticModels;
-    const container = document.getElementById('static-model-list');
-    container.innerHTML='';
-    models.forEach(id => {
-        makeModelCard(id, 'ok', id===selectedModelInModal, container, ()=>{
-            selectedModelInModal=id; selectedModelDisplay.textContent=id; renderStaticModelList(providerKey);
-        });
-    });
-    selectedModelDisplay.textContent = selectedModelInModal||'—';
-}
+// Initializers
+btnSend.addEventListener('click', sendChat);
+chatInput.addEventListener('keypress', e => { if(e.key==='Enter') sendChat(); });
 
-async function probeModel(key, modelId, endpoint) {
-    try {
-        const res=await fetch(endpoint,{ method:'POST', headers:{ 'Authorization':'Bearer '+key,'Content-Type':'application/json' }, body:JSON.stringify({ model:modelId, messages:[{role:'user',content:'hi'}], max_tokens:1 }) });
-        if (res.status===200) return 'ok';
-        if (res.status===500) return 'busy';
-        if (res.status===400) { const b=await res.json().catch(()=>({})); return JSON.stringify(b).includes('unsupported')?'unsupported':'error'; }
-        return 'error';
-    } catch(e){ return 'unknown'; }
-}
-
-async function fetchModels() {
-    const prov = PROVIDERS[selectedProviderInModal];
-    if (!prov.fetchable) return;
-    const key = inputApiKey.value.trim() || localStorage.getItem(`key_${selectedProviderInModal}`) || '';
-    if (!key) { modelsError.textContent='Enter your API key first.'; modelsError.style.display='block'; return; }
-    modelsError.style.display='none'; modelsLoading.style.display='block';
-    modelList.innerHTML=''; btnFetchModels.disabled=true; btnFetchModels.textContent='Loading…';
-    try {
-        const res=await fetch(prov.modelsEndpoint,{ headers:{ 'Authorization':'Bearer '+key } });
-        if (!res.ok) throw new Error('HTTP '+res.status);
-        const data=await res.json();
-        const rawList=data.data||data.models||(Array.isArray(data)?data:[]);
-        if (!rawList.length) throw new Error('Empty model list.');
-        availableModels=rawList.map(m=>({...(typeof m==='string'?{id:m}:m),status:'pending'}));
-        renderGmiModelList(availableModels);
-        modelsLoading.style.display='none';
-        btnFetchModels.textContent='Probing…';
-        for (let i=0;i<availableModels.length;i+=6) {
-            await Promise.all(availableModels.slice(i,i+6).map(async m=>{ m.status=await probeModel(key,m.id,prov.endpoint); }));
-            renderGmiModelList(availableModels);
-        }
-        if (!selectedModelInModal) { const f=availableModels.find(m=>m.status==='ok'); if(f){ selectedModelInModal=f.id; renderGmiModelList(availableModels); } }
-        logTrace(`GMI: ${availableModels.filter(m=>m.status==='ok'||m.status==='busy').length} models available.`,true);
-    } catch(err) {
-        modelsError.textContent='⚠ '+err.message; modelsError.style.display='block';
-        modelList.innerHTML='<div style="font-size:12px;color:var(--text-muted);font-style:italic;">Could not load models.</div>';
-    } finally { modelsLoading.style.display='none'; btnFetchModels.disabled=false; btnFetchModels.textContent='Fetch Models'; }
-}
-
-// ─── PROVIDER MODAL SWITCH ───────────────────────────────────────────────────
-function switchProviderInModal(provKey) {
-    selectedProviderInModal = provKey;
-    const prov = PROVIDERS[provKey];
-
-    // Update tabs
-    document.querySelectorAll('.provider-tab').forEach(t => {
-        t.classList.toggle('active', t.dataset.provider === provKey);
-    });
-
-    // Update info strip
-    document.getElementById('provider-name-label').textContent = prov.name;
-    document.getElementById('provider-endpoint-label').textContent = prov.host;
-
-    // Update key field placeholder & hint
-    inputApiKey.value = localStorage.getItem(`key_${provKey}`) || '';
-    inputApiKey.placeholder = `Enter ${prov.name} API Key`;
-    document.getElementById('provider-key-hint').textContent = prov.keyHint;
-
-    // Fetch button: only show for GMI
-    btnFetchModels.style.display = prov.fetchable ? 'block' : 'none';
-
-    // Show/hide sections
-    const fetchSection = document.getElementById('section-fetch-models');
-    const staticSection = document.getElementById('section-static-models');
-
-    if (prov.fetchable) {
-        fetchSection.style.display = 'block';
-        staticSection.style.display = 'none';
-        // Show cached GMI models if any
-        if (availableModels.length) renderGmiModelList(availableModels);
-        else modelList.innerHTML = '<div style="font-size:12px;color:var(--text-muted);font-style:italic;">Enter your API key and click Fetch Models.</div>';
-    } else {
-        fetchSection.style.display = 'none';
-        staticSection.style.display = 'block';
-        // Pre-select saved model for this provider
-        selectedModelInModal = localStorage.getItem(`model_${provKey}`) || prov.staticModels[0] || '';
-        renderStaticModelList(provKey);
-    }
-
-    selectedModelDisplay.textContent = selectedModelInModal || '—';
-    modelsError.style.display = 'none';
-}
-
-// ─── KNOWLEDGE BASE ──────────────────────────────────────────────────────────
-function renderKbFileList() {
-    kbFileList.innerHTML='';
-    if (!kbFiles.length) { kbFileList.innerHTML='<p style="font-size:12px;color:var(--text-muted);font-style:italic;">No documents uploaded.</p>'; return; }
-    kbFiles.forEach((file,i)=>{
-        const d=document.createElement('div');
-        d.style.cssText='display:flex;justify-content:space-between;align-items:center;background:var(--bg-elevated);padding:8px 12px;border-radius:6px;border:1px solid var(--border);';
-        d.innerHTML=`<span style="font-size:12px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;margin-right:8px;">📄 ${file.name}</span><button onclick="removeKbFile(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px;flex-shrink:0;">Remove</button>`;
-        kbFileList.appendChild(d);
-    });
-}
-window.removeKbFile = (i) => { kbFiles.splice(i,1); renderKbFileList(); };
-
-// ─── BOARDROOM INIT ──────────────────────────────────────────────────────────
-function initializeBoardroom() {
-    chatWindow.innerHTML='';
-    const name=founderName||'Founder';
-    const company=startupDesc?startupDesc.split(',')[0]:null;
-
-    const wrapper=document.createElement('div');
-    wrapper.style.cssText='display:flex;justify-content:flex-start;';
-    const avatar=document.createElement('div');
-    avatar.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);overflow:hidden;';
-    const soleilImg=document.createElement('img');
-    soleilImg.src='https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/soleil.png';
-    soleilImg.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;';
-    soleilImg.onerror=()=>{ avatar.removeChild(soleilImg); avatar.textContent='S'; };
-    avatar.appendChild(soleilImg);
-
-    const card=document.createElement('div');
-    card.className='chat-bubble-ai';
-    card.style.cssText='max-width:520px;';
-
-    const specialists=[
-        {name:'Elon',     role:'Engineering', color:'#ef4444'},
-        {name:'Isaac',    role:'Finance',      color:'#22c55e'},
-        {name:'Steve',    role:'Marketing',    color:'#3b82f6'},
-        {name:'Harvey',   role:'Legal',        color:'#eab308'},
-        {name:'Leonardo', role:'Architecture', color:'#a855f7'},
-        {name:'Donna',    role:'HR',           color:'#ec4899'},
-    ];
-
-    const rosterHTML=specialists.map(s=>`
-        <div style="display:flex;align-items:center;gap:8px;">
-            <div style="width:5px;height:5px;border-radius:50%;background:${s.color};flex-shrink:0;"></div>
-            <span style="font-size:12px;font-weight:600;color:${s.color};">${s.name}</span>
-            <span style="font-size:11px;color:var(--text-muted);">${s.role}</span>
-        </div>`).join('');
-
-    const hr = new Date().getHours();
-    const timeOfDay = hr < 12 ? 'morning' : hr < 18 ? 'afternoon' : 'evening';
-
-    card.innerHTML=`
-        <p style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Good ${timeOfDay}, ${name}. Your Core Team is live.</p>
-        ${company?`<p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Briefed on <strong>${company}</strong>. Ready to execute.</p>`:'<p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Ready for your directives.</p>'}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;background:var(--bg-base);border-radius:8px;padding:12px;margin-bottom:16px;border:1px solid var(--border);">
-            ${rosterHTML}
-        </div>
-        <div style="border-top:1px solid var(--border);padding-top:12px;">
-            <p style="font-size:12px;color:var(--text-secondary);">Ask me anything about your startup — strategy, legal, finance, engineering, marketing, or HR.</p>
-        </div>`;
-
-    wrapper.appendChild(avatar); wrapper.appendChild(card);
-    chatWindow.appendChild(wrapper);
-    chatWindow.scrollTop=chatWindow.scrollHeight;
-}
-
-function updateModelBadge() {
-    // Badge removed from header — no-op kept for compatibility
-}
-
-// About modal
-document.getElementById('btn-about').addEventListener('click', () => {
-    document.getElementById('about-modal').style.display = 'flex';
-});
-document.getElementById('btn-close-about').addEventListener('click', () => {
-    document.getElementById('about-modal').style.display = 'none';
-});
-// Close on overlay click
-document.getElementById('about-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('about-modal'))
-        document.getElementById('about-modal').style.display = 'none';
-});
-
-// ─── EVENT LISTENERS ─────────────────────────────────────────────────────────
-btnSend.addEventListener('click',sendChat);
-chatInput.addEventListener('keypress',e=>{ if(e.key==='Enter') sendChat(); });
-
-btnClear.addEventListener('click',()=>{
-    chatHistory=[]; initializeBoardroom();
-    traceWindow.innerHTML='';
-    logTrace('Boardroom cleared.');
-    document.querySelectorAll('.connector-line').forEach(el=>el.classList.remove('active'));
-    document.querySelectorAll('.node-circle').forEach(el=>el.classList.remove('active'));
-});
-
-btnFullscreen.addEventListener('click',()=>{
-    document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
-});
-
-// Provider tab clicks
-document.querySelectorAll('.provider-tab').forEach(tab => {
-    tab.addEventListener('click', () => switchProviderInModal(tab.dataset.provider));
-});
-
-btnApiConfig.addEventListener('click',()=>{
-    selectedProviderInModal = ACTIVE_PROVIDER;
-    selectedModelInModal = MODEL_NAME;
-    switchProviderInModal(ACTIVE_PROVIDER);
-    apiModal.style.display='flex';
-});
-btnCloseApi.addEventListener('click',()=>apiModal.style.display='none');
-btnFetchModels.addEventListener('click',fetchModels);
-btnSaveConfig.addEventListener('click',()=>{
-    const newKey = inputApiKey.value.trim();
-    const newProvider = selectedProviderInModal;
-    const newModel = selectedModelInModal;
-
-    // Save key per provider
-    if (newKey) {
-        localStorage.setItem(`key_${newProvider}`, newKey);
-        if (newProvider === ACTIVE_PROVIDER) API_KEY = newKey;
-    }
-
-    // Save model per provider
-    if (newModel) {
-        localStorage.setItem(`model_${newProvider}`, newModel);
-    }
-
-    // Apply if provider changed or it's the current provider
-    ACTIVE_PROVIDER = newProvider;
-    MODEL_NAME = newModel;
-    API_KEY = localStorage.getItem(`key_${newProvider}`) || '';
-    localStorage.setItem('active_provider', ACTIVE_PROVIDER);
-
-    updateModelBadge();
-    apiModal.style.display='none';
-    logTrace(`Provider: ${PROVIDERS[ACTIVE_PROVIDER].name} | Model: ${MODEL_NAME||'none'}`, true);
-});
-
-btnKb.addEventListener('click',()=>{ kbUrlsInput.value=kbUrls; renderKbFileList(); kbModal.style.display='flex'; });
-btnCloseKb.addEventListener('click',()=>kbModal.style.display='none');
-kbFilesInput.addEventListener('change',e=>{
-    Array.from(e.target.files).forEach(file=>{
-        const r=new FileReader();
-        r.onload=ev=>{ kbFiles.push({name:file.name,content:ev.target.result}); renderKbFileList(); };
-        r.readAsText(file);
-    });
-});
-btnSaveKb.addEventListener('click',()=>{ kbUrls=kbUrlsInput.value.trim(); kbModal.style.display='none'; logTrace(`Knowledge Base updated — ${kbFiles.length} doc(s).`,true); });
-btnClearKb.addEventListener('click',()=>{ kbUrls=''; kbFiles=[]; kbUrlsInput.value=''; kbFilesInput.value=''; renderKbFileList(); logTrace('Knowledge Base cleared.'); });
-
-btnEditStartup.addEventListener('click',()=>{ inputFounderName.value=founderName; inputStartupDesc.value=startupDesc; startupModal.style.display='flex'; });
-btnLaunchBoardroom.addEventListener('click',()=>{
-    founderName=inputFounderName.value.trim();
-    startupDesc=inputStartupDesc.value.trim();
-    if (!founderName||!startupDesc){ alert('Please enter your name and startup description.'); return; }
-    localStorage.setItem('founder_name',founderName);
-    localStorage.setItem('startup_desc',startupDesc);
-    startupModal.style.display='none';
-    initializeBoardroom();
-});
-
-window.onload = async () => {
-    updateModelBadge();
-    logTrace('System initialized.', true);
-    if (!MODEL_NAME) logTrace('No model configured. Open ⚙ API Config.', true);
-
-    // Check existing session — handles OAuth callback redirect too
-    const { data: { session } } = await sbClient.auth.getSession();
-    if (!session) {
-        showAuthModal();
-    } else {
-        populateUserUI(session);
-        hideAuthModal();
-        if (!founderName || !startupDesc) {
-            document.getElementById('startup-modal').style.display = 'flex';
-        } else {
-            initializeBoardroom();
-        }
-    }
+window.onload = () => {
+    if (!founderName) document.getElementById('startup-modal').style.display = 'flex';
+    logTrace('System Online. Welcome Red.');
 };
 
-// ─── TRACE PANEL DRAG RESIZE ────────────────────────────────────────────────
-(function() {
-    const handle = document.getElementById('trace-drag-handle');
-    const panel  = document.getElementById('trace-panel');
-    const leftCol = panel.closest('div[style*="width:50%"]') || panel.parentElement;
+// Theme Logic
+document.getElementById('btn-dark').onclick = () => document.documentElement.setAttribute('data-theme', 'dark');
+document.getElementById('btn-light').onclick = () => document.documentElement.setAttribute('data-theme', 'light');
 
-    let dragging = false;
-    let startY   = 0;
-    let startH   = 0;
-
-    handle.addEventListener('mousedown', e => {
-        dragging = true;
-        startY   = e.clientY;
-        startH   = panel.offsetHeight;
-        document.body.style.cursor    = 'ns-resize';
-        document.body.style.userSelect = 'none';
-        handle.style.background = 'var(--border)';
-        e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', e => {
-        if (!dragging) return;
-        const delta  = startY - e.clientY;           // drag up = bigger
-        const maxH   = leftCol.offsetHeight * 0.65;
-        const newH   = Math.min(Math.max(startH + delta, 40), maxH);
-        panel.style.height = newH + 'px';
-    });
-
-    document.addEventListener('mouseup', () => {
-        if (!dragging) return;
-        dragging = false;
-        document.body.style.cursor     = '';
-        document.body.style.userSelect = '';
-        handle.style.background = 'transparent';
-    });
-
-    // Touch support
-    handle.addEventListener('touchstart', e => {
-        dragging = true;
-        startY   = e.touches[0].clientY;
-        startH   = panel.offsetHeight;
-        e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('touchmove', e => {
-        if (!dragging) return;
-        const delta = startY - e.touches[0].clientY;
-        const maxH  = leftCol.offsetHeight * 0.65;
-        const newH  = Math.min(Math.max(startH + delta, 40), maxH);
-        panel.style.height = newH + 'px';
-    }, { passive: false });
-
-    document.addEventListener('touchend', () => { dragging = false; });
-})();
+// Modal Logic
+document.getElementById('btn-launch-boardroom').onclick = () => {
+    founderName = document.getElementById('input-founder-name').value;
+    startupDesc = document.getElementById('input-startup-desc').value;
+    localStorage.setItem('founder_name', founderName);
+    document.getElementById('startup-modal').style.display = 'none';
+};
 </script>
 </body>
 </html>
