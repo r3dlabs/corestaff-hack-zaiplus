@@ -162,15 +162,15 @@
         .btn-icon {
             background: transparent;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 7px 12px;
+            border-radius: 7px;
+            padding: 5px 10px;
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px;
             font-family: 'Geist', sans-serif;
             cursor: pointer;
             white-space: nowrap;
             transition: background 0.15s, color 0.15s, border-color 0.15s;
-            display: flex; align-items: center; gap: 6px;
+            display: flex; align-items: center; gap: 5px;
         }
         .btn-icon:hover { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--border-strong); }
 
@@ -178,11 +178,12 @@
         header {
             background: var(--bg-surface);
             border-bottom: 1px solid var(--border);
-            padding: 0 20px;
-            height: 56px;
+            padding: 0 16px;
+            height: 52px;
             display: flex; align-items: center; justify-content: space-between;
             flex-shrink: 0;
             z-index: 10;
+            overflow: visible;
         }
 
         /* ── Chat bubble ── */
@@ -280,21 +281,21 @@
             align-items: center;
             background: var(--bg-elevated);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 3px;
-            gap: 2px;
+            border-radius: 7px;
+            padding: 2px;
+            gap: 1px;
             flex-shrink: 0;
         }
         .theme-toggle-btn {
             display: flex; align-items: center; justify-content: center;
-            width: 26px; height: 26px;
+            width: 22px; height: 22px;
             border-radius: 5px;
             border: none;
             background: transparent;
             cursor: pointer;
             transition: background 0.15s, color 0.15s;
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
             line-height: 1;
         }
         .theme-toggle-btn.active {
@@ -716,7 +717,7 @@
             <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" alt="Startup Staff" style="width:28px;height:28px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">
             <span style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Startup Staff</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:nowrap;flex-shrink:0;">
             <button id="btn-edit-startup" class="btn-icon">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
                 Business Profile
