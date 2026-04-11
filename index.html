@@ -8,7 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        window._supabaseCreateClient = createClient;
+    </script>
+    <script>
+        // Wait for ESM to load
+    </script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -947,7 +953,15 @@
 // ─── SUPABASE AUTH ───────────────────────────────────────────────────────────
 const SUPABASE_URL  = 'https://owxqyvuvjhnzbmxncnbn.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93eHF5dnV2amhuemJteG5jbmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MjIyNTksImV4cCI6MjA5MTM5ODI1OX0.fmsx0UhLyfMeK3hgDJHyCSKFhiueU94swG8OJNVmlnI';
-const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+let sbClient = null;
+try {
+    const createClient = window._supabaseCreateClient || window.supabase?.createClient;
+    if (createClient) {
+        sbClient = createClient(SUPABASE_URL, SUPABASE_ANON);
+    }
+} catch(e) {
+    console.warn('Supabase failed to initialize:', e);
+}
 
 const authModal      = document.getElementById('auth-modal');
 const btnLinkedIn    = document.getElementById('btn-linkedin-login');
@@ -1014,7 +1028,7 @@ btnLinkedIn.addEventListener('click', async () => {
     btnLinkedIn.textContent = 'Redirecting…';
     authError.style.display = 'none';
     const redirectTo = window.location.origin + window.location.pathname;
-    const { error } = await sbClient.auth.signInWithOAuth({
+    const { error } = await sbClient?.auth.signInWithOAuth({
         provider: 'linkedin_oidc',
         options: { redirectTo }
     });
@@ -1039,14 +1053,14 @@ userDropdown.addEventListener('click', e => e.stopPropagation());
 
 // Logout
 btnLogout.addEventListener('click', async () => {
-    await sbClient.auth.signOut();
+    await sbClient?.auth.signOut();
     clearUserUI();
     showAuthModal();
     logTrace('Session ended. Signed out.', true);
 });
 
 // Session state listener — runs on load + on auth change
-sbClient.auth.onAuthStateChange(async (event, session) => {
+sbClient?.auth.onAuthStateChange(async (event, session) => {
     if (session) {
         hideAuthModal();
         populateUserUI(session);
@@ -1903,12 +1917,34 @@ window.onload = async () => {
     logTrace('System initialized.', true);
     if (!MODEL_NAME) logTrace('No model configured. Open ⚙ API Config.', true);
 
+    if (!sbClient) {
+        // Supabase failed to load — skip auth, go straight to app
+        console.warn('Running without Supabase auth');
+        hideAuthModal();
+        if (!founderName || !startupDesc) {
+            document.getElementById('startup-modal').style.display = 'flex';
+        } else {
+            initializeBoardroom();
+        }
+        return;
+    }
+
     // Check existing session — handles OAuth callback redirect too
-    const { data: { session } } = await sbClient.auth.getSession();
-    if (!session) {
-        showAuthModal();
-    } else {
-        populateUserUI(session);
+    try {
+        const { data: { session } } = await sbClient.auth.getSession();
+        if (!session) {
+            showAuthModal();
+        } else {
+            populateUserUI(session);
+            hideAuthModal();
+            if (!founderName || !startupDesc) {
+                document.getElementById('startup-modal').style.display = 'flex';
+            } else {
+                initializeBoardroom();
+            }
+        }
+    } catch(e) {
+        console.warn('Auth check failed:', e);
         hideAuthModal();
         if (!founderName || !startupDesc) {
             document.getElementById('startup-modal').style.display = 'flex';
