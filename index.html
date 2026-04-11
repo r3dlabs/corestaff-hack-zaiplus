@@ -236,7 +236,6 @@
             flex-shrink: 0;
             z-index: 20;
             width: 100%;
-            overflow: hidden;
         }
         .header-left {
             display: flex;
@@ -252,10 +251,11 @@
             color: var(--text-primary);
         }
         .header-right {
-            flex-wrap: nowrap;
             display: flex;
             align-items: center;
             gap: 6px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
         }
 
         /* ── Chat bubble ── */
