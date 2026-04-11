@@ -1059,13 +1059,12 @@ btnLogout.addEventListener('click', async () => {
     logTrace('Session ended. Signed out.', true);
 });
 
-// Session state listener — runs on load + on auth change
+// Session state listener — only handle SIGN_IN and SIGN_OUT events, not initial load
 sbClient?.auth.onAuthStateChange(async (event, session) => {
-    if (session) {
+    if (event === 'SIGNED_IN' && session) {
         hideAuthModal();
         populateUserUI(session);
         logTrace(`Signed in as ${session.user.user_metadata?.full_name || session.user.email}`, true);
-        // Only init boardroom if not already shown
         if (!document.getElementById('chat-window').children.length) {
             if (!founderName || !startupDesc) {
                 document.getElementById('startup-modal').style.display = 'flex';
@@ -1073,7 +1072,7 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
                 initializeBoardroom();
             }
         }
-    } else {
+    } else if (event === 'SIGNED_OUT') {
         clearUserUI();
         showAuthModal();
     }
