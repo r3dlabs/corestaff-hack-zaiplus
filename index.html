@@ -178,39 +178,54 @@
         header {
             background: var(--bg-surface);
             border-bottom: 1px solid var(--border);
-            padding: 0 16px;
+            padding: 0 12px;
             height: 52px;
             min-height: 52px;
+            max-height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
             z-index: 20;
-            position: relative;
             overflow: hidden;
+            box-sizing: border-box;
+            width: 100%;
         }
         .header-left {
-            display: flex; align-items: center; gap: 8px;
-            flex-shrink: 0; min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .header-title-text {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: var(--text-primary);
         }
         .header-right {
-            display: flex; align-items: center; gap: 4px;
-            flex-shrink: 0; min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
-        /* Progressive label hiding as viewport narrows */
+        /* Hide labels at ≤1080px */
         @media (max-width: 1080px) {
-            .btn-label, .btn-fullscreen-label { display: none !important; }
-            .btn-icon { padding: 6px 8px; }
-        }
-        @media (max-width: 700px) {
-            .header-title-text { display: none !important; }
-            #btn-kb, #btn-fullscreen { display: none !important; }
+            .btn-label { display: none !important; }
+            .btn-icon { padding: 5px 7px !important; }
             .header-right { gap: 3px; }
-            .btn-icon { padding: 5px 7px; }
+        }
+        /* Hide title + extra buttons at ≤680px */
+        @media (max-width: 680px) {
+            .header-title-text { display: none !important; }
+            #btn-kb { display: none !important; }
+            #btn-fullscreen { display: none !important; }
         }
 
-        /* Mobile stacked layout */
+        /* Mobile stacked layout — only below 768px */
         @media (max-width: 768px) {
             body { height: 100svh; overflow: hidden; }
             main {
@@ -229,8 +244,10 @@
             #trace-panel { height: 90px !important; max-height: 90px !important; }
             main > div:last-child {
                 width: 100% !important;
-                flex: 1; min-height: 300px;
-                display: flex; flex-direction: column;
+                flex: 1;
+                min-height: 300px;
+                display: flex;
+                flex-direction: column;
             }
             #chat-window { flex: 1; overflow-y: auto; }
             .modal-box { max-width: calc(100vw - 32px) !important; width: calc(100vw - 32px) !important; }
@@ -238,7 +255,6 @@
             .chat-bubble-ai { max-width: calc(100vw - 80px) !important; }
             .chat-bubble-user { max-width: calc(100vw - 80px) !important; }
             #chat-input { font-size: 16px; }
-            .user-dropdown { right: 12px !important; }
         }
 
         /* ── Chat bubble ── */
@@ -389,15 +405,15 @@
         }
         .user-dropdown {
             position: fixed;
-            top: 60px;
-            right: 16px;
+            top: 58px;
+            right: 12px;
             background: var(--bg-surface);
             border: 1px solid var(--border-strong);
             border-radius: 10px;
             padding: 6px;
-            min-width: 200px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            z-index: 100;
+            min-width: 210px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 1000;
             animation: slideUp 0.15s ease;
         }
         .user-dropdown-name {
@@ -767,60 +783,53 @@
     </div>
 
     <!-- ── HEADER ──────────────────────────────────────────── -->
+    <!-- User dropdown — outside header so overflow:hidden doesn't clip it -->
+    <div id="user-dropdown" class="user-dropdown" style="display:none;">
+        <div class="user-dropdown-name">
+            <div id="user-full-name" style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:1px;"></div>
+            <div id="user-email" style="font-size:11px;color:var(--text-muted);font-family:'Geist Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;"></div>
+        </div>
+        <button class="user-dropdown-item danger" id="btn-logout">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+        </button>
+    </div>
+
     <header>
         <div class="header-left">
-            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" alt="Startup Staff" style="width:28px;height:28px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">
-            <span class="header-title-text" style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;">Startup Staff</span>
+            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" alt="Startup Staff" style="width:26px;height:26px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">
+            <span class="header-title-text">Startup Staff</span>
         </div>
         <div class="header-right">
-            <button id="btn-edit-startup" class="btn-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
+            <button id="btn-edit-startup" class="btn-icon" title="Business Profile">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
                 <span class="btn-label">Business Profile</span>
             </button>
-            <button id="btn-kb" class="btn-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+            <button id="btn-kb" class="btn-icon" title="Knowledge Base">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
                 <span class="btn-label">Knowledge Base</span>
             </button>
-            <button id="btn-api-config" class="btn-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <button id="btn-api-config" class="btn-icon" title="API Config">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 <span class="btn-label">API Config</span>
             </button>
-            <button id="btn-about" class="btn-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <button id="btn-about" class="btn-icon" title="About">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 <span class="btn-label">About</span>
             </button>
-
-            <!-- Theme toggle -->
             <div class="theme-toggle">
                 <button class="theme-toggle-btn" id="btn-dark" aria-label="Dark mode" title="Dark mode">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 </button>
                 <button class="theme-toggle-btn" id="btn-light" aria-label="Light mode" title="Light mode">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </button>
             </div>
-
-            <button id="btn-fullscreen" class="btn-icon">⛶ <span class="btn-fullscreen-label">Full Screen</span></button>
-
-            <!-- User avatar -->
+            <button id="btn-fullscreen" class="btn-icon" title="Full Screen">⛶</button>
             <div id="user-avatar-btn" style="display:none;flex-shrink:0;">
-                <button id="btn-user-avatar" style="
-                    width:32px;height:32px;border-radius:50%;border:2px solid var(--border-strong);
-                    overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);
-                    transition:border-color 0.15s;" title="Account">
+                <button id="btn-user-avatar" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--border-strong);overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);flex-shrink:0;" title="Account">
                     <img id="user-avatar-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
                 </button>
-                <!-- Dropdown -->
-                <div id="user-dropdown" class="user-dropdown" style="display:none;">
-                    <div class="user-dropdown-name">
-                        <div id="user-full-name" style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:1px;"></div>
-                        <div id="user-email" style="font-size:11px;color:var(--text-muted);font-family:'Geist Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
-                    </div>
-                    <button class="user-dropdown-item danger" id="btn-logout">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                        Sign out
-                    </button>
-                </div>
             </div>
         </div>
     </header>
