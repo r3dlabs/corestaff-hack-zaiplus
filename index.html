@@ -186,6 +186,93 @@
             overflow: visible;
         }
 
+        /* ── Mobile responsive ── */
+        @media (max-width: 768px) {
+            body { height: 100svh; overflow: hidden; }
+
+            header {
+                padding: 0 12px;
+                height: 48px;
+                flex-shrink: 0;
+            }
+
+            /* Hide text labels on header buttons, show icons only */
+            .btn-icon span.btn-label { display: none; }
+
+            /* Stack main layout vertically */
+            main {
+                flex-direction: column !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+                height: calc(100svh - 48px);
+            }
+
+            /* Left panel (viz + log) — middle */
+            main > div:first-child {
+                width: 100% !important;
+                border-right: none !important;
+                border-bottom: 1px solid var(--border);
+                flex-shrink: 0;
+                min-height: 0;
+            }
+
+            /* SVG boardroom — constrain height on mobile */
+            #boardroom-svg {
+                max-width: 320px !important;
+                max-height: 320px !important;
+            }
+
+            /* Trace panel on mobile */
+            #trace-panel {
+                height: 100px !important;
+                max-height: 120px !important;
+            }
+
+            /* Right panel (Soleil interface) — bottom, takes remaining space */
+            main > div:last-child {
+                width: 100% !important;
+                flex: 1;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Chat window scrolls within its container */
+            #chat-window {
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            /* Modals full width on mobile */
+            .modal-box {
+                max-width: 100% !important;
+                width: calc(100vw - 32px) !important;
+                border-radius: 12px;
+            }
+            .modal-box-lg {
+                max-width: 100% !important;
+                width: calc(100vw - 32px) !important;
+            }
+
+            /* Chat bubbles tighter on mobile */
+            .chat-bubble-ai { max-width: calc(100vw - 80px) !important; }
+            .chat-bubble-user { max-width: calc(100vw - 80px) !important; }
+
+            /* Header logo text — hide on very small screens */
+            .header-title-text { display: none; }
+
+            /* User dropdown position fix on mobile */
+            .user-dropdown { right: 0; left: auto; min-width: 180px; }
+
+            /* Input area */
+            #chat-input { font-size: 16px; } /* prevents iOS zoom on focus */
+        }
+
+        @media (max-width: 480px) {
+            .btn-icon { padding: 5px 8px; }
+            header { padding: 0 10px; gap: 4px; }
+        }
+
         /* ── Chat bubble ── */
         .chat-bubble-ai {
             background: var(--bg-elevated);
@@ -715,24 +802,24 @@
     <header>
         <div style="display:flex;align-items:center;gap:10px;">
             <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" alt="Startup Staff" style="width:28px;height:28px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">
-            <span style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Startup Staff</span>
+            <span class="header-title-text" style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Startup Staff</span>
         </div>
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:nowrap;flex-shrink:0;">
             <button id="btn-edit-startup" class="btn-icon">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
-                Business Profile
+                <span class="btn-label">Business Profile</span>
             </button>
             <button id="btn-kb" class="btn-icon">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-                Knowledge Base
+                <span class="btn-label">Knowledge Base</span>
             </button>
             <button id="btn-api-config" class="btn-icon">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                API Config
+                <span class="btn-label">API Config</span>
             </button>
             <button id="btn-about" class="btn-icon">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                About
+                <span class="btn-label">About</span>
             </button>
 
             <!-- Theme toggle -->
@@ -771,7 +858,7 @@
     </header>
 
     <!-- ── MAIN ────────────────────────────────────────────── -->
-    <main style="flex:1;display:flex;overflow:hidden;">
+    <main style="flex:1;display:flex;overflow:hidden;min-height:0;">
 
         <!-- Left: Boardroom Viz -->
         <div style="width:50%;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--bg-base);">
