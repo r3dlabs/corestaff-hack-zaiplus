@@ -224,41 +224,6 @@
             #chat-input { font-size: 16px; }
         }
 
-
-        /* ── Header ── */
-        header {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 16px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            z-index: 20;
-            width: 100%;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .header-title-text {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            white-space: nowrap;
-            color: var(--text-primary);
-        }
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: nowrap;
-            flex-shrink: 0;
-        }
-
         /* ── Chat bubble ── */
         .chat-bubble-ai {
             background: var(--bg-elevated);
@@ -797,47 +762,26 @@
         </button>
     </div>
 
-    <header>
+    <header style="background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;flex-direction:row;align-items:center;justify-content:space-between;width:100%;box-sizing:border-box;flex-shrink:0;z-index:20;">
         <div style="display:flex;flex-direction:row;align-items:center;gap:8px;flex-shrink:0;">
-            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png"
-                 style="width:26px;height:26px;border-radius:6px;object-fit:cover;"
-                 onerror="this.style.display='none'">
-            <span class="header-title-text">STARTUP STAFF</span>
+            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" style="width:26px;height:26px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'">
+            <span style="font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;color:var(--text-primary);">STARTUP STAFF</span>
         </div>
-        <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-wrap:nowrap;flex-shrink:0;">
-            <button id="btn-edit-startup" class="btn-icon" title="Business Profile">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-                <span class="btn-label">Business Profile</span>
-            </button>
-            <button id="btn-kb" class="btn-icon" title="Knowledge Base">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-                <span class="btn-label">Knowledge Base</span>
-            </button>
-            <button id="btn-api-config" class="btn-icon" title="API Config">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                <span class="btn-label">API Config</span>
-            </button>
-            <button id="btn-about" class="btn-icon" title="About">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <span class="btn-label">About</span>
-            </button>
-            <div style="display:flex;align-items:center;background:var(--bg-elevated);border:1px solid var(--border);border-radius:7px;padding:2px;gap:1px;">
-                <button id="btn-dark" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);" title="Dark mode">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
-                <button id="btn-light" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);" title="Light mode">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </button>
+        <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;">
+            <button id="btn-edit-startup" title="Business Profile" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></button>
+            <button id="btn-kb" title="Knowledge Base" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></button>
+            <button id="btn-api-config" title="API Config" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+            <button id="btn-about" title="About" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></button>
+            <div style="display:flex;flex-direction:row;align-items:center;background:var(--bg-elevated);border:1px solid var(--border);border-radius:7px;padding:2px;gap:1px;flex-shrink:0;">
+                <button id="btn-dark" title="Dark mode" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+                <button id="btn-light" title="Light mode" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
             </div>
-            <div id="user-avatar-btn" style="display:none;">
-                <button id="btn-user-avatar" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--border-strong);overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);" title="Account">
+            <div id="user-avatar-btn" style="display:none;flex-shrink:0;">
+                <button id="btn-user-avatar" title="Account" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--border-strong);overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;">
                     <img id="user-avatar-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
                 </button>
             </div>
-            <button id="btn-fullscreen" class="btn-icon" title="Full Screen">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-                <span class="btn-label">Full Screen</span>
-            </button>
+            <button id="btn-fullscreen" title="Full Screen" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
         </div>
     </header>
 
