@@ -883,7 +883,7 @@
 // ─── SUPABASE AUTH ───────────────────────────────────────────────────────────
 const SUPABASE_URL  = 'https://owxqyvuvjhnzbmxncnbn.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93eHF5dnV2amhuemJteG5jbmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MjIyNTksImV4cCI6MjA5MTM5ODI1OX0.fmsx0UhLyfMeK3hgDJHyCSKFhiueU94swG8OJNVmlnI';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 const authModal      = document.getElementById('auth-modal');
 const btnLinkedIn    = document.getElementById('btn-linkedin-login');
@@ -950,7 +950,7 @@ btnLinkedIn.addEventListener('click', async () => {
     btnLinkedIn.textContent = 'Redirecting…';
     authError.style.display = 'none';
     const redirectTo = window.location.origin + window.location.pathname;
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await sbClient.auth.signInWithOAuth({
         provider: 'linkedin_oidc',
         options: { redirectTo }
     });
@@ -975,14 +975,14 @@ userDropdown.addEventListener('click', e => e.stopPropagation());
 
 // Logout
 btnLogout.addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    await sbClient.auth.signOut();
     clearUserUI();
     showAuthModal();
     logTrace('Session ended. Signed out.', true);
 });
 
 // Session state listener — runs on load + on auth change
-supabase.auth.onAuthStateChange(async (event, session) => {
+sbClient.auth.onAuthStateChange(async (event, session) => {
     if (session) {
         hideAuthModal();
         populateUserUI(session);
@@ -1835,7 +1835,7 @@ window.onload = async () => {
     if (!MODEL_NAME) logTrace('No model configured. Open ⚙ API Config.', true);
 
     // Check existing session — handles OAuth callback redirect too
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await sbClient.auth.getSession();
     if (!session) {
         showAuthModal();
     } else {
