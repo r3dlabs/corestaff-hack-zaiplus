@@ -8,13 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        window._supabaseCreateClient = createClient;
-    </script>
-    <script>
-        // Wait for ESM to load
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -963,10 +957,7 @@ const SUPABASE_URL  = 'https://owxqyvuvjhnzbmxncnbn.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im93eHF5dnV2amhuemJteG5jbmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MjIyNTksImV4cCI6MjA5MTM5ODI1OX0.fmsx0UhLyfMeK3hgDJHyCSKFhiueU94swG8OJNVmlnI';
 let sbClient = null;
 try {
-    const createClient = window._supabaseCreateClient || window.supabase?.createClient;
-    if (createClient) {
-        sbClient = createClient(SUPABASE_URL, SUPABASE_ANON);
-    }
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 } catch(e) {
     console.warn('Supabase failed to initialize:', e);
 }
