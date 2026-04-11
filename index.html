@@ -186,15 +186,14 @@
             border-bottom: 1px solid var(--border);
             padding: 0 16px;
             height: 52px;
-            min-height: 52px;
-            max-height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: nowrap;
             flex-shrink: 0;
             z-index: 20;
-            box-sizing: border-box;
             width: 100%;
+            overflow: hidden;
         }
         .header-left {
             display: flex;
@@ -218,8 +217,9 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             flex-shrink: 0;
+            flex-wrap: nowrap;
         }
 
         /* Hide title on narrow screens */
