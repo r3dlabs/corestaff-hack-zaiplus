@@ -2098,7 +2098,10 @@ function applyStaffCustomizations(custom) {
         const pat = document.getElementById(svgPatterns[key]);
         if (pat) {
             const imgEl = pat.querySelector('image');
-            if (imgEl) imgEl.setAttributeNS('http://www.w3.org/1999/xlink', 'href', d.img);
+            if (imgEl) {
+                imgEl.setAttribute('href', d.img);
+                imgEl.setAttributeNS('http://www.w3.org/1999/xlink', 'href', d.img);
+            }
         }
 
         const aboutImg = document.getElementById(aboutImgs[key]);
