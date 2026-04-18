@@ -1328,6 +1328,7 @@
             <span style="font-weight:600;letter-spacing:0.06em;color:#fff;font-size:11px;">⚡ DIAGNOSTICS</span>
             <div style="display:flex;gap:6px;">
                 <button onclick="runDiag()" style="background:#1a3a1a;border:1px solid #0f0;color:#0f0;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:10px;font-family:'Geist Mono',monospace;">RUN</button>
+                <button onclick="navigator.clipboard.writeText(document.getElementById('diag-output').innerText).then(()=>{this.textContent='COPIED';setTimeout(()=>this.textContent='COPY',1500)})" style="background:#1a1a3a;border:1px solid #44f;color:#88f;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:10px;font-family:'Geist Mono',monospace;">COPY</button>
                 <button onclick="toggleDiag()" style="background:#3a1a1a;border:1px solid #f44;color:#f44;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:10px;font-family:'Geist Mono',monospace;">CLOSE</button>
             </div>
         </div>
