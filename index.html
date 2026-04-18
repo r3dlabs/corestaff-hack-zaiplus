@@ -455,14 +455,10 @@
 
         <!-- Gate controls: theme + fullscreen — top right always -->
         <div style="position:fixed;top:14px;right:14px;display:flex;align-items:center;gap:6px;z-index:101;">
-            <div style="display:flex;align-items:center;background:var(--bg-elevated);border:1px solid var(--border);border-radius:7px;padding:2px;gap:1px;">
-                <button id="btn-dark-gate" title="Dark mode" style="width:28px;height:28px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                </button>
-                <button id="btn-light-gate" title="Light mode" style="width:28px;height:28px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                </button>
-            </div>
+            <button title="Toggle theme" style="width:34px;height:34px;border:1px solid var(--border);border-radius:7px;background:var(--bg-elevated);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);" onclick="applyTheme(currentTheme==='dark'?'light':'dark')">
+                <svg id="gate-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg id="gate-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
             <button id="btn-fullscreen-gate" title="Full Screen" style="width:34px;height:34px;border:1px solid var(--border);border-radius:7px;background:var(--bg-elevated);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             </button>
@@ -1211,10 +1207,10 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </button>
             <button id="btn-about" title="About" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></button>
-            <div style="display:flex;flex-direction:row;align-items:center;background:var(--bg-elevated);border:1px solid var(--border);border-radius:7px;padding:2px;gap:1px;flex-shrink:0;">
-                <button id="btn-dark" title="Dark mode" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
-                <button id="btn-light" title="Light mode" style="width:22px;height:22px;border-radius:5px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-            </div>
+            <button id="btn-theme-toggle" title="Toggle theme" style="width:32px;height:32px;border:1px solid var(--border);border-radius:7px;background:var(--bg-elevated);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;" onclick="applyTheme(currentTheme==='dark'?'light':'dark')">
+                <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
             <div id="user-avatar-btn" style="display:none;flex-shrink:0;">
                 <button id="btn-user-avatar" title="Account" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--border-strong);overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;">
                     <img id="user-avatar-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
@@ -1605,26 +1601,27 @@ const btnEditStartup     = document.getElementById('btn-edit-startup');
 
 // ─── THEME ──────────────────────────────────────────────────────────────────
 const html = document.documentElement;
-const btnDark  = document.getElementById('btn-dark');
-const btnLight = document.getElementById('btn-light');
 let currentTheme = localStorage.getItem('theme') || 'light';
 
 function applyTheme(theme) {
     currentTheme = theme;
     html.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-    const activeBg = 'var(--bg-surface)';
-    const activeColor = 'var(--text-primary)';
-    const inactiveColor = 'var(--text-muted)';
-    btnDark.style.background  = theme === 'dark'  ? activeBg : 'transparent';
-    btnDark.style.color       = theme === 'dark'  ? activeColor : inactiveColor;
-    btnLight.style.background = theme === 'light' ? activeBg : 'transparent';
-    btnLight.style.color      = theme === 'light' ? activeColor : inactiveColor;
+
+    // Header toggle icon — show moon in light mode (click to go dark), sun in dark mode (click to go light)
+    const moonH = document.getElementById('theme-icon-moon');
+    const sunH  = document.getElementById('theme-icon-sun');
+    if (moonH) moonH.style.display = theme === 'light' ? 'block' : 'none';
+    if (sunH)  sunH.style.display  = theme === 'dark'  ? 'block' : 'none';
+
+    // Gate toggle icons — same logic
+    const moonG = document.getElementById('gate-icon-moon');
+    const sunG  = document.getElementById('gate-icon-sun');
+    if (moonG) moonG.style.display = theme === 'light' ? 'block' : 'none';
+    if (sunG)  sunG.style.display  = theme === 'dark'  ? 'block' : 'none';
 }
 
 applyTheme(currentTheme);
-btnDark.addEventListener('click',  () => applyTheme('dark'));
-btnLight.addEventListener('click', () => applyTheme('light'));
 
 // ─── DOCUMENT DETECTION ─────────────────────────────────────────────────────
 function detectDocRequest(text) {
@@ -3181,16 +3178,6 @@ window.loadProviderConfigs = async function() {
 };
 
 // ── Gate controls (auth screen theme + fullscreen) ────────────────────────────
-document.getElementById('btn-dark-gate')?.addEventListener('click', () => {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    localStorage.setItem('theme', 'dark');
-    applyTheme('dark');
-});
-document.getElementById('btn-light-gate')?.addEventListener('click', () => {
-    document.documentElement.setAttribute('data-theme', 'light');
-    localStorage.setItem('theme', 'light');
-    applyTheme('light');
-});
 document.getElementById('btn-fullscreen-gate')?.addEventListener('click', () => {
     document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
 });
