@@ -2953,7 +2953,9 @@ STRICT RULES:
 4. Keep responses concise`;
 
         logTrace(`Phase 1: Routing to ${cosName}...`, true);
+        setDotActive('cos');
         const phase1Response = await callStaffModel('cos', chatHistory, phase1System, 512);
+        setDotReady('cos');
 
         // Extract which staff were consulted
         const staffNames = Object.values(window.staffCustom || STAFF_DEFAULTS).map(s => s.name);
@@ -2983,10 +2985,13 @@ STRICT RULES:
             const staffMessages = [{ role: 'user', content: userText }];
 
             try {
+                setDotActive(key);
                 const response = await callStaffModel(key, staffMessages, staffSystem, 1024);
                 specialistResponses[name] = response;
+                setDotReady(key);
                 logTrace(`✓ ${name} responded.`, false);
             } catch(e) {
+                setDotGray(key);
                 specialistResponses[name] = `[${name} unavailable: ${e.message}]`;
                 logTrace(`✗ ${name} error: ${e.message}`, false);
             }
@@ -3008,7 +3013,9 @@ STRICT RULES:
         ];
 
         const phase3System = buildStaffSystemPrompt('cos');
+        setDotActive('cos');
         const synthesis = await callStaffModel('cos', phase3Messages, phase3System, 2048);
+        setDotReady('cos');
 
         // ── Render with specialist blocks ────────────────────────────────────
         const fullResponse = Object.entries(specialistResponses)
@@ -3621,21 +3628,29 @@ function setDotGray(key)   { setStaffDot(key, STATUS.GRAY, 'Not configured'); }
 async function probeStaffConnection(key) {
     const assignment = window.staffAssignments?.[key];
     if (!assignment?.provider || !assignment?.model) { setDotGray(key); return false; }
-
     const provCfg = window.providerConfigs?.[assignment.provider];
     if (!provCfg?.api_key) { setDotGray(key); return false; }
-
-    const PDEF = window.PROVIDERS?.[assignment.provider];
+    const PDEF = PROVIDER_DEFS[assignment.provider];
     if (!PDEF) { setDotGray(key); return false; }
-
     try {
-        const res = await fetch(PDEF.endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + provCfg.api_key },
-            body: JSON.stringify({ model: assignment.model, messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 }),
-            signal: AbortSignal.timeout(6000)
+        const baseEndpoint = (provCfg.endpoint_url || PDEF.endpoint).replace(/\/$/, '');
+        const isAnthropic = assignment.provider === 'anthropic';
+        const isGoogle = assignment.provider === 'google';
+        const headers = { 'Content-Type': 'application/json' };
+        if (isAnthropic) { headers['x-api-key'] = provCfg.api_key; headers['anthropic-version'] = '2023-06-01'; }
+        else { headers['Authorization'] = 'Bearer ' + provCfg.api_key; }
+        const endpoint = isGoogle
+            ? `${baseEndpoint}/models/${assignment.model}:generateContent?key=${provCfg.api_key}`
+            : `${baseEndpoint}/chat/completions`;
+        const body = isAnthropic
+            ? { model: assignment.model, max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }
+            : isGoogle ? { contents: [{ parts: [{ text: 'hi' }] }] }
+            : { model: assignment.model, messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 };
+        const res = await fetch(endpoint, {
+            method: 'POST', headers, body: JSON.stringify(body),
+            signal: AbortSignal.timeout(8000)
         });
-        const ok = res.status === 200 || res.status === 400; // 400 = model exists but bad req = connected
+        const ok = res.status === 200 || res.status === 400;
         ok ? setDotReady(key) : setDotGray(key);
         return ok;
     } catch(e) {
@@ -3655,11 +3670,8 @@ async function checkAllConnections() {
 
 // Initialize dots based on what's configured (fast — no network)
 function initStatusDots() {
-    STAFF_KEYS.forEach(key => {
-        const assignment = window.staffAssignments?.[key];
-        const hasCfg = assignment?.provider && assignment?.model && window.providerConfigs?.[assignment.provider]?.api_key;
-        hasCfg ? setDotReady(key) : setDotGray(key);
-    });
+    // Start all gray — probeStaffConnection will set green after actual connection test
+    STAFF_KEYS.forEach(key => setDotGray(key));
 }
 
 // Run connection check every 5 minutes
