@@ -2153,32 +2153,18 @@ function initializeBoardroom() {
 async function sendChat() {
     const userText = chatInput.value.trim();
     if (!userText) return;
-    // Provider config now handled via Providers modal (Supabase)
 
-    const docReq = detectDocRequest(userText);
-    appendMessage('User', userText);
-    chatInput.value = '';
-    chatHistory.push({ role:'user', content:userText });
-    btnSend.disabled = true;
-    setDotActive('cos');
-    btnSend.textContent = docReq.type ? 'Generating…' : 'Routing…';
+    // Check if any provider is configured
+    const hasProvider = window.providerConfigs && Object.keys(window.providerConfigs).length > 0;
+    const cosAssignment = window.staffAssignments?.cos;
 
-    try {
-        const extra = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic) : '';
-        if (docReq.type) logTrace(`Document request: ${docReq.type.toUpperCase()} — "${docReq.topic}"`, true);
-
-
-        // Legacy single-model path — redirects to agentic if providers configured
-        appendMessage('Soleil', 'Please configure a provider via the AI Providers button to continue.');
-    } catch(error) {
-        console.error(error); apiErrorCount++;
-        logTrace(`Error: ${error.message}`);
-        appendMessage('Soleil', `Error: ${error.message}`);
-    } finally {
-        btnSend.disabled=false; btnSend.textContent='Execute';
-        const cosAssigned = window.staffAssignments?.cos?.model;
-        cosAssigned ? setDotReady('cos') : setDotGray('cos');
+    if (!hasProvider || !cosAssignment?.provider || !cosAssignment?.model) {
+        appendMessage('Donna', 'Please configure at least one AI provider and assign a model to your Chief of Staff via the ⚙️ Providers button.');
+        return;
     }
+
+    // Route to agentic query
+    return sendChatAgentic();
 }
 
 // ─── MODEL FETCH & RENDER ────────────────────────────────────────────────────
