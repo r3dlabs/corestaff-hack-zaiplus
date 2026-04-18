@@ -470,7 +470,7 @@
 
                 <p id="auth-error" style="display:none;font-size:12px;color:#ef4444;margin-top:12px;"></p>
                 <p style="font-size:11px;color:var(--text-muted);margin-top:20px;line-height:1.6;">
-                    By signing in you agree to our terms of use.<br>
+                    By signing in you agree to our <a href="/terms.html" target="_blank" style="color:var(--text-secondary);text-decoration:underline;text-underline-offset:2px;">Terms of Service</a> and <a href="/privacy.html" target="_blank" style="color:var(--text-secondary);text-decoration:underline;text-underline-offset:2px;">Privacy Policy</a>.<br>
                     Built by Modular Technology Solutions Pte Ltd
                 </p>
             </div>
@@ -1910,6 +1910,67 @@ function animateConnection(personaName) {
 }
 
 // ─── SEND ────────────────────────────────────────────────────────────────────
+
+// ─── BOARDROOM INIT ───────────────────────────────────────────────────────────
+function initializeBoardroom() {
+    const chatWindow = document.getElementById('chat-window');
+    chatWindow.innerHTML = '';
+    const name = founderName || 'Founder';
+    const company = startupDesc ? startupDesc.split(',')[0] : null;
+
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;justify-content:flex-start;';
+
+    const avatar = document.createElement('div');
+    avatar.style.cssText = 'width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);overflow:hidden;';
+    const cosImg = document.createElement('img');
+    cosImg.src = window.staffCustom?.cos?.img || 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
+    cosImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+    cosImg.onerror = () => { avatar.removeChild(cosImg); avatar.textContent = 'D'; };
+    avatar.appendChild(cosImg);
+
+    const card = document.createElement('div');
+    card.className = 'chat-bubble-ai';
+    card.style.cssText = 'max-width:520px;';
+
+    const cosName = window.staffCustom?.cos?.name || 'Donna';
+
+    // Use custom staff names if available
+    const specialists = [
+        { key:'tony',     name: (window.staffCustom&&window.staffCustom.tony&&window.staffCustom.tony.name)||'Tony',     role:'Engineering',    color:'#ef4444' },
+        { key:'mike',     name: (window.staffCustom&&window.staffCustom.mike&&window.staffCustom.mike.name)||'Mike',     role:'Finance',        color:'#22c55e' },
+        { key:'steve',    name: (window.staffCustom&&window.staffCustom.steve&&window.staffCustom.steve.name)||'Steve',   role:'Marketing',      color:'#3b82f6' },
+        { key:'harvey',   name: (window.staffCustom&&window.staffCustom.harvey&&window.staffCustom.harvey.name)||'Harvey', role:'Legal',          color:'#eab308' },
+        { key:'leonardo', name: (window.staffCustom&&window.staffCustom.leonardo&&window.staffCustom.leonardo.name)||'Leonardo', role:'Architecture', color:'#a855f7' },
+        { key:'sigmund',  name: (window.staffCustom&&window.staffCustom.sigmund&&window.staffCustom.sigmund.name)||'Rachel',  role:'HR',             color:'#ec4899' },
+    ];
+
+    const rosterHTML = specialists.map(s => `
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:5px;height:5px;border-radius:50%;background:${s.color};flex-shrink:0;"></div>
+            <span style="font-size:12px;font-weight:600;color:${s.color};">${s.name}</span>
+            <span style="font-size:11px;color:var(--text-muted);">${s.role}</span>
+        </div>`).join('');
+
+    const hr = new Date().getHours();
+    const timeOfDay = hr < 12 ? 'morning' : hr < 18 ? 'afternoon' : 'evening';
+
+    card.innerHTML = `
+        <p style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Good ${timeOfDay}, ${name}. Your Core Team is live.</p>
+        ${company ? `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Briefed on <strong>${company}</strong>. Ready to execute.</p>` : '<p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Ready for your directives.</p>'}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;background:var(--bg-base);border-radius:8px;padding:12px;margin-bottom:16px;border:1px solid var(--border);">
+            ${rosterHTML}
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:12px;">
+            <p style="font-size:12px;color:var(--text-secondary);">Ask me anything about your startup — strategy, legal, finance, engineering, marketing, or HR.</p>
+        </div>`;
+
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(card);
+    chatWindow.appendChild(wrapper);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
 async function sendChat() {
     const userText = chatInput.value.trim();
     if (!userText) return;
