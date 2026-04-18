@@ -522,6 +522,7 @@
                     <div class="ob-dot" id="ob-dot-1" style="width:7px;height:7px;border-radius:50%;background:var(--text-primary);transition:all 0.2s;"></div>
                     <div class="ob-dot" id="ob-dot-2" style="width:7px;height:7px;border-radius:50%;background:var(--border-strong);transition:all 0.2s;"></div>
                     <div class="ob-dot" id="ob-dot-3" style="width:7px;height:7px;border-radius:50%;background:var(--border-strong);transition:all 0.2s;"></div>
+                    <div class="ob-dot" id="ob-dot-4" style="width:7px;height:7px;border-radius:50%;background:var(--border-strong);transition:all 0.2s;"></div>
                 </div>
             </div>
 
@@ -550,8 +551,19 @@
                     <p style="font-size:11px;color:var(--text-muted);">This context is injected into every query. Be specific — it helps the team give better advice.</p>
                 </div>
 
-                <!-- Step 3: API setup -->
+                <!-- Step 3: HQ Country -->
                 <div id="ob-step-3" style="display:none;">
+                    <p style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;" id="ob-step3-greeting"></p>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">Where is your business headquartered? This helps the team apply the right legal, tax, and regulatory context by default — unless you specify otherwise.</p>
+                    <div style="margin-bottom:8px;">
+                        <label class="field-label">Headquarters country</label>
+                        <input type="text" id="input-hq-country" class="input-field" placeholder="e.g. Singapore" autocomplete="country-name" style="font-size:15px;">
+                    </div>
+                    <p style="font-size:11px;color:var(--text-muted);line-height:1.6;">When operating in multiple jurisdictions, the team will default to this country for tax, legal, and compliance matters unless you specify otherwise in your query.</p>
+                </div>
+
+                <!-- Step 4: API setup -->
+                <div id="ob-step-4" style="display:none;">
                     <p style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Almost ready.</p>
                     <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">To activate the team, you'll need to connect at least one AI provider. Each staff member can use their own model — or they'll all share one.</p>
                     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
@@ -583,11 +595,18 @@
             </div>
 
             <!-- Footer buttons -->
-            <div style="padding:0 24px 24px;display:flex;gap:10px;justify-content:space-between;align-items:center;">
-                <button id="ob-back" style="background:transparent;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif;display:none;" onclick="obBack()">← Back</button>
-                <button id="ob-skip" style="background:transparent;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;font-family:'Geist Mono',monospace;letter-spacing:0.04em;text-decoration:underline;text-underline-offset:3px;display:none;" onclick="obDontShow()">Don't show again</button>
-                <div style="flex:1;"></div>
-                <button id="ob-next" class="btn-primary" style="padding:10px 24px;" onclick="obNext()">Continue →</button>
+            <div style="padding:0 24px 24px;display:flex;flex-direction:column;gap:14px;">
+                <!-- Don't show again checkbox -->
+                <label id="ob-skip-row" style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+                    <input type="checkbox" id="ob-skip-checkbox" style="width:15px;height:15px;cursor:pointer;accent-color:var(--text-primary);">
+                    <span style="font-size:12px;color:var(--text-muted);font-family:'Geist',sans-serif;">Don't show this again</span>
+                </label>
+                <!-- Action buttons -->
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <button id="ob-back" style="background:transparent;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif;display:none;" onclick="obBack()">← Back</button>
+                    <div style="flex:1;"></div>
+                    <button id="ob-next" class="btn-primary" style="padding:10px 24px;" onclick="obNext()">Continue →</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1274,10 +1293,16 @@
                 <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             </button>
-            <div id="user-avatar-btn" style="display:none;flex-shrink:0;">
+            <div id="user-avatar-btn" style="display:none;flex-shrink:0;display:flex;align-items:center;gap:6px;">
+                <!-- HQ country flag -->
+                <div id="hq-flag-badge" title="" style="display:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border-strong);overflow:hidden;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;flex-shrink:0;"></div>
+                <!-- Avatar with status dot -->
+                <div style="position:relative;display:inline-flex;flex-shrink:0;">
                 <button id="btn-user-avatar" title="Account" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--border-strong);overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;">
                     <img id="user-avatar-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">
                 </button>
+                <span id="user-status-dot" title="Available" style="position:absolute;bottom:-1px;right:-1px;width:9px;height:9px;border-radius:50%;background:#22c55e;border:2px solid var(--bg-surface);display:block;transition:background 0.3s;z-index:1;"></span>
+                </div>
             </div>
             <button id="btn-fullscreen" title="Full Screen" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
         </div>
@@ -1313,57 +1338,73 @@
                         <g id="visual-elon" class="node-circle">
                             <circle cx="400" cy="150" r="40" fill="url(#pat-elon)" stroke="#ef4444" stroke-width="2"/>
                         </g>
-                        <text x="400" y="205" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-tony">TONY</text>
-                        <text x="400" y="218" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-tony">ENGINEERING</text>
+                        <text x="400" y="216" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-tony">TONY</text>
+                        <text x="400" y="229" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-tony">ENGINEERING</text>
                     </g>
                     <!-- Isaac -->
                     <g id="node-isaac">
                         <g id="visual-isaac" class="node-circle">
                             <circle cx="616" cy="275" r="40" fill="url(#pat-isaac)" stroke="#22c55e" stroke-width="2"/>
                         </g>
-                        <text x="616" y="330" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-mike">MIKE</text>
-                        <text x="616" y="343" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-mike">FINANCE</text>
+                        <text x="616" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-mike">MIKE</text>
+                        <text x="616" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-mike">FINANCE</text>
                     </g>
                     <!-- Steve -->
                     <g id="node-steve">
                         <g id="visual-steve" class="node-circle">
                             <circle cx="616" cy="525" r="40" fill="url(#pat-steve)" stroke="#3b82f6" stroke-width="2"/>
                         </g>
-                        <text x="616" y="580" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-steve">STEVE</text>
-                        <text x="616" y="593" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-steve">MARKETING</text>
+                        <text x="616" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-steve">STEVE</text>
+                        <text x="616" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-steve">MARKETING</text>
                     </g>
                     <!-- Donna -->
                     <g id="node-donna">
                         <g id="visual-donna" class="node-circle">
                             <circle cx="400" cy="650" r="40" fill="url(#pat-donna)" stroke="#ec4899" stroke-width="2"/>
                         </g>
-                        <text x="400" y="705" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-sigmund">RACHEL</text>
-                        <text x="400" y="718" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-sigmund">HUMAN RESOURCES</text>
+                        <text x="400" y="716" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-sigmund">RACHEL</text>
+                        <text x="400" y="729" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-sigmund">HUMAN RESOURCES</text>
                     </g>
                     <!-- Harvey -->
                     <g id="node-harvey">
                         <g id="visual-harvey" class="node-circle">
                             <circle cx="184" cy="525" r="40" fill="url(#pat-harvey)" stroke="#eab308" stroke-width="2"/>
                         </g>
-                        <text x="184" y="580" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-harvey">HARVEY</text>
-                        <text x="184" y="593" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-harvey">LEGAL</text>
+                        <text x="184" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-harvey">HARVEY</text>
+                        <text x="184" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-harvey">LEGAL</text>
                     </g>
                     <!-- Leonardo -->
                     <g id="node-leonardo">
                         <g id="visual-leonardo" class="node-circle">
                             <circle cx="184" cy="275" r="40" fill="url(#pat-leonardo)" stroke="#a855f7" stroke-width="2"/>
                         </g>
-                        <text x="184" y="330" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-leonardo">LEONARDO</text>
-                        <text x="184" y="343" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-leonardo">ARCHITECTURE</text>
+                        <text x="184" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-leonardo">LEONARDO</text>
+                        <text x="184" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-leonardo">ARCHITECTURE</text>
                     </g>
                     <!-- Soleil (center) -->
                     <g id="node-soleil">
                         <g id="visual-soleil" class="node-circle">
                             <circle cx="400" cy="400" r="70" fill="url(#pat-soleil)" stroke="var(--text-primary)" stroke-width="2"/>
                         </g>
-                        <text x="400" y="490" text-anchor="middle" fill="var(--text-primary)" font-size="14" font-weight="700" font-family="Geist, sans-serif" id="svg-name-cos">DONNA</text>
-                        <text x="400" y="506" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Geist Mono, monospace" id="svg-role-cos">CHIEF OF STAFF</text>
+                        <text x="400" y="502" text-anchor="middle" fill="var(--text-primary)" font-size="14" font-weight="700" font-family="Geist, sans-serif" id="svg-name-cos">DONNA</text>
+                        <text x="400" y="518" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-family="Geist Mono, monospace" id="svg-role-cos">CHIEF OF STAFF</text>
                     </g>
+
+                    <!-- ── STATUS DOTS ── -->
+                    <circle id="status-border-tony" cx="436.8" cy="186.8" r="11" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-tony" cx="436.8" cy="186.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-mike" cx="652.8" cy="311.8" r="11" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-mike" cx="652.8" cy="311.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-steve" cx="652.8" cy="561.8" r="11" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-steve" cx="652.8" cy="561.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-sigmund" cx="436.8" cy="686.8" r="11" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-sigmund" cx="436.8" cy="686.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-harvey" cx="220.8" cy="561.8" r="11" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-harvey" cx="220.8" cy="561.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-leonardo" cx="220.8" cy="311.8" r="11" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-leonardo" cx="220.8" cy="311.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-cos" cx="462.2" cy="462.2" r="11" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-cos" cx="462.2" cy="462.2" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
                 </svg>
             </div>
 
@@ -1553,6 +1594,7 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
         loadProviderConfigs();
         loadStaffAssignments();
         loadStaffKb();
+    setTimeout(startStatusPolling, 2000); // slight delay to let configs load
         if (!document.getElementById('chat-window').children.length) {
             if (!founderName || !startupDesc) {
                 obCheckAndOpen(session.user.user_metadata?.full_name || session.user.email);
@@ -1640,8 +1682,9 @@ const PROVIDERS = {
 // Old global API state removed — now per-staff via providerConfigs
 let chatHistory = [];
 let apiErrorCount = 0;
-let founderName = localStorage.getItem('founder_name') || '';
-let startupDesc = localStorage.getItem('startup_desc') || '';
+let founderName  = localStorage.getItem('founder_name')  || '';
+let startupDesc  = localStorage.getItem('startup_desc')   || '';
+let hqCountry    = localStorage.getItem('hq_country')     || '';
 
 
 // Derived from active provider
@@ -1877,10 +1920,12 @@ Specialists:
 
 function buildSystemPrompt(extra='') {
     let p = BASE_SYSTEM_PROMPT;
-    if (founderName||startupDesc) {
+    if (founderName||startupDesc||hqCountry) {
         p+='\n\n[STARTUP CONTEXT]\n';
         if (founderName) p+=`Founder: ${founderName}\n`;
         if (startupDesc) p+=`Business: ${startupDesc}\n`;
+        if (hqCountry)   p+=`Headquarters: ${hqCountry}\n`;
+        if (hqCountry)   p+=`Default jurisdiction: ${hqCountry}. For legal, tax, regulatory and compliance matters, assume ${hqCountry} law and regulations as the default unless the user explicitly specifies another jurisdiction.\n`;
         p+='[END STARTUP CONTEXT]';
     }
 
@@ -1988,7 +2033,9 @@ function parseSoleilResponse(text) {
     let html = '';
     const allNames = Object.values(window.staffCustom).map(s=>s.name).filter(Boolean).join('|');
     const consultRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]', 'gi');
-    [...text.matchAll(consultRegex)].forEach(m=>animateConnection(m[1]));
+    const matches = [...text.matchAll(consultRegex)];
+    // Stagger animations — each staff member fires 900ms after the previous
+    matches.forEach((m, i) => setTimeout(() => animateConnection(m[1]), i * 900));
 
     const blockRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]\\s*\\n\\s*\\1:\\s*([\\s\\S]*?)(?=\\n\\s*\\[Source:|\\n\\s*\\[CONSULT:|\\n\\s*Soleil:|$)', 'gi');
     const sourceRegex = /\[Source:\s*(https?:\/\/[^\s]+)\]/gi;
@@ -2024,10 +2071,19 @@ function animateConnection(personaName) {
     const n = personaName.toLowerCase();
     const line = document.getElementById(`line-${n}`);
     const node = document.getElementById(`visual-${n}`);
-    if (line&&node) {
+    const nameToKey = { donna:'cos', tony:'tony', mike:'mike', steve:'steve', harvey:'harvey', leonardo:'leonardo', rachel:'sigmund', sigmund:'sigmund' };
+    const key = nameToKey[personaName.toLowerCase()] || personaName.toLowerCase();
+    if (line && node) {
         logTrace(`Consulting ${personaName}…`);
-        line.classList.add('active'); node.classList.add('active');
-        setTimeout(()=>{ line.classList.remove('active'); node.classList.remove('active'); },4000);
+        line.classList.add('active');
+        node.classList.add('active');
+        setDotActive(key);
+        setTimeout(() => {
+            line.classList.remove('active');
+            node.classList.remove('active');
+            const hasCfg = window.staffAssignments?.[key]?.provider && window.staffAssignments?.[key]?.model;
+            hasCfg ? setDotReady(key) : setDotGray(key);
+        }, 2800);
     }
 }
 
@@ -2037,6 +2093,7 @@ function animateConnection(personaName) {
 function initializeBoardroom() {
     const chatWindow = document.getElementById('chat-window');
     chatWindow.innerHTML = '';
+    updateHqFlag(hqCountry);
     const name = founderName || 'Founder';
     const company = startupDesc ? startupDesc.split(',')[0] : null;
 
@@ -2103,6 +2160,7 @@ async function sendChat() {
     chatInput.value = '';
     chatHistory.push({ role:'user', content:userText });
     btnSend.disabled = true;
+    setDotActive('cos');
     btnSend.textContent = docReq.type ? 'Generating…' : 'Routing…';
 
     try {
@@ -2118,6 +2176,8 @@ async function sendChat() {
         appendMessage('Soleil', `Error: ${error.message}`);
     } finally {
         btnSend.disabled=false; btnSend.textContent='Execute';
+        const cosAssigned = window.staffAssignments?.cos?.model;
+        cosAssigned ? setDotReady('cos') : setDotGray('cos');
     }
 }
 
@@ -2299,6 +2359,21 @@ async function loadStaffCustomizations() {
         if (error || !data || data.length === 0) return;
         const custom = {};
         data.forEach(row => {
+            // Founder preference rows
+            if (row.staff_key === '__founder_name__') {
+                if (row.custom_name) { founderName = row.custom_name; localStorage.setItem('founder_name', founderName); }
+                return;
+            }
+            if (row.staff_key === '__startup_desc__') {
+                if (row.custom_name) { startupDesc = row.custom_name; localStorage.setItem('startup_desc', startupDesc); }
+                return;
+            }
+            if (row.staff_key === '__hq_country__') {
+                if (row.custom_name) { hqCountry = row.custom_name; localStorage.setItem('hq_country', hqCountry); updateHqFlag(hqCountry); }
+                return;
+            }
+            if (row.staff_key === '__onboarding_skip__') return; // handled separately
+            // Staff customization rows
             custom[row.staff_key] = {
                 name:  row.custom_name || STAFF_DEFAULTS[row.staff_key]?.name,
                 img:   row.photo_url  || STAFF_DEFAULTS[row.staff_key]?.img,
@@ -2310,6 +2385,25 @@ async function loadStaffCustomizations() {
         logTrace('Team customizations loaded.', false);
     } catch(e) {
         console.warn('Failed to load staff customizations:', e);
+    }
+}
+
+async function saveFounderPrefs() {
+    if (!sbClient) return;
+    try {
+        const { data: { user } } = await sbClient.auth.getUser();
+        if (!user) return;
+        const rows = [
+            { user_id: user.id, staff_key: '__founder_name__', custom_name: founderName, photo_url: null },
+            { user_id: user.id, staff_key: '__startup_desc__', custom_name: startupDesc, photo_url: null },
+            { user_id: user.id, staff_key: '__hq_country__',   custom_name: hqCountry,   photo_url: null },
+        ];
+        for (const row of rows) {
+            await sbClient.from('staff_customizations').upsert(row, { onConflict: 'user_id,staff_key' });
+        }
+        logTrace('Founder prefs saved to DB.', true);
+    } catch(e) {
+        console.warn('Failed to save founder prefs:', e);
     }
 }
 
@@ -3327,9 +3421,41 @@ async function runDiag() {
 
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
 let obStep = 1;
+const OB_TOTAL = 4;
+
+function countryToFlag(name) {
+    const map = {
+        'singapore':'🇸🇬','united states':'🇺🇸','usa':'🇺🇸','us':'🇺🇸',
+        'united kingdom':'🇬🇧','uk':'🇬🇧','great britain':'🇬🇧',
+        'australia':'🇦🇺','canada':'🇨🇦','germany':'🇩🇪','france':'🇫🇷',
+        'japan':'🇯🇵','china':'🇨🇳','india':'🇮🇳','indonesia':'🇮🇩',
+        'malaysia':'🇲🇾','thailand':'🇹🇭','philippines':'🇵🇭','vietnam':'🇻🇳',
+        'south korea':'🇰🇷','korea':'🇰🇷','taiwan':'🇹🇼','hong kong':'🇭🇰',
+        'new zealand':'🇳🇿','ireland':'🇮🇪','netherlands':'🇳🇱','sweden':'🇸🇪',
+        'switzerland':'🇨🇭','spain':'🇪🇸','italy':'🇮🇹','portugal':'🇵🇹',
+        'brazil':'🇧🇷','mexico':'🇲🇽','uae':'🇦🇪','united arab emirates':'🇦🇪',
+        'saudi arabia':'🇸🇦','israel':'🇮🇱','south africa':'🇿🇦','nigeria':'🇳🇬',
+        'kenya':'🇰🇪','denmark':'🇩🇰','norway':'🇳🇴','finland':'🇫🇮',
+        'belgium':'🇧🇪','austria':'🇦🇹','poland':'🇵🇱','czechia':'🇨🇿',
+        'czech republic':'🇨🇿','russia':'🇷🇺','ukraine':'🇺🇦','turkey':'🇹🇷',
+        'greece':'🇬🇷','romania':'🇷🇴','hungary':'🇭🇺','argentina':'🇦🇷',
+        'chile':'🇨🇱','colombia':'🇨🇴','peru':'🇵🇪','egypt':'🇪🇬',
+        'pakistan':'🇵🇰','bangladesh':'🇧🇩','sri lanka':'🇱🇰','myanmar':'🇲🇲',
+        'cambodia':'🇰🇭','laos':'🇱🇦','brunei':'🇧🇳',
+    };
+    return map[name.toLowerCase().trim()] || '🏳️';
+}
+
+function updateHqFlag(country) {
+    const badge = document.getElementById('hq-flag-badge');
+    if (!badge) return;
+    if (!country) { badge.style.display = 'none'; return; }
+    badge.textContent = countryToFlag(country);
+    badge.title = country;
+    badge.style.display = 'flex';
+}
 
 async function obCheckAndOpen(userName) {
-    // Check DB first — if user has skipped, don't show
     if (sbClient) {
         try {
             const { data: { user } } = await sbClient.auth.getUser();
@@ -3340,157 +3466,225 @@ async function obCheckAndOpen(userName) {
                     .eq('user_id', user.id)
                     .eq('staff_key', '__onboarding_skip__')
                     .maybeSingle();
-                if (data?.custom_name === 'true') {
-                    // User opted out — go straight to boardroom
-                    if (!founderName || !startupDesc) {
-                        obOpen(userName); // still need their name/desc
-                    } else {
-                        initializeBoardroom();
-                    }
-                    return;
-                }
+                if (data?.custom_name === 'true') { initializeBoardroom(); return; }
             }
         } catch(e) { console.warn('onboarding check failed', e); }
     }
+    if (localStorage.getItem('onboarding_skip') === 'true') { initializeBoardroom(); return; }
     obOpen(userName);
 }
 
 function obOpen(userName) {
     obStep = 1;
+    const cb = document.getElementById('ob-skip-checkbox');
+    if (cb) cb.checked = false;
     obRender(userName);
     document.getElementById('startup-modal').style.display = 'flex';
 }
 
 async function obDontShow() {
-    // Save to DB
     if (sbClient) {
         try {
             const { data: { user } } = await sbClient.auth.getUser();
             if (user) {
                 await sbClient.from('staff_customizations').upsert({
-                    user_id: user.id,
-                    staff_key: '__onboarding_skip__',
-                    custom_name: 'true',
-                    photo_url: null
+                    user_id: user.id, staff_key: '__onboarding_skip__',
+                    custom_name: 'true', photo_url: null
                 }, { onConflict: 'user_id,staff_key' });
             }
         } catch(e) { console.warn('onboarding skip save failed', e); }
     }
-    // Also save locally
     localStorage.setItem('onboarding_skip', 'true');
-    document.getElementById('startup-modal').style.display = 'none';
-    if (!founderName || !startupDesc) {
-        // Still no context — launch boardroom with defaults
-        initializeBoardroom();
-    } else {
-        initializeBoardroom();
+}
+
+async function obClearSkip() {
+    if (sbClient) {
+        try {
+            const { data: { user } } = await sbClient.auth.getUser();
+            if (user) { await sbClient.from('staff_customizations').delete().eq('user_id', user.id).eq('staff_key', '__onboarding_skip__'); }
+        } catch(e) {}
     }
+    localStorage.removeItem('onboarding_skip');
 }
 
 function obRender(userName) {
     const name = userName || window._currentUserName || 'there';
-    const cosName = (window.staffCustom?.cos?.name) || 'Donna';
-    const cosImg  = (window.staffCustom?.cos?.img)  || 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
-
-    // Update Donna header
+    const cosName = window.staffCustom?.cos?.name || 'Donna';
+    const cosImg  = window.staffCustom?.cos?.img  || 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
     const img = document.getElementById('ob-donna-img');
     if (img) img.src = cosImg;
     const nameEl = document.getElementById('ob-donna-name');
     if (nameEl) nameEl.textContent = cosName;
 
-    // Step dots
-    [1,2,3].forEach(i => {
+    [1,2,3,4].forEach(i => {
         const dot = document.getElementById('ob-dot-'+i);
         if (dot) {
             dot.style.background = i === obStep ? 'var(--text-primary)' : 'var(--border-strong)';
             dot.style.width = i === obStep ? '20px' : '7px';
             dot.style.borderRadius = i === obStep ? '4px' : '50%';
         }
-    });
-
-    // Show correct step
-    [1,2,3].forEach(i => {
         const el = document.getElementById('ob-step-'+i);
         if (el) el.style.display = i === obStep ? 'block' : 'none';
     });
 
-    // Back button
     const back = document.getElementById('ob-back');
     if (back) back.style.display = obStep > 1 ? 'block' : 'none';
-
-    // Skip button — only on steps 1 & 2, hidden on step 3
-    const skip = document.getElementById('ob-skip');
-    if (skip) skip.style.display = obStep < 3 ? 'block' : 'none';
-
-    // Next button label
+    const skipRow = document.getElementById('ob-skip-row');
+    if (skipRow) skipRow.style.display = obStep < OB_TOTAL ? 'flex' : 'none';
     const next = document.getElementById('ob-next');
-    if (next) next.textContent = obStep === 3 ? 'Launch Boardroom 🚀' : 'Continue →';
+    if (next) next.textContent = obStep === OB_TOTAL ? 'Launch Startup Staff 🚀' : 'Continue →';
 
-    // Step-specific content
     if (obStep === 1) {
         const hr = new Date().getHours();
         const tod = hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening';
         const greet = document.getElementById('ob-greeting');
         if (greet) greet.textContent = `${tod}, ${name}.`;
-        const nameInput = document.getElementById('input-founder-name');
-        if (nameInput && !nameInput.value) nameInput.value = founderName || '';
-        setTimeout(() => nameInput?.focus(), 100);
+        const inp = document.getElementById('input-founder-name');
+        if (inp && !inp.value) inp.value = founderName || '';
+        setTimeout(() => inp?.focus(), 100);
     }
-
     if (obStep === 2) {
         const preferred = document.getElementById('input-founder-name')?.value.trim() || name;
         const g2 = document.getElementById('ob-step2-greeting');
         if (g2) g2.textContent = `Got it, ${preferred}. Now tell me about your startup.`;
-        const descInput = document.getElementById('input-startup-desc');
-        if (descInput && !descInput.value) descInput.value = startupDesc || '';
-        setTimeout(() => descInput?.focus(), 100);
+        const inp = document.getElementById('input-startup-desc');
+        if (inp && !inp.value) inp.value = startupDesc || '';
+        setTimeout(() => inp?.focus(), 100);
+    }
+    if (obStep === 3) {
+        const preferred = document.getElementById('input-founder-name')?.value.trim() || name;
+        const g3 = document.getElementById('ob-step3-greeting');
+        if (g3) g3.textContent = `Great. One more thing, ${preferred}.`;
+        const inp = document.getElementById('input-hq-country');
+        if (inp && !inp.value) inp.value = hqCountry || '';
+        setTimeout(() => inp?.focus(), 100);
     }
 }
 
 function obNext() {
+    const skipChecked = document.getElementById('ob-skip-checkbox')?.checked;
+    const dismiss = () => { obDontShow(); saveFounderPrefs(); document.getElementById('startup-modal').style.display = 'none'; initializeBoardroom(); };
+
     if (obStep === 1) {
         const val = document.getElementById('input-founder-name')?.value.trim();
-        if (!val) {
-            const inp = document.getElementById('input-founder-name');
-            inp?.focus();
-            if (inp) { inp.style.borderColor = '#ef4444'; setTimeout(() => inp.style.borderColor = '', 1200); }
-            return;
-        }
-        founderName = val;
-        localStorage.setItem('founder_name', founderName);
-        obStep = 2;
-        obRender();
+        if (!val) { const i = document.getElementById('input-founder-name'); i?.focus(); if(i){i.style.borderColor='#ef4444';setTimeout(()=>i.style.borderColor='',1200);} return; }
+        founderName = val; localStorage.setItem('founder_name', founderName);
+        if (skipChecked) { dismiss(); return; }
+        obStep = 2; obRender();
     } else if (obStep === 2) {
         const val = document.getElementById('input-startup-desc')?.value.trim();
-        if (!val) {
-            const inp = document.getElementById('input-startup-desc');
-            inp?.focus();
-            if (inp) { inp.style.borderColor = '#ef4444'; setTimeout(() => inp.style.borderColor = '', 1200); }
-            return;
-        }
-        startupDesc = val;
-        localStorage.setItem('startup_desc', startupDesc);
-        obStep = 3;
-        obRender();
+        if (!val) { const i = document.getElementById('input-startup-desc'); i?.focus(); if(i){i.style.borderColor='#ef4444';setTimeout(()=>i.style.borderColor='',1200);} return; }
+        startupDesc = val; localStorage.setItem('startup_desc', startupDesc);
+        if (skipChecked) { dismiss(); return; }
+        obStep = 3; obRender();
     } else if (obStep === 3) {
+        const val = document.getElementById('input-hq-country')?.value.trim();
+        if (!val) { const i = document.getElementById('input-hq-country'); i?.focus(); if(i){i.style.borderColor='#ef4444';setTimeout(()=>i.style.borderColor='',1200);} return; }
+        hqCountry = val; localStorage.setItem('hq_country', hqCountry);
+        updateHqFlag(hqCountry);
+        if (skipChecked) { dismiss(); return; }
+        obStep = 4; obRender();
+    } else if (obStep === 4) {
         document.getElementById('startup-modal').style.display = 'none';
+        saveFounderPrefs();
         initializeBoardroom();
     }
 }
 
-function obBack() {
-    if (obStep > 1) { obStep--; obRender(); }
-}
+function obBack() { if (obStep > 1) { obStep--; obRender(); } }
 
-// Enter key navigation
 document.addEventListener('keydown', e => {
     if (document.getElementById('startup-modal')?.style.display !== 'none') {
         if (e.key === 'Enter' && obStep === 1 && document.activeElement?.id === 'input-founder-name') obNext();
+        if (e.key === 'Enter' && obStep === 3 && document.activeElement?.id === 'input-hq-country') obNext();
         if (e.key === 'Enter' && obStep === 2 && e.ctrlKey) obNext();
     }
 });
 
-// ─── ONBOARDING ───────────────────────────────────────────────────────────────
+// ─── ONBOARDING END ────────────────────────────────────────────────────────────
+
+// ─── STAFF STATUS DOTS ───────────────────────────────────────────────────────
+const STATUS = { GRAY: '#6b7280', GREEN: '#22c55e', RED: '#ef4444' };
+
+// Map staff keys to SVG dot IDs
+const STAFF_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+
+function setStaffDot(key, color, title) {
+    // SVG dot
+    const dot = document.getElementById('status-dot-' + key);
+    if (dot) { dot.setAttribute('fill', color); dot.setAttribute('title', title||''); }
+    // Border adapts to theme
+    const border = document.getElementById('status-border-' + key);
+    if (border) border.setAttribute('fill', 'var(--bg-base)');
+    // User avatar dot (for cos / chief of staff = the active session)
+    if (key === 'cos') {
+        const uDot = document.getElementById('user-status-dot');
+        if (uDot) { uDot.style.background = color; uDot.title = title||''; }
+    }
+}
+
+function setAllDotsGray() {
+    STAFF_KEYS.forEach(k => setStaffDot(k, STATUS.GRAY, 'Not configured'));
+}
+
+function setDotActive(key) { setStaffDot(key, STATUS.RED, 'Thinking…'); }
+function setDotReady(key)  { setStaffDot(key, STATUS.GREEN, 'Ready'); }
+function setDotGray(key)   { setStaffDot(key, STATUS.GRAY, 'Not configured'); }
+
+// Probe a single staff member's assigned model
+async function probeStaffConnection(key) {
+    const assignment = window.staffAssignments?.[key];
+    if (!assignment?.provider || !assignment?.model) { setDotGray(key); return false; }
+
+    const provCfg = window.providerConfigs?.[assignment.provider];
+    if (!provCfg?.api_key) { setDotGray(key); return false; }
+
+    const PDEF = window.PROVIDERS?.[assignment.provider];
+    if (!PDEF) { setDotGray(key); return false; }
+
+    try {
+        const res = await fetch(PDEF.endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + provCfg.api_key },
+            body: JSON.stringify({ model: assignment.model, messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 }),
+            signal: AbortSignal.timeout(6000)
+        });
+        const ok = res.status === 200 || res.status === 400; // 400 = model exists but bad req = connected
+        ok ? setDotReady(key) : setDotGray(key);
+        return ok;
+    } catch(e) {
+        setDotGray(key);
+        return false;
+    }
+}
+
+// Check all staff connections
+async function checkAllConnections() {
+    logTrace('Checking staff connections…');
+    for (const key of STAFF_KEYS) {
+        await probeStaffConnection(key);
+    }
+    logTrace('Connection check done.', true);
+}
+
+// Initialize dots based on what's configured (fast — no network)
+function initStatusDots() {
+    STAFF_KEYS.forEach(key => {
+        const assignment = window.staffAssignments?.[key];
+        const hasCfg = assignment?.provider && assignment?.model && window.providerConfigs?.[assignment.provider]?.api_key;
+        hasCfg ? setDotReady(key) : setDotGray(key);
+    });
+}
+
+// Run connection check every 5 minutes
+let _statusInterval = null;
+function startStatusPolling() {
+    if (_statusInterval) clearInterval(_statusInterval);
+    checkAllConnections();
+    _statusInterval = setInterval(checkAllConnections, 5 * 60 * 1000);
+}
+
+// ─── STAFF STATUS DOTS ───────────────────────────────────────────────────────
 
 function toggleDiag() {
     const panel = document.getElementById('diag-panel');
