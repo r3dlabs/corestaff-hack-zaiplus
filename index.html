@@ -506,28 +506,91 @@
     </div>
 
     <!-- ── STARTUP MODAL ───────────────────────────────────── -->
+    <!-- ── ONBOARDING MODAL ─────────────────────────────────── -->
     <div id="startup-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box">
-            <div style="margin-bottom:24px;">
-                <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;font-family:'Geist Mono',monospace;">Startup Staff</p>
-                <h1 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Initialize Core Team</h1>
-                <p style="font-size:13px;color:var(--text-secondary);">Enter your details to brief the team.</p>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="modal-box" style="max-width:480px;width:100%;padding:0;overflow:hidden;">
+
+            <!-- Donna header -->
+            <div style="background:linear-gradient(135deg,var(--bg-elevated) 0%,var(--bg-surface) 100%);border-bottom:1px solid var(--border);padding:20px 24px;display:flex;align-items:center;gap:14px;">
+                <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png" id="ob-donna-img" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--border-strong);flex-shrink:0;" onerror="this.style.display='none'">
                 <div>
-                    <label class="field-label">Your Name (Founder)</label>
-                    <input type="text" id="input-founder-name" class="input-field" placeholder="e.g. Alex">
+                    <div style="font-size:13px;font-weight:700;color:var(--text-primary);" id="ob-donna-name">Donna</div>
+                    <div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Chief of Staff</div>
                 </div>
-                <div>
-                    <label class="field-label">Startup Name & Description</label>
-                    <textarea id="input-startup-desc" rows="3" class="input-field" style="resize:none;" placeholder="e.g. TechFlow AI — a B2B SaaS platform automating customer onboarding using generative agents."></textarea>
+                <!-- Step indicator -->
+                <div style="margin-left:auto;display:flex;gap:5px;align-items:center;">
+                    <div class="ob-dot" id="ob-dot-1" style="width:7px;height:7px;border-radius:50%;background:var(--text-primary);transition:all 0.2s;"></div>
+                    <div class="ob-dot" id="ob-dot-2" style="width:7px;height:7px;border-radius:50%;background:var(--border-strong);transition:all 0.2s;"></div>
+                    <div class="ob-dot" id="ob-dot-3" style="width:7px;height:7px;border-radius:50%;background:var(--border-strong);transition:all 0.2s;"></div>
                 </div>
             </div>
-            <button id="btn-launch-boardroom" class="btn-primary" style="width:100%;margin-top:20px;padding:12px;">LAUNCH CORE TEAM</button>
+
+            <!-- Steps container -->
+            <div style="padding:24px;">
+
+                <!-- Step 1: Greeting + name -->
+                <div id="ob-step-1">
+                    <p id="ob-greeting" style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;line-height:1.4;"></p>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">I'm <strong>Donna</strong>, your Chief of Staff. I'll be coordinating the team on your behalf. Before we get started — what would you like me to call you?</p>
+                    <div style="margin-bottom:8px;">
+                        <label class="field-label">Your preferred name</label>
+                        <input type="text" id="input-founder-name" class="input-field" placeholder="e.g. Alex" autocomplete="given-name" style="font-size:15px;">
+                    </div>
+                    <p style="font-size:11px;color:var(--text-muted);">This is how I'll address you in our conversations.</p>
+                </div>
+
+                <!-- Step 2: Business description -->
+                <div id="ob-step-2" style="display:none;">
+                    <p style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;" id="ob-step2-greeting"></p>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">To brief the team properly, I need to understand what we're building. Give me a quick overview of your startup.</p>
+                    <div style="margin-bottom:8px;">
+                        <label class="field-label">Startup name & description</label>
+                        <textarea id="input-startup-desc" rows="3" class="input-field" style="resize:none;font-size:14px;" placeholder="e.g. TechFlow AI — a B2B SaaS platform automating customer onboarding using generative agents."></textarea>
+                    </div>
+                    <p style="font-size:11px;color:var(--text-muted);">This context is injected into every query. Be specific — it helps the team give better advice.</p>
+                </div>
+
+                <!-- Step 3: API setup -->
+                <div id="ob-step-3" style="display:none;">
+                    <p style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Almost ready.</p>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">To activate the team, you'll need to connect at least one AI provider. Each staff member can use their own model — or they'll all share one.</p>
+                    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:18px;">⚙️</span>
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">AI Providers</div>
+                                <div style="font-size:12px;color:var(--text-secondary);">Click the gear icon in the header to add OpenAI, Anthropic, DeepSeek, Groq, Mistral or Google keys.</div>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:18px;">👥</span>
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Assign Models</div>
+                                <div style="font-size:12px;color:var(--text-secondary);">Use Customize Team to assign specific models to Tony, Mike, Harvey and the rest of the team.</div>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
+                            <span style="font-size:18px;">📚</span>
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Staff Knowledge</div>
+                                <div style="font-size:12px;color:var(--text-secondary);">Add URLs and documents to each staff member's knowledge base so they respond with your context.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="font-size:11px;color:var(--text-muted);line-height:1.6;">You can skip this for now and configure later. The team will prompt you when needed.</p>
+                </div>
+
+            </div>
+
+            <!-- Footer buttons -->
+            <div style="padding:0 24px 24px;display:flex;gap:10px;justify-content:space-between;align-items:center;">
+                <button id="ob-back" style="background:transparent;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif;display:none;" onclick="obBack()">← Back</button>
+                <button id="ob-skip" style="background:transparent;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;font-family:'Geist Mono',monospace;letter-spacing:0.04em;text-decoration:underline;text-underline-offset:3px;display:none;" onclick="obDontShow()">Don't show again</button>
+                <div style="flex:1;"></div>
+                <button id="ob-next" class="btn-primary" style="padding:10px 24px;" onclick="obNext()">Continue →</button>
+            </div>
         </div>
     </div>
-
-
 
     <!-- ── ABOUT MODAL ───────────────────────────────────────── -->
     <div id="about-modal" class="modal-overlay" style="display:none;">
@@ -1490,7 +1553,7 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
         loadStaffKb();
         if (!document.getElementById('chat-window').children.length) {
             if (!founderName || !startupDesc) {
-                document.getElementById('startup-modal').style.display = 'flex';
+                obCheckAndOpen(session.user.user_metadata?.full_name || session.user.email);
             } else {
                 initializeBoardroom();
             }
@@ -2087,16 +2150,8 @@ btnFullscreen.addEventListener('click',()=>{
 
 
 
-btnEditStartup.addEventListener('click',()=>{ inputFounderName.value=founderName; inputStartupDesc.value=startupDesc; startupModal.style.display='flex'; });
-btnLaunchBoardroom.addEventListener('click',()=>{
-    founderName=inputFounderName.value.trim();
-    startupDesc=inputStartupDesc.value.trim();
-    if (!founderName||!startupDesc){ alert('Please enter your name and startup description.'); return; }
-    localStorage.setItem('founder_name',founderName);
-    localStorage.setItem('startup_desc',startupDesc);
-    startupModal.style.display='none';
-    initializeBoardroom();
-});
+btnEditStartup.addEventListener('click', () => obOpen(window._currentUserName || founderName));
+// btnLaunchBoardroom removed — handled by obNext()
 
 window.onload = async () => {
     logTrace('System initialized.', true);
@@ -2106,7 +2161,7 @@ window.onload = async () => {
         console.warn('Running without Supabase auth');
         hideAuthModal();
         if (!founderName || !startupDesc) {
-            document.getElementById('startup-modal').style.display = 'flex';
+            obCheckAndOpen(founderName);
         } else {
             initializeBoardroom();
         }
@@ -3258,6 +3313,173 @@ async function runDiag() {
 
     document.getElementById('diag-output').innerHTML = out.join('\n');
 }
+
+// ─── ONBOARDING ───────────────────────────────────────────────────────────────
+let obStep = 1;
+
+async function obCheckAndOpen(userName) {
+    // Check DB first — if user has skipped, don't show
+    if (sbClient) {
+        try {
+            const { data: { user } } = await sbClient.auth.getUser();
+            if (user) {
+                const { data } = await sbClient
+                    .from('staff_customizations')
+                    .select('custom_name')
+                    .eq('user_id', user.id)
+                    .eq('staff_key', '__onboarding_skip__')
+                    .maybeSingle();
+                if (data?.custom_name === 'true') {
+                    // User opted out — go straight to boardroom
+                    if (!founderName || !startupDesc) {
+                        obOpen(userName); // still need their name/desc
+                    } else {
+                        initializeBoardroom();
+                    }
+                    return;
+                }
+            }
+        } catch(e) { console.warn('onboarding check failed', e); }
+    }
+    obOpen(userName);
+}
+
+function obOpen(userName) {
+    obStep = 1;
+    obRender(userName);
+    document.getElementById('startup-modal').style.display = 'flex';
+}
+
+async function obDontShow() {
+    // Save to DB
+    if (sbClient) {
+        try {
+            const { data: { user } } = await sbClient.auth.getUser();
+            if (user) {
+                await sbClient.from('staff_customizations').upsert({
+                    user_id: user.id,
+                    staff_key: '__onboarding_skip__',
+                    custom_name: 'true',
+                    photo_url: null
+                }, { onConflict: 'user_id,staff_key' });
+            }
+        } catch(e) { console.warn('onboarding skip save failed', e); }
+    }
+    // Also save locally
+    localStorage.setItem('onboarding_skip', 'true');
+    document.getElementById('startup-modal').style.display = 'none';
+    if (!founderName || !startupDesc) {
+        // Still no context — launch boardroom with defaults
+        initializeBoardroom();
+    } else {
+        initializeBoardroom();
+    }
+}
+
+function obRender(userName) {
+    const name = userName || window._currentUserName || 'there';
+    const cosName = (window.staffCustom?.cos?.name) || 'Donna';
+    const cosImg  = (window.staffCustom?.cos?.img)  || 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
+
+    // Update Donna header
+    const img = document.getElementById('ob-donna-img');
+    if (img) img.src = cosImg;
+    const nameEl = document.getElementById('ob-donna-name');
+    if (nameEl) nameEl.textContent = cosName;
+
+    // Step dots
+    [1,2,3].forEach(i => {
+        const dot = document.getElementById('ob-dot-'+i);
+        if (dot) {
+            dot.style.background = i === obStep ? 'var(--text-primary)' : 'var(--border-strong)';
+            dot.style.width = i === obStep ? '20px' : '7px';
+            dot.style.borderRadius = i === obStep ? '4px' : '50%';
+        }
+    });
+
+    // Show correct step
+    [1,2,3].forEach(i => {
+        const el = document.getElementById('ob-step-'+i);
+        if (el) el.style.display = i === obStep ? 'block' : 'none';
+    });
+
+    // Back button
+    const back = document.getElementById('ob-back');
+    if (back) back.style.display = obStep > 1 ? 'block' : 'none';
+
+    // Skip button — only on steps 1 & 2, hidden on step 3
+    const skip = document.getElementById('ob-skip');
+    if (skip) skip.style.display = obStep < 3 ? 'block' : 'none';
+
+    // Next button label
+    const next = document.getElementById('ob-next');
+    if (next) next.textContent = obStep === 3 ? 'Launch Boardroom 🚀' : 'Continue →';
+
+    // Step-specific content
+    if (obStep === 1) {
+        const hr = new Date().getHours();
+        const tod = hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening';
+        const greet = document.getElementById('ob-greeting');
+        if (greet) greet.textContent = `${tod}, ${name}.`;
+        const nameInput = document.getElementById('input-founder-name');
+        if (nameInput && !nameInput.value) nameInput.value = founderName || '';
+        setTimeout(() => nameInput?.focus(), 100);
+    }
+
+    if (obStep === 2) {
+        const preferred = document.getElementById('input-founder-name')?.value.trim() || name;
+        const g2 = document.getElementById('ob-step2-greeting');
+        if (g2) g2.textContent = `Got it, ${preferred}. Now tell me about your startup.`;
+        const descInput = document.getElementById('input-startup-desc');
+        if (descInput && !descInput.value) descInput.value = startupDesc || '';
+        setTimeout(() => descInput?.focus(), 100);
+    }
+}
+
+function obNext() {
+    if (obStep === 1) {
+        const val = document.getElementById('input-founder-name')?.value.trim();
+        if (!val) {
+            const inp = document.getElementById('input-founder-name');
+            inp?.focus();
+            if (inp) { inp.style.borderColor = '#ef4444'; setTimeout(() => inp.style.borderColor = '', 1200); }
+            return;
+        }
+        founderName = val;
+        localStorage.setItem('founder_name', founderName);
+        obStep = 2;
+        obRender();
+    } else if (obStep === 2) {
+        const val = document.getElementById('input-startup-desc')?.value.trim();
+        if (!val) {
+            const inp = document.getElementById('input-startup-desc');
+            inp?.focus();
+            if (inp) { inp.style.borderColor = '#ef4444'; setTimeout(() => inp.style.borderColor = '', 1200); }
+            return;
+        }
+        startupDesc = val;
+        localStorage.setItem('startup_desc', startupDesc);
+        obStep = 3;
+        obRender();
+    } else if (obStep === 3) {
+        document.getElementById('startup-modal').style.display = 'none';
+        initializeBoardroom();
+    }
+}
+
+function obBack() {
+    if (obStep > 1) { obStep--; obRender(); }
+}
+
+// Enter key navigation
+document.addEventListener('keydown', e => {
+    if (document.getElementById('startup-modal')?.style.display !== 'none') {
+        if (e.key === 'Enter' && obStep === 1 && document.activeElement?.id === 'input-founder-name') obNext();
+        if (e.key === 'Enter' && obStep === 2 && e.ctrlKey) obNext();
+    }
+});
+
+// ─── ONBOARDING ───────────────────────────────────────────────────────────────
 
 function toggleDiag() {
     const panel = document.getElementById('diag-panel');
