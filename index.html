@@ -1352,7 +1352,7 @@
         <!-- Right: Chat -->
         <div style="width:50%;display:flex;flex-direction:column;background:var(--bg-surface);">
             <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Soleil Interface</span>
+                <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Staff Conversations</span>
                 <button id="btn-clear" style="background:transparent;border:none;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:'Geist',sans-serif;transition:color 0.15s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'">Clear Core Team Conversations</button>
             </div>
             <div id="chat-window" style="flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px;"></div>
@@ -1417,6 +1417,7 @@ function populateUserUI(session) {
     const email = session.user.email || '';
 
     userFullName.textContent = name;
+    window._currentUserName = name;
     userEmail.textContent = email;
     if (avatar) {
         userAvatarImg.src = avatar;
@@ -1875,19 +1876,52 @@ function formatTextToHtml(text) {
     }).filter(Boolean).join('');
 }
 
+function getStaffImgForSender(sender) {
+    // Returns { src, fallback } for a given sender name
+    const CDN = 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/';
+    const cosName = window.staffCustom?.cos?.name || 'Donna';
+    // Check if sender matches any staff member
+    for (const [key, def] of Object.entries(window.staffCustom || STAFF_DEFAULTS)) {
+        if ((def.name || STAFF_DEFAULTS[key].name).toLowerCase() === sender.toLowerCase()) {
+            return { src: def.img || STAFF_DEFAULTS[key].img, fallback: (def.name||'?')[0].toUpperCase() };
+        }
+    }
+    // Legacy fallback names
+    const legacy = { soleil: CDN+'donna.png', donna: CDN+'donna.png' };
+    const legacyImg = legacy[sender.toLowerCase()];
+    if (legacyImg) return { src: legacyImg, fallback: sender[0].toUpperCase() };
+    return null;
+}
+
 function appendMessage(sender, text) {
     const wrapper = document.createElement('div');
     wrapper.style.cssText = `display:flex;justify-content:${sender==='User'?'flex-end':'flex-start'};`;
     const avatar = document.createElement('div');
     avatar.style.cssText = `width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);overflow:hidden;`;
+
     if (sender === 'User') {
-        avatar.textContent = 'U';
+        // Use logged-in user avatar if available
+        const userAvatarSrc = document.getElementById('user-avatar-img')?.src;
+        if (userAvatarSrc && !userAvatarSrc.endsWith('/') && userAvatarSrc !== window.location.href) {
+            const img = document.createElement('img');
+            img.src = userAvatarSrc;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+            img.onerror = () => { avatar.removeChild(img); avatar.textContent = (window._currentUserName||'U')[0].toUpperCase(); };
+            avatar.appendChild(img);
+        } else {
+            avatar.textContent = (window._currentUserName||'U')[0].toUpperCase();
+        }
     } else {
-        const img = document.createElement('img');
-        img.src = 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-        img.onerror = () => { avatar.removeChild(img); avatar.textContent = 'S'; };
-        avatar.appendChild(img);
+        const staffImg = getStaffImgForSender(sender);
+        if (staffImg) {
+            const img = document.createElement('img');
+            img.src = staffImg.src;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+            img.onerror = () => { if (avatar.contains(img)) avatar.removeChild(img); avatar.textContent = staffImg.fallback; };
+            avatar.appendChild(img);
+        } else {
+            avatar.textContent = sender[0].toUpperCase();
+        }
     }
     const bubble = document.createElement('div');
     if (sender==='User') {
@@ -2193,7 +2227,7 @@ function initializeBoardroom() {
     const avatar=document.createElement('div');
     avatar.style.cssText='width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-secondary);overflow:hidden;';
     const soleilImg=document.createElement('img');
-    soleilImg.src='https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
+    soleilImg.src = window.staffCustom?.cos?.img || 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
     soleilImg.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%;';
     soleilImg.onerror=()=>{ avatar.removeChild(soleilImg); avatar.textContent='S'; };
     avatar.appendChild(soleilImg);
