@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Startup Staff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --border: #e0e0e0;
+    --text: #0a0a0a;
+    --muted: #6b6b6b;
+    --accent: #0a0a0a;
+  }
+  body {
+    font-family: 'Geist', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .header-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .back-link {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.04em;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--text); }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 32px 120px;
+  }
+  .doc-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .effective {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    margin-bottom: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .intro {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 48px;
+    line-height: 1.75;
+  }
+  section { margin-bottom: 48px; }
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Geist Mono', monospace;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  p { margin-bottom: 14px; color: #1a1a1a; }
+  p:last-child { margin-bottom: 0; }
+  ul {
+    padding-left: 20px;
+    margin-bottom: 14px;
+  }
+  ul li {
+    margin-bottom: 8px;
+    color: #1a1a1a;
+  }
+  .highlight-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .highlight-box p { margin-bottom: 0; }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    margin-top: 0;
+  }
+  .footer-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-inner p {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    margin: 0;
+  }
+  .footer-inner a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-inner a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="https://startup-staff.com" class="logo">Startup Staff</a>
+    <a href="https://startup-staff.com" class="back-link">← Back to app</a>
+  </div>
+</header>
+
+<main>
+  <div class="doc-label">Legal Document</div>
+  <h1>Privacy Policy</h1>
+  <p class="effective">Effective date: April 18, 2026 &nbsp;·&nbsp; Modular Technology Solutions Pte Ltd, Singapore</p>
+
+  <p class="intro">Startup Staff is built by Modular Technology Solutions Pte Ltd ("we", "us", "our"). This policy explains what data we collect when you use Startup Staff, how we use it, and your rights over it. We have written this in plain language because we believe you deserve to understand how your data is handled.</p>
+
+  <section>
+    <h2>01 — What we collect</h2>
+    <p>We collect the minimum data required to operate the service:</p>
+    <ul>
+      <li><strong>Account data</strong> — your name, email address, and profile photo obtained from LinkedIn via OAuth when you sign in.</li>
+      <li><strong>Configuration data</strong> — AI provider API keys you enter, provider endpoint URLs, preferred models, and per-staff model assignments. These are stored in our database associated with your account.</li>
+      <li><strong>Customisation data</strong> — custom staff names, uploaded staff photos, and per-staff knowledge base content (URLs and documents you upload).</li>
+      <li><strong>Usage data</strong> — session activity such as sign-in timestamps and feature usage patterns, collected for service improvement purposes.</li>
+    </ul>
+    <p>We do <strong>not</strong> store your conversation history or the content of your queries to AI models. Queries are sent directly from your browser to the AI provider you configure.</p>
+  </section>
+
+  <section>
+    <h2>02 — How we use your data</h2>
+    <ul>
+      <li>To authenticate you and maintain your session.</li>
+      <li>To persist your configuration across devices and sessions.</li>
+      <li>To render your customised boardroom (staff names, photos, knowledge bases).</li>
+      <li>To improve and debug the service.</li>
+    </ul>
+    <p>We do not sell your data. We do not use your data for advertising. We do not share your data with third parties except as described in section 04.</p>
+  </section>
+
+  <section>
+    <h2>03 — API keys</h2>
+    <div class="highlight-box">
+      <p>Your AI provider API keys (OpenAI, Anthropic, DeepSeek, Groq, Mistral, Google) are stored in our database. While we implement standard security practices, <strong>we strongly recommend using keys with usage limits and monitoring your provider dashboards</strong>. Treat your API keys like passwords.</p>
+    </div>
+    <p>Your keys are used solely to make requests to AI providers on your behalf, within the Startup Staff application. We do not use them for any other purpose.</p>
+  </section>
+
+  <section>
+    <h2>04 — Third parties</h2>
+    <p>We use the following third-party services to operate Startup Staff:</p>
+    <ul>
+      <li><strong>Supabase</strong> — database, authentication, and file storage. Your account data and configuration are stored on Supabase infrastructure. Supabase is SOC 2 Type II certified.</li>
+      <li><strong>LinkedIn</strong> — OAuth authentication provider. We receive your name, email, and profile photo upon sign-in.</li>
+      <li><strong>Vercel</strong> — application hosting and delivery.</li>
+      <li><strong>jsDelivr / GitHub</strong> — CDN delivery of static assets.</li>
+    </ul>
+    <p>We do not share your personal data with AI providers. Queries sent to AI providers originate from your browser and are governed by the respective provider's privacy policy.</p>
+  </section>
+
+  <section>
+    <h2>05 — Data retention</h2>
+    <p>We retain your account and configuration data for as long as your account is active. If you delete your account, we will delete your personal data within 30 days, except where retention is required by law.</p>
+    <p>Uploaded documents stored in our file storage are deleted when you clear them from the Staff Knowledge Base or when your account is deleted.</p>
+  </section>
+
+  <section>
+    <h2>06 — Your rights</h2>
+    <p>Depending on your jurisdiction, you may have the right to:</p>
+    <ul>
+      <li>Access the personal data we hold about you.</li>
+      <li>Request correction of inaccurate data.</li>
+      <li>Request deletion of your data.</li>
+      <li>Object to or restrict processing of your data.</li>
+      <li>Port your data to another service.</li>
+    </ul>
+    <p>To exercise any of these rights, contact us at <strong>privacy@modular.technology</strong>. We will respond within 30 days.</p>
+  </section>
+
+  <section>
+    <h2>07 — Security</h2>
+    <p>We implement industry-standard security measures including encryption in transit (TLS), row-level security on our database, and access controls. No system is perfectly secure; we encourage you to use strong, unique API keys and to report any suspected security issues to us immediately.</p>
+  </section>
+
+  <section>
+    <h2>08 — Children</h2>
+    <p>Startup Staff is not directed at individuals under the age of 18. We do not knowingly collect personal data from minors. If you believe we have inadvertently collected data from a minor, please contact us and we will delete it promptly.</p>
+  </section>
+
+  <section>
+    <h2>09 — Changes to this policy</h2>
+    <p>We may update this policy from time to time. We will notify you of material changes by updating the effective date above and, where appropriate, by sending an email to the address associated with your account. Continued use of the service after changes constitutes acceptance of the updated policy.</p>
+  </section>
+
+  <section>
+    <h2>10 — Contact</h2>
+    <p>Modular Technology Solutions Pte Ltd<br>Singapore<br>Email: <strong>privacy@modular.technology</strong></p>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <p>© 2026 Modular Technology Solutions Pte Ltd · Singapore</p>
+    <p><a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="https://startup-staff.com">App</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
