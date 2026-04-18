@@ -1543,7 +1543,9 @@ btnLogout.addEventListener('click', async () => {
 // Session state listener — only handle SIGN_IN and SIGN_OUT events, not initial load
 sbClient?.auth.onAuthStateChange(async (event, session) => {
     clearTimeout(window._authFallbackTimer);
-    if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') && session) {
+    logTrace(`Auth event: ${event}`, false);
+
+    if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
         hideAuthModal();
         populateUserUI(session);
         logTrace(`Signed in as ${session.user.user_metadata?.full_name || session.user.email}`, true);
@@ -1558,10 +1560,11 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
                 initializeBoardroom();
             }
         }
-    } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
+    } else if (event === 'SIGNED_OUT') {
         clearUserUI();
         showAuthModal();
     }
+    // All other events (PASSWORD_RECOVERY etc.) — do nothing
 });
 // ─── PROVIDER DEFINITIONS ───────────────────────────────────────────────────
 const PROVIDERS = {
@@ -2169,11 +2172,19 @@ window.onload = async () => {
     }
 
     // onAuthStateChange(INITIAL_SESSION) will handle showing/hiding the gate.
-    // Fallback: if INITIAL_SESSION never fires within 6s, show the gate.
-    const fallback = setTimeout(() => {
-        if (authModal.style.display !== 'none') return; // already shown
-        logTrace('Auth timeout — showing gate.', true);
-        showAuthModal();
+    // Fallback: if no auth event fires within 6s, check session once and show gate if needed
+    const fallback = setTimeout(async () => {
+        try {
+            const { data: { session } } = await sbClient.auth.getSession();
+            if (!session) {
+                logTrace('Auth timeout — no session, showing gate.', true);
+                showAuthModal();
+            }
+            // If session exists, onAuthStateChange should have handled it already
+        } catch(e) {
+            logTrace('Auth timeout — showing gate.', true);
+            showAuthModal();
+        }
     }, 6000);
 
     // Clear fallback once onAuthStateChange fires (handled inside the listener)
