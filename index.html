@@ -752,6 +752,313 @@
 
     <!-- ── HEADER ──────────────────────────────────────────── -->
 
+    <!-- ── STAFF KNOWLEDGE BASE MODAL ───────────────────────────── -->
+    <div id="staff-kb-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-box modal-box-lg" style="max-width:560px;width:100%;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Staff Knowledge Base</p>
+                <button id="btn-close-staff-kb" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;">×</button>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Add URLs and documents for each staff member. This context is injected into their prompt whenever they are consulted.</p>
+            <!-- Tabs -->
+            <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;overflow-x:auto;">
+                <button id="skb-tab-btn-cos" onclick="switchStaffKbTab('cos')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">COS</button><button id="skb-tab-btn-tony" onclick="switchStaffKbTab('tony')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">TONY</button><button id="skb-tab-btn-mike" onclick="switchStaffKbTab('mike')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">MIKE</button><button id="skb-tab-btn-steve" onclick="switchStaffKbTab('steve')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">STEVE</button><button id="skb-tab-btn-harvey" onclick="switchStaffKbTab('harvey')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">HARVEY</button><button id="skb-tab-btn-leonardo" onclick="switchStaffKbTab('leonardo')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">LEONARDO</button><button id="skb-tab-btn-sigmund" onclick="switchStaffKbTab('sigmund')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">SIGMUND</button>
+            </div>
+            <!-- Panels -->
+            <div style="min-height:220px;">
+                
+                <div id="skb-panel-cos" style="display:none;">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Donna — Chief of Staff</p>
+                    <div style="margin-bottom:12px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
+                        <textarea id="skb-urls-cos" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
+                        <input type="file" id="skb-files-cos" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
+                        <div id="skb-filelist-cos" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div id="skb-status-cos" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                </div>
+                <div id="skb-panel-tony" style="display:none;">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Tony — Engineering</p>
+                    <div style="margin-bottom:12px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
+                        <textarea id="skb-urls-tony" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
+                        <input type="file" id="skb-files-tony" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
+                        <div id="skb-filelist-tony" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div id="skb-status-tony" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                </div>
+                <div id="skb-panel-mike" style="display:none;">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Mike — Finance</p>
+                    <div style="margin-bottom:12px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
+                        <textarea id="skb-urls-mike" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
+                        <input type="file" id="skb-files-mike" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
+                        <div id="skb-filelist-mike" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div id="skb-status-mike" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                </div>
+                <div id="skb-panel-steve" style="display:none;">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Steve — Marketing</p>
+                    <div style="margin-bottom:12px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
+                        <textarea id="skb-urls-steve" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
+                        <input type="file" id="skb-files-steve" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
+                        <div id="skb-filelist-steve" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div id="skb-status-steve" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                </div>
+                <div id="skb-panel-harvey" style="display:none;">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Harvey — Legal</p>
+                    <div style="margin-bottom:12px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
+                        <textarea id="skb-urls-harvey" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
+                        <input type="file" id="skb-files-harvey" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
+                        <div id="skb-filelist-harvey" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div id="skb-status-harvey" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                </div>
+                <div id="skb-panel-leonardo" style="display:none;">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Leonardo — Architecture</p>
+                    <div style="margin-bottom:12px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
+                        <textarea id="skb-urls-leonardo" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
+                        <input type="file" id="skb-files-leonardo" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
+                        <div id="skb-filelist-leonardo" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div id="skb-status-leonardo" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                </div>
+                <div id="skb-panel-sigmund" style="display:none;">
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Sigmund — Human Resources</p>
+                    <div style="margin-bottom:12px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
+                        <textarea id="skb-urls-sigmund" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
+                        <input type="file" id="skb-files-sigmund" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
+                        <div id="skb-filelist-sigmund" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div id="skb-status-sigmund" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                </div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end;">
+                <button id="btn-fetch-staff-kb" class="btn-secondary" style="padding:8px 16px;">Fetch URLs</button>
+                <button id="btn-save-staff-kb" class="btn-primary" style="padding:8px 20px;">Save</button>
+            </div>
+            <div id="staff-kb-status" style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;min-height:16px;"></div>
+        </div>
+    </div>
+
+    <!-- ── PROVIDERS MODAL ───────────────────────────────────── -->
+    <div id="providers-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-box" style="max-width:500px;width:100%;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">AI Providers</p>
+                <button id="btn-close-providers" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;">×</button>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Configure API keys for each provider. Keys are saved to your account and shared across all staff members using that provider.</p>
+            <div style="max-height:500px;overflow-y:auto;padding-right:4px;">
+                
+                    <div class="provider-card" id="pcard-openai" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#10a37f;flex-shrink:0;" id="pstatus-openai"></div>
+                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">OpenAI</span>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button id="ptest-openai" onclick="testProvider('openai')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                                <button id="pclear-openai" onclick="clearProvider('openai')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
+                                <input id="pendpoint-openai" type="text" value="https://api.openai.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
+                                <input id="papikey-openai" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div id="pmodel-section-openai" style="display:none;">
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
+                                <select id="pmodel-openai" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                    <option value="">— select model —</option>
+                                </select>
+                            </div>
+                            <div id="pstatus-msg-openai" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                    </div>
+                    <div class="provider-card" id="pcard-anthropic" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#d4763b;flex-shrink:0;" id="pstatus-anthropic"></div>
+                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Anthropic</span>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button id="ptest-anthropic" onclick="testProvider('anthropic')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                                <button id="pclear-anthropic" onclick="clearProvider('anthropic')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
+                                <input id="pendpoint-anthropic" type="text" value="https://api.anthropic.com" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
+                                <input id="papikey-anthropic" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div id="pmodel-section-anthropic" style="display:none;">
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
+                                <select id="pmodel-anthropic" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                    <option value="">— select model —</option>
+                                </select>
+                            </div>
+                            <div id="pstatus-msg-anthropic" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                    </div>
+                    <div class="provider-card" id="pcard-google" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;" id="pstatus-google"></div>
+                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Google</span>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button id="ptest-google" onclick="testProvider('google')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                                <button id="pclear-google" onclick="clearProvider('google')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
+                                <input id="pendpoint-google" type="text" value="https://generativelanguage.googleapis.com/v1beta" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
+                                <input id="papikey-google" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div id="pmodel-section-google" style="display:none;">
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
+                                <select id="pmodel-google" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                    <option value="">— select model —</option>
+                                </select>
+                            </div>
+                            <div id="pstatus-msg-google" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                    </div>
+                    <div class="provider-card" id="pcard-deepseek" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#5b6ef5;flex-shrink:0;" id="pstatus-deepseek"></div>
+                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">DeepSeek</span>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button id="ptest-deepseek" onclick="testProvider('deepseek')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                                <button id="pclear-deepseek" onclick="clearProvider('deepseek')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
+                                <input id="pendpoint-deepseek" type="text" value="https://api.deepseek.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
+                                <input id="papikey-deepseek" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div id="pmodel-section-deepseek" style="display:none;">
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
+                                <select id="pmodel-deepseek" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                    <option value="">— select model —</option>
+                                </select>
+                            </div>
+                            <div id="pstatus-msg-deepseek" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                    </div>
+                    <div class="provider-card" id="pcard-groq" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#f55036;flex-shrink:0;" id="pstatus-groq"></div>
+                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Groq</span>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button id="ptest-groq" onclick="testProvider('groq')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                                <button id="pclear-groq" onclick="clearProvider('groq')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
+                                <input id="pendpoint-groq" type="text" value="https://api.groq.com/openai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
+                                <input id="papikey-groq" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div id="pmodel-section-groq" style="display:none;">
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
+                                <select id="pmodel-groq" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                    <option value="">— select model —</option>
+                                </select>
+                            </div>
+                            <div id="pstatus-msg-groq" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                    </div>
+                    <div class="provider-card" id="pcard-mistral" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#ff7000;flex-shrink:0;" id="pstatus-mistral"></div>
+                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Mistral</span>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button id="ptest-mistral" onclick="testProvider('mistral')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                                <button id="pclear-mistral" onclick="clearProvider('mistral')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
+                                <input id="pendpoint-mistral" type="text" value="https://api.mistral.ai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div>
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
+                                <input id="papikey-mistral" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
+                            </div>
+                            <div id="pmodel-section-mistral" style="display:none;">
+                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
+                                <select id="pmodel-mistral" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                    <option value="">— select model —</option>
+                                </select>
+                            </div>
+                            <div id="pstatus-msg-mistral" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                    </div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
+                <button id="btn-save-providers" class="btn-primary" style="padding:8px 20px;">Save All</button>
+            </div>
+            <div id="providers-status" style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;min-height:16px;"></div>
+        </div>
+    </div>
+
     <!-- ── CUSTOMIZE TEAM MODAL ──────────────────────────────── -->
     <div id="customize-modal" class="modal-overlay" style="display:none;">
         <div class="modal-box" style="max-width:460px;width:100%;">
@@ -771,6 +1078,17 @@
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Chief of Staff</div>
                                 <input id="custom-name-cos" type="text" value="Donna" placeholder="Donna" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <div style="margin-top:6px;">
+                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <select id="custom-provider-cos" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— provider —</option>
+                                        </select>
+                                        <select id="custom-model-cos" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— model —</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -782,6 +1100,17 @@
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Engineering</div>
                                 <input id="custom-name-tony" type="text" value="Tony" placeholder="Tony" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <div style="margin-top:6px;">
+                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <select id="custom-provider-tony" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— provider —</option>
+                                        </select>
+                                        <select id="custom-model-tony" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— model —</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -793,6 +1122,17 @@
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Finance</div>
                                 <input id="custom-name-mike" type="text" value="Mike" placeholder="Mike" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <div style="margin-top:6px;">
+                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <select id="custom-provider-mike" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— provider —</option>
+                                        </select>
+                                        <select id="custom-model-mike" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— model —</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -804,6 +1144,17 @@
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Marketing</div>
                                 <input id="custom-name-steve" type="text" value="Steve" placeholder="Steve" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <div style="margin-top:6px;">
+                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <select id="custom-provider-steve" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— provider —</option>
+                                        </select>
+                                        <select id="custom-model-steve" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— model —</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -815,6 +1166,17 @@
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Legal</div>
                                 <input id="custom-name-harvey" type="text" value="Harvey" placeholder="Harvey" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <div style="margin-top:6px;">
+                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <select id="custom-provider-harvey" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— provider —</option>
+                                        </select>
+                                        <select id="custom-model-harvey" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— model —</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -826,6 +1188,17 @@
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Architecture</div>
                                 <input id="custom-name-leonardo" type="text" value="Leonardo" placeholder="Leonardo" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <div style="margin-top:6px;">
+                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <select id="custom-provider-leonardo" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— provider —</option>
+                                        </select>
+                                        <select id="custom-model-leonardo" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— model —</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -837,6 +1210,17 @@
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Human Resources</div>
                                 <input id="custom-name-sigmund" type="text" value="Sigmund" placeholder="Sigmund" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <div style="margin-top:6px;">
+                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
+                                    <div style="display:flex;gap:4px;">
+                                        <select id="custom-provider-sigmund" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— provider —</option>
+                                        </select>
+                                        <select id="custom-model-sigmund" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                                            <option value="">— model —</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
             </div>
@@ -868,6 +1252,12 @@
         <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">
             <button id="btn-edit-startup" title="Business Profile" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></button>
             <button id="btn-kb" title="Knowledge Base" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></button>
+            <button id="btn-staff-kb" title="Staff Knowledge Base" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </button>
+            <button id="btn-providers" title="AI Providers" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            </button>
             <button id="btn-api-config" title="API Config" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
             <button id="btn-customize" title="Customize Team" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1123,6 +1513,9 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
         populateUserUI(session);
         logTrace(`Signed in as ${session.user.user_metadata?.full_name || session.user.email}`, true);
     loadStaffCustomizations();
+    loadProviderConfigs();
+    loadStaffAssignments();
+    loadStaffKb();
         if (!document.getElementById('chat-window').children.length) {
             if (!founderName || !startupDesc) {
                 document.getElementById('startup-modal').style.display = 'flex';
@@ -2232,6 +2625,775 @@ Object.keys(STAFF_DEFAULTS).forEach(key => {
     const input = document.getElementById('custom-upload-' + key);
     if (input) input.addEventListener('change', e => { if (e.target.files[0]) handlePhotoUpload(key, e.target.files[0]); });
 });
+
+// ─── PROVIDER CONFIGS ────────────────────────────────────────────────────────
+
+const PROVIDER_DEFS = {
+    openai:    { label:'OpenAI',     endpoint:'https://api.openai.com/v1',                       modelsPath:'/models',  preferred:'gpt-4o',                  color:'#10a37f', auth:'bearer'    },
+    anthropic: { label:'Anthropic',  endpoint:'https://api.anthropic.com',                       modelsPath:null,       preferred:'claude-sonnet-4-5',        color:'#d4763b', auth:'x-api-key' },
+    google:    { label:'Google',     endpoint:'https://generativelanguage.googleapis.com/v1beta', modelsPath:'/models',  preferred:'gemini-1.5-pro',           color:'#4285f4', auth:'key'       },
+    deepseek:  { label:'DeepSeek',   endpoint:'https://api.deepseek.com/v1',                     modelsPath:'/models',  preferred:'deepseek-chat',            color:'#5b6ef5', auth:'bearer'    },
+    groq:      { label:'Groq',       endpoint:'https://api.groq.com/openai/v1',                  modelsPath:'/models',  preferred:'llama-3.3-70b-versatile',  color:'#f55036', auth:'bearer'    },
+    mistral:   { label:'Mistral',    endpoint:'https://api.mistral.ai/v1',                       modelsPath:'/models',  preferred:'mistral-large-latest',     color:'#ff7000', auth:'bearer'    },
+};
+
+const ANTHROPIC_MODELS = [
+    'claude-opus-4-6',
+    'claude-sonnet-4-6',
+    'claude-opus-4-5',
+    'claude-sonnet-4-5',
+    'claude-haiku-4-5',
+];
+
+// In-memory store: { openai: { apiKey, endpoint, model }, ... }
+window.providerConfigs = {};
+
+function setProviderStatus(key, msg, ok) {
+    const el = document.getElementById('pstatus-msg-' + key);
+    if (el) { el.textContent = msg; el.style.color = ok ? '#22c55e' : ok === false ? '#ef4444' : 'var(--text-muted)'; }
+    const dot = document.getElementById('pstatus-' + key);
+    if (dot) dot.style.background = ok ? '#22c55e' : ok === false ? '#ef4444' : 'var(--text-muted)';
+}
+
+async function fetchModelsForProvider(key, apiKey, endpoint) {
+    const def = PROVIDER_DEFS[key];
+    const modelSelect = document.getElementById('pmodel-' + key);
+    const modelSection = document.getElementById('pmodel-section-' + key);
+    if (!modelSelect || !modelSection) return;
+
+    modelSelect.innerHTML = '<option value="">Loading...</option>';
+    modelSection.style.display = 'block';
+
+    // Anthropic — hardcoded list
+    if (key === 'anthropic') {
+        modelSelect.innerHTML = ANTHROPIC_MODELS.map(m =>
+            `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+        ).join('');
+        setProviderStatus(key, 'Models loaded.', true);
+        return;
+    }
+
+    try {
+        let url, headers = {};
+        if (key === 'google') {
+            url = endpoint + '/models?key=' + apiKey;
+        } else {
+            url = endpoint + def.modelsPath;
+            headers['Authorization'] = 'Bearer ' + apiKey;
+        }
+
+        const res = await fetch(url, { headers });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        let models = [];
+        if (key === 'google') {
+            models = (data.models || [])
+                .filter(m => m.name && m.supportedGenerationMethods?.includes('generateContent'))
+                .map(m => m.name.replace('models/', ''));
+        } else {
+            models = (data.data || data.models || [])
+                .map(m => m.id || m.name)
+                .filter(Boolean)
+                .sort();
+        }
+
+        if (models.length === 0) throw new Error('No models returned');
+
+        modelSelect.innerHTML = models.map(m =>
+            `<option value="${m}" ${m === def.preferred || m.includes(def.preferred) ? 'selected' : ''}>${m}</option>`
+        ).join('');
+
+        // If preferred not in list, prepend it
+        if (!models.find(m => m === def.preferred || m.includes(def.preferred))) {
+            modelSelect.innerHTML = `<option value="${def.preferred}" selected>${def.preferred} (default)</option>` + modelSelect.innerHTML;
+        }
+
+        setProviderStatus(key, `${models.length} models loaded.`, true);
+    } catch(e) {
+        // Fallback to preferred model
+        modelSelect.innerHTML = `<option value="${def.preferred}" selected>${def.preferred}</option>`;
+        setProviderStatus(key, 'Could not fetch models — using default. ' + e.message, null);
+    }
+}
+
+async function testProvider(key) {
+    const apiKey = document.getElementById('papikey-' + key)?.value.trim();
+    const endpoint = document.getElementById('pendpoint-' + key)?.value.trim();
+    if (!apiKey) { setProviderStatus(key, 'Enter an API key first.', false); return; }
+
+    const btn = document.getElementById('ptest-' + key);
+    if (btn) { btn.textContent = 'Testing...'; btn.disabled = true; }
+    setProviderStatus(key, 'Testing...', null);
+
+    await fetchModelsForProvider(key, apiKey, endpoint);
+
+    if (btn) { btn.textContent = 'Test'; btn.disabled = false; }
+}
+
+function clearProvider(key) {
+    const keyEl = document.getElementById('papikey-' + key);
+    const modelSection = document.getElementById('pmodel-section-' + key);
+    const modelSelect = document.getElementById('pmodel-' + key);
+    if (keyEl) keyEl.value = '';
+    if (modelSection) modelSection.style.display = 'none';
+    if (modelSelect) modelSelect.innerHTML = '<option value="">— select model —</option>';
+    setProviderStatus(key, 'Cleared.', null);
+    delete window.providerConfigs[key];
+}
+
+async function saveProviderConfigs() {
+    if (!sbClient) { document.getElementById('providers-status').textContent = 'Not signed in.'; return; }
+    const { data: { user } } = await sbClient.auth.getUser();
+    if (!user) return;
+
+    const btn = document.getElementById('btn-save-providers');
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    try {
+        const upserts = [];
+        for (const key of Object.keys(PROVIDER_DEFS)) {
+            const apiKey   = document.getElementById('papikey-' + key)?.value.trim();
+            const endpoint = document.getElementById('pendpoint-' + key)?.value.trim();
+            const model    = document.getElementById('pmodel-' + key)?.value.trim();
+            if (!apiKey) continue; // only save configured providers
+            upserts.push({ user_id: user.id, provider: key, api_key: apiKey, endpoint_url: endpoint, preferred_model: model || PROVIDER_DEFS[key].preferred });
+            window.providerConfigs[key] = { apiKey, endpoint, model: model || PROVIDER_DEFS[key].preferred };
+        }
+
+        if (upserts.length > 0) {
+            const { error } = await sbClient.from('provider_configs').upsert(upserts, { onConflict: 'user_id,provider' });
+            if (error) throw error;
+        }
+
+        const statusEl = document.getElementById('providers-status');
+        statusEl.textContent = '✓ Saved successfully.';
+        statusEl.style.color = '#22c55e';
+        setTimeout(() => { document.getElementById('providers-modal').style.display = 'none'; }, 800);
+    } catch(e) {
+        const statusEl = document.getElementById('providers-status');
+        statusEl.textContent = 'Error: ' + e.message;
+        statusEl.style.color = '#ef4444';
+    } finally {
+        btn.disabled = false; btn.textContent = 'Save All';
+    }
+}
+
+async function loadProviderConfigs() {
+    if (!sbClient) return;
+    try {
+        const { data: { user } } = await sbClient.auth.getUser();
+        if (!user) return;
+        const { data, error } = await sbClient.from('provider_configs').select('*').eq('user_id', user.id);
+        if (error || !data || data.length === 0) return;
+
+        for (const row of data) {
+            const key = row.provider;
+            if (!PROVIDER_DEFS[key]) continue;
+
+            window.providerConfigs[key] = { apiKey: row.api_key, endpoint: row.endpoint_url, model: row.preferred_model };
+
+            // Populate UI
+            const keyEl = document.getElementById('papikey-' + key);
+            if (keyEl) keyEl.value = row.api_key;
+            const epEl = document.getElementById('pendpoint-' + key);
+            if (epEl && row.endpoint_url) epEl.value = row.endpoint_url;
+
+            // Load models and pre-select saved model
+            await fetchModelsForProvider(key, row.api_key, row.endpoint_url || PROVIDER_DEFS[key].endpoint);
+            const modelSelect = document.getElementById('pmodel-' + key);
+            if (modelSelect && row.preferred_model) {
+                // Try to select saved model
+                const opt = Array.from(modelSelect.options).find(o => o.value === row.preferred_model);
+                if (opt) opt.selected = true;
+                else {
+                    const newOpt = document.createElement('option');
+                    newOpt.value = row.preferred_model;
+                    newOpt.text = row.preferred_model;
+                    newOpt.selected = true;
+                    modelSelect.prepend(newOpt);
+                }
+            }
+        }
+        logTrace('Provider configs loaded.', false);
+    } catch(e) {
+        console.warn('Failed to load provider configs:', e);
+    }
+}
+
+// ── Providers modal wiring ────────────────────────────────────────────────────
+document.getElementById('btn-providers').addEventListener('click', () => {
+    if (!sbClient) { alert('Please sign in to configure providers.'); return; }
+    document.getElementById('providers-modal').style.display = 'flex';
+});
+document.getElementById('btn-close-providers').addEventListener('click', () => {
+    document.getElementById('providers-modal').style.display = 'none';
+});
+document.getElementById('providers-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('providers-modal')) document.getElementById('providers-modal').style.display = 'none';
+});
+document.getElementById('btn-save-providers').addEventListener('click', saveProviderConfigs);
+
+// ─── CHUNK 2: PER-STAFF MODEL ASSIGNMENT ────────────────────────────────────
+
+// staff_assignments in memory: { cos: { provider, model }, tony: { provider, model }, ... }
+window.staffAssignments = {};
+
+function populateProviderDropdowns() {
+    // Called when customize modal opens — fill provider dropdowns with configured providers
+    const configuredProviders = Object.keys(window.providerConfigs || {});
+    const STAFF_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+
+    STAFF_KEYS.forEach(key => {
+        const sel = document.getElementById('custom-provider-' + key);
+        if (!sel) return;
+        const current = window.staffAssignments[key]?.provider || '';
+        sel.innerHTML = '<option value="">— provider —</option>' +
+            Object.entries(PROVIDER_DEFS)
+                .filter(([k]) => configuredProviders.includes(k))
+                .map(([k, def]) => `<option value="${k}" ${k === current ? 'selected' : ''}>${def.label}</option>`)
+                .join('');
+
+        // Populate model dropdown for current selection
+        if (current) populateModelDropdown(key, current);
+
+        // On provider change, repopulate model dropdown
+        sel.onchange = () => populateModelDropdown(key, sel.value);
+    });
+}
+
+function populateModelDropdown(staffKey, providerKey) {
+    const modelSel = document.getElementById('custom-model-' + staffKey);
+    if (!modelSel) return;
+
+    if (!providerKey) {
+        modelSel.innerHTML = '<option value="">— model —</option>';
+        return;
+    }
+
+    const provConf = window.providerConfigs[providerKey];
+    const def = PROVIDER_DEFS[providerKey];
+    const savedModel = window.staffAssignments[staffKey]?.model || provConf?.model || def?.preferred || '';
+
+    let models = [];
+    if (providerKey === 'anthropic') {
+        models = ANTHROPIC_MODELS;
+    } else {
+        // Get from the providers modal model select
+        const provModelSel = document.getElementById('pmodel-' + providerKey);
+        if (provModelSel && provModelSel.options.length > 1) {
+            models = Array.from(provModelSel.options).map(o => o.value).filter(Boolean);
+        } else {
+            models = [def?.preferred || ''];
+        }
+    }
+
+    modelSel.innerHTML = models.map(m =>
+        `<option value="${m}" ${m === savedModel ? 'selected' : ''}>${m}</option>`
+    ).join('');
+
+    // If saved model not in list, prepend it
+    if (savedModel && !models.includes(savedModel)) {
+        modelSel.innerHTML = `<option value="${savedModel}" selected>${savedModel}</option>` + modelSel.innerHTML;
+    }
+}
+
+async function loadStaffAssignments() {
+    if (!sbClient) return;
+    try {
+        const { data: { user } } = await sbClient.auth.getUser();
+        if (!user) return;
+        const { data, error } = await sbClient.from('staff_assignments').select('*').eq('user_id', user.id);
+        if (error || !data || data.length === 0) return;
+        data.forEach(row => {
+            window.staffAssignments[row.staff_key] = { provider: row.provider, model: row.model_id };
+        });
+        logTrace('Staff model assignments loaded.', false);
+    } catch(e) {
+        console.warn('Failed to load staff assignments:', e);
+    }
+}
+
+async function saveStaffAssignments() {
+    if (!sbClient) { showCustomizeStatus('Not signed in.', true); return; }
+    const { data: { user } } = await sbClient.auth.getUser();
+    if (!user) { showCustomizeStatus('Not signed in.', true); return; }
+
+    const STAFF_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+    const upserts = [];
+
+    STAFF_KEYS.forEach(key => {
+        const provider = document.getElementById('custom-provider-' + key)?.value;
+        const model    = document.getElementById('custom-model-' + key)?.value;
+        if (!provider || !model) return;
+        upserts.push({ user_id: user.id, staff_key: key, provider, model_id: model });
+        window.staffAssignments[key] = { provider, model };
+    });
+
+    if (upserts.length > 0) {
+        const { error } = await sbClient.from('staff_assignments').upsert(upserts, { onConflict: 'user_id,staff_key' });
+        if (error) { showCustomizeStatus('Error saving assignments: ' + error.message, true); return; }
+    }
+}
+
+// ── Patch customize modal open to populate provider dropdowns ─────────────────
+const _origCustomizeOpen = document.getElementById('btn-customize').onclick;
+document.getElementById('btn-customize').removeEventListener('click', document.getElementById('btn-customize')._customizeHandler);
+
+document.getElementById('btn-customize')._customizeHandler2 = () => {
+    if (!sbClient) { alert('Please sign in to customize your team.'); return; }
+    Object.keys(STAFF_DEFAULTS).forEach(key => {
+        const nameEl = document.getElementById('custom-name-' + key);
+        if (nameEl) nameEl.value = window.staffCustom[key]?.name || STAFF_DEFAULTS[key].name;
+        const imgEl = document.getElementById('custom-img-' + key);
+        if (imgEl) imgEl.src = window.staffCustom[key]?.img || STAFF_DEFAULTS[key].img;
+    });
+    populateProviderDropdowns();
+    document.getElementById('customize-modal').style.display = 'flex';
+};
+
+// Re-wire btn-customize click
+document.getElementById('btn-customize').onclick = document.getElementById('btn-customize')._customizeHandler2;
+
+// ── Patch saveStaffCustomizations to also save assignments ────────────────────
+const _origSaveCustomize = saveStaffCustomizations;
+window.saveStaffCustomizations = async function() {
+    await _origSaveCustomize();
+    await saveStaffAssignments();
+};
+document.getElementById('btn-save-customize').onclick = () => window.saveStaffCustomizations();
+
+// ─── CHUNK 3: PER-STAFF MODEL ROUTING ────────────────────────────────────────
+
+// Map staff key to their name (for matching CONSULT tags)
+function getStaffKeyByName(name) {
+    for (const [key, def] of Object.entries(window.staffCustom || STAFF_DEFAULTS)) {
+        if (def.name.toLowerCase() === name.toLowerCase()) return key;
+    }
+    return null;
+}
+
+// Build fetch options for a specific staff member's assigned model
+// Falls back to global API config if no assignment
+function buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens) {
+    const assignment = window.staffAssignments?.[staffKey];
+    const providerKey = assignment?.provider;
+    const model = assignment?.model;
+    const provConf = providerKey ? window.providerConfigs?.[providerKey] : null;
+
+    // If no assignment or no provider config, fall back to global
+    if (!provConf || !model) {
+        const isAnthro = isAnthropicProvider();
+        return {
+            url: getEndpoint(),
+            options: isAnthro ? {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01' },
+                body: JSON.stringify({ model: MODEL_NAME, system: systemPrompt, messages, max_tokens: maxTokens })
+            } : {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+                body: JSON.stringify({ model: MODEL_NAME, messages: [{ role:'system', content:systemPrompt }, ...messages], temperature:0.7, max_tokens: maxTokens })
+            },
+            isAnthropic: isAnthro,
+            label: MODEL_NAME + ' (global)'
+        };
+    }
+
+    const endpoint = (provConf.endpoint || PROVIDER_DEFS[providerKey].endpoint).replace(/\/$/, '');
+    const isAnthropic = providerKey === 'anthropic';
+    const isGoogle = providerKey === 'google';
+
+    let url, options;
+    if (isAnthropic) {
+        url = endpoint + '/v1/messages';
+        options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-api-key': provConf.apiKey, 'anthropic-version': '2023-06-01' },
+            body: JSON.stringify({ model, system: systemPrompt, messages, max_tokens: maxTokens })
+        };
+    } else if (isGoogle) {
+        url = endpoint + '/models/' + model + ':generateContent?key=' + provConf.apiKey;
+        options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                system_instruction: { parts: [{ text: systemPrompt }] },
+                contents: messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }))
+            })
+        };
+    } else {
+        url = endpoint + '/chat/completions';
+        options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + provConf.apiKey },
+            body: JSON.stringify({ model, messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
+        };
+    }
+
+    return { url, options, isAnthropic, isGoogle, label: model + ' (' + PROVIDER_DEFS[providerKey].label + ')' };
+}
+
+async function callStaffModel(staffKey, messages, systemPrompt, maxTokens = 1024) {
+    const { url, options, isAnthropic, isGoogle, label } = buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens);
+    logTrace(`[${(window.staffCustom?.[staffKey]?.name || staffKey)}] → ${label}`, false);
+
+    const resp = await fetch(url, options);
+    if (!resp.ok) {
+        let eb = {}; try { eb = await resp.json(); } catch(e) {}
+        throw new Error(`${label} API ${resp.status}: ${eb.error?.message || eb.message || resp.statusText}`);
+    }
+    const data = await resp.json();
+
+    if (isAnthropic) return data.content?.[0]?.text || '';
+    if (isGoogle) return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    return data.choices?.[0]?.message?.content || '';
+}
+
+// Build per-staff system prompt
+function buildStaffSystemPrompt(staffKey) {
+    const def = STAFF_DEFAULTS[staffKey];
+    const custom = window.staffCustom?.[staffKey] || def;
+    const name = custom.name || def.name;
+    const role = def.role;
+    const founderCtx = (founderName || startupDesc) ?
+        `\n\nFOUNDER CONTEXT:\nFounder: ${founderName || 'Unknown'}\nBusiness: ${startupDesc || 'Not specified'}` : '';
+
+    const personas = {
+        cos:      `You are ${name}, Chief of Staff. You are diplomatic, strategic, and an orchestrator. You synthesise specialist input into unified recommendations.`,
+        tony:     `You are ${name}, Head of Engineering. First-principles thinker. You focus on technical feasibility, architecture decisions, build vs buy, and engineering execution.`,
+        mike:     `You are ${name}, Head of Finance & Accounting. Burn-rate obsessed, ROI-focused, conservative. You focus on financial modelling, unit economics, and fundraising.`,
+        steve:    `You are ${name}, Head of Marketing. Narrative-driven, growth-hacker. You focus on go-to-market strategy, brand positioning, and customer acquisition.`,
+        harvey:   `You are ${name}, Head of Legal. Precise, risk-averse, equity-protective. You focus on contracts, IP protection, and regulatory compliance.`,
+        leonardo: `You are ${name}, Head of Architecture. Systems design expert. You focus on technical architecture, infrastructure planning, and long-term platform thinking.`,
+        sigmund:  `You are ${name}, Head of Human Resources. Empathetic and compliance focused. You focus on hiring strategy, team structure, compensation, and people operations.`,
+    };
+
+    return (personas[staffKey] || `You are ${name}, a specialist advisor.`) +
+        `\n\nRespond concisely and professionally. 2-4 sentences max unless detail is required. No markdown tables. Use bullet points sparingly.` +
+        founderCtx;
+}
+
+// ── Override sendChat with agentic multi-model version ────────────────────────
+const _originalSendChat = sendChat;
+
+async function sendChatAgentic() {
+    const userText = chatInput.value.trim();
+    if (!userText) return;
+
+    // Check if any staff have model assignments — if not, fall back to original
+    const hasAssignments = Object.keys(window.staffAssignments || {}).length > 0;
+    const hasProviderConfigs = Object.keys(window.providerConfigs || {}).length > 0;
+
+    if (!hasAssignments || !hasProviderConfigs) {
+        // Fall back to legacy single-model mode
+        return _originalSendChat();
+    }
+
+    const docReq = detectDocRequest(userText);
+    appendMessage('User', userText);
+    chatInput.value = '';
+    chatHistory.push({ role: 'user', content: userText });
+    btnSend.disabled = true;
+    btnSend.textContent = 'Routing…';
+
+    try {
+        // ── Phase 1: Ask Donna which specialists to consult ──────────────────
+        const cosName = window.staffCustom?.cos?.name || 'Donna';
+        const allStaffNames = Object.values(window.staffCustom || STAFF_DEFAULTS).map(s => s.name).join(', ');
+
+        const phase1System = buildStaffSystemPrompt('cos') + `
+
+Your team: ${allStaffNames}.
+When answering, decide which specialists are relevant. Format their consultation as:
+[CONSULT: Name]
+Then provide the final synthesis.
+
+STRICT RULES:
+1. Never use markdown tables
+2. Use plain bullet points with "- " 
+3. Bold key terms with **term** only
+4. Keep responses concise`;
+
+        logTrace(`Phase 1: Routing to ${cosName}...`, true);
+        const phase1Response = await callStaffModel('cos', chatHistory, phase1System, 512);
+
+        // Extract which staff were consulted
+        const staffNames = Object.values(window.staffCustom || STAFF_DEFAULTS).map(s => s.name);
+        const consultRegexAgentic = new RegExp('\\[CONSULT:\\s*(' + staffNames.join('|') + ')\\]', 'gi');
+        const consultedNames = [...phase1Response.matchAll(consultRegexAgentic)].map(m => m[1]);
+
+        // Animate connections
+        consultedNames.forEach(name => animateConnection(name));
+
+        if (consultedNames.length === 0) {
+            // Donna answered directly — no consultations needed
+            appendMessage(cosName, phase1Response);
+            chatHistory.push({ role: 'assistant', content: phase1Response });
+            return;
+        }
+
+        logTrace(`Consulting: ${consultedNames.join(', ')}`, true);
+        btnSend.textContent = 'Consulting…';
+
+        // ── Phase 2: Call each specialist's own model ────────────────────────
+        const specialistResponses = {};
+        for (const name of consultedNames) {
+            const key = getStaffKeyByName(name);
+            if (!key || key === 'cos') continue;
+
+            const staffSystem = buildStaffSystemPrompt(key);
+            const staffMessages = [{ role: 'user', content: userText }];
+
+            try {
+                const response = await callStaffModel(key, staffMessages, staffSystem, 1024);
+                specialistResponses[name] = response;
+                logTrace(`✓ ${name} responded.`, false);
+            } catch(e) {
+                specialistResponses[name] = `[${name} unavailable: ${e.message}]`;
+                logTrace(`✗ ${name} error: ${e.message}`, false);
+            }
+        }
+
+        // ── Phase 3: Donna synthesises all specialist input ──────────────────
+        btnSend.textContent = 'Synthesising…';
+        logTrace(`Phase 3: ${cosName} synthesising...`, true);
+
+        const specialistSummary = Object.entries(specialistResponses)
+            .map(([name, resp]) => `${name}:\n${resp}`)
+            .join('\n\n');
+
+        const phase3Messages = [
+            ...chatHistory.slice(0, -1), // exclude last user message
+            { role: 'user', content: userText },
+            { role: 'assistant', content: `I consulted the team. Here are their inputs:\n\n${specialistSummary}` },
+            { role: 'user', content: `Based on the team's input above, provide a clear, unified strategic recommendation.` }
+        ];
+
+        const phase3System = buildStaffSystemPrompt('cos');
+        const synthesis = await callStaffModel('cos', phase3Messages, phase3System, 2048);
+
+        // ── Render with specialist blocks ────────────────────────────────────
+        const fullResponse = Object.entries(specialistResponses)
+            .map(([name, resp]) => `[CONSULT: ${name}]\n${name}: ${resp}`)
+            .join('\n\n') + `\n\n${cosName}: ${synthesis}`;
+
+        appendMessage(cosName, fullResponse);
+        chatHistory.push({ role: 'assistant', content: synthesis });
+
+        if (docReq.type) {
+            const extracted = extractDocBlock(synthesis);
+            injectDownloadCard(extracted?.docType || docReq.type, docReq.filename, extracted?.rawBlock || synthesis);
+        }
+
+    } catch(error) {
+        console.error(error);
+        logTrace(`Error: ${error.message}`, false);
+        appendMessage('Soleil', `Error: ${error.message}`);
+    } finally {
+        btnSend.disabled = false;
+        btnSend.textContent = 'Execute';
+    }
+}
+
+// Replace sendChat with agentic version
+window.sendChat = sendChatAgentic;
+btnSend.onclick = () => window.sendChat();
+document.getElementById('chat-input').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendChat(); } };
+
+// ─── CHUNK 4: PER-STAFF KNOWLEDGE BASE ───────────────────────────────────────
+
+const STAFF_KB_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+
+// In-memory: { cos: { urls: '', files: [{name, content}], urlContent: '' }, ... }
+window.staffKb = {};
+STAFF_KB_KEYS.forEach(k => { window.staffKb[k] = { urls: '', files: [], urlContent: '' }; });
+
+let activeStaffKbTab = 'cos';
+
+function switchStaffKbTab(key) {
+    STAFF_KB_KEYS.forEach(k => {
+        const panel = document.getElementById('skb-panel-' + k);
+        const btn = document.getElementById('skb-tab-btn-' + k);
+        if (panel) panel.style.display = k === key ? 'block' : 'none';
+        if (btn) {
+            btn.style.color = k === key ? 'var(--text-primary)' : 'var(--text-muted)';
+            btn.style.borderBottomColor = k === key ? 'var(--text-primary)' : 'transparent';
+        }
+    });
+    activeStaffKbTab = key;
+    renderStaffKbFileList(key);
+}
+
+function renderStaffKbFileList(key) {
+    const listEl = document.getElementById('skb-filelist-' + key);
+    if (!listEl) return;
+    const files = window.staffKb[key]?.files || [];
+    if (files.length === 0) { listEl.innerHTML = ''; return; }
+    listEl.innerHTML = files.map((f, i) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg-elevated);border-radius:5px;font-size:11px;color:var(--text-secondary);font-family:'Geist Mono',monospace;">
+            <span>${f.name} (${Math.round(f.content.length/1024*10)/10}kb)</span>
+            <button onclick="removeStaffKbFile('${key}',${i})" style="background:transparent;border:none;cursor:pointer;color:#ef4444;font-size:13px;line-height:1;">×</button>
+        </div>`).join('');
+}
+
+function removeStaffKbFile(key, idx) {
+    window.staffKb[key].files.splice(idx, 1);
+    renderStaffKbFileList(key);
+}
+
+function setStaffKbStatus(msg, isError=false) {
+    const el = document.getElementById('staff-kb-status');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? '#ef4444' : '#22c55e';
+}
+
+async function fetchStaffKbUrls() {
+    const key = activeStaffKbTab;
+    const urlsEl = document.getElementById('skb-urls-' + key);
+    if (!urlsEl) return;
+    const urls = urlsEl.value.trim().split('\n').map(u => u.trim()).filter(u => u.startsWith('http'));
+    if (urls.length === 0) { setStaffKbStatus('No valid URLs to fetch.', true); return; }
+
+    setStaffKbStatus('Fetching ' + urls.length + ' URL(s)...');
+    let combined = '';
+    let fetched = 0;
+
+    for (const url of urls) {
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const text = await res.text();
+            // Strip HTML tags roughly
+            const clean = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 8000);
+            combined += `--- ${url} ---\n${clean}\n--- End ---\n\n`;
+            fetched++;
+        } catch(e) {
+            combined += `--- ${url} ---\n[Fetch failed: ${e.message}]\n--- End ---\n\n`;
+        }
+    }
+
+    window.staffKb[key].urlContent = combined;
+    setStaffKbStatus(`✓ Fetched ${fetched}/${urls.length} URL(s).`);
+}
+
+async function saveStaffKb() {
+    if (!sbClient) { setStaffKbStatus('Not signed in.', true); return; }
+    const { data: { user } } = await sbClient.auth.getUser();
+    if (!user) { setStaffKbStatus('Not signed in.', true); return; }
+
+    const btn = document.getElementById('btn-save-staff-kb');
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    try {
+        // Read any newly selected files
+        for (const key of STAFF_KB_KEYS) {
+            const fileInput = document.getElementById('skb-files-' + key);
+            if (fileInput?.files?.length > 0) {
+                for (const file of fileInput.files) {
+                    const text = await file.text();
+                    const truncated = text.slice(0, 50000); // 50kb max per file
+                    window.staffKb[key].files.push({ name: file.name, content: truncated });
+                }
+                fileInput.value = '';
+            }
+            // Save URLs from textarea
+            const urlsEl = document.getElementById('skb-urls-' + key);
+            if (urlsEl) window.staffKb[key].urls = urlsEl.value.trim();
+            renderStaffKbFileList(key);
+        }
+
+        const upserts = STAFF_KB_KEYS.map(key => ({
+            user_id:     user.id,
+            staff_key:   key,
+            urls:        window.staffKb[key].urls || '',
+            url_content: window.staffKb[key].urlContent || '',
+            files_json:  JSON.stringify(window.staffKb[key].files || []),
+        }));
+
+        const { error } = await sbClient.from('staff_knowledge').upsert(upserts, { onConflict: 'user_id,staff_key' });
+        if (error) throw error;
+
+        setStaffKbStatus('✓ Staff knowledge base saved.');
+        setTimeout(() => { document.getElementById('staff-kb-modal').style.display = 'none'; }, 800);
+    } catch(e) {
+        setStaffKbStatus('Error: ' + e.message, true);
+    } finally {
+        btn.disabled = false; btn.textContent = 'Save';
+    }
+}
+
+async function loadStaffKb() {
+    if (!sbClient) return;
+    try {
+        const { data: { user } } = await sbClient.auth.getUser();
+        if (!user) return;
+        const { data, error } = await sbClient.from('staff_knowledge').select('*').eq('user_id', user.id);
+        if (error || !data || data.length === 0) return;
+
+        data.forEach(row => {
+            const key = row.staff_key;
+            if (!STAFF_KB_KEYS.includes(key)) return;
+            window.staffKb[key] = {
+                urls:       row.urls || '',
+                urlContent: row.url_content || '',
+                files:      JSON.parse(row.files_json || '[]'),
+            };
+            // Populate textarea
+            const urlsEl = document.getElementById('skb-urls-' + key);
+            if (urlsEl) urlsEl.value = row.urls || '';
+            renderStaffKbFileList(key);
+        });
+        logTrace('Staff knowledge base loaded.', false);
+    } catch(e) {
+        console.warn('Failed to load staff KB:', e);
+    }
+}
+
+// ── Inject per-staff KB into buildStaffSystemPrompt ────────────────────────────
+const _origBuildStaffPrompt = buildStaffSystemPrompt;
+window.buildStaffSystemPrompt = function(staffKey) {
+    let prompt = _origBuildStaffPrompt(staffKey);
+    const kb = window.staffKb?.[staffKey];
+    if (!kb) return prompt;
+
+    const parts = [];
+    if (kb.urlContent) parts.push(kb.urlContent);
+    if (kb.files?.length > 0) {
+        kb.files.forEach(f => {
+            parts.push(`--- ${f.name} ---\n${f.content}\n--- End ---`);
+        });
+    }
+
+    if (parts.length > 0) {
+        const kbText = parts.join('\n\n').slice(0, 12000); // cap at 12k chars
+        prompt += `\n\n[KNOWLEDGE BASE]\n${kbText}\n[END KNOWLEDGE BASE]`;
+    }
+
+    return prompt;
+};
+
+// Also patch callStaffModel to use updated buildStaffSystemPrompt
+// (already done since we replaced window.buildStaffSystemPrompt)
+
+// ── Staff KB modal wiring ─────────────────────────────────────────────────────
+document.getElementById('btn-staff-kb').addEventListener('click', () => {
+    if (!sbClient) { alert('Please sign in to manage staff knowledge.'); return; }
+    switchStaffKbTab('cos');
+    document.getElementById('staff-kb-modal').style.display = 'flex';
+});
+document.getElementById('btn-close-staff-kb').addEventListener('click', () => {
+    document.getElementById('staff-kb-modal').style.display = 'none';
+});
+document.getElementById('staff-kb-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('staff-kb-modal')) document.getElementById('staff-kb-modal').style.display = 'none';
+});
+document.getElementById('btn-save-staff-kb').addEventListener('click', saveStaffKb);
+document.getElementById('btn-fetch-staff-kb').addEventListener('click', fetchStaffKbUrls);
+
+// Init first tab
+switchStaffKbTab('cos');
 
 </script>
 </body>
