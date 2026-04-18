@@ -1479,6 +1479,7 @@ btnLogout.addEventListener('click', async () => {
 
 // Session state listener — only handle SIGN_IN and SIGN_OUT events, not initial load
 sbClient?.auth.onAuthStateChange(async (event, session) => {
+    clearTimeout(window._authFallbackTimer);
     if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') && session) {
         hideAuthModal();
         populateUserUI(session);
@@ -2112,8 +2113,16 @@ window.onload = async () => {
         return;
     }
 
-    // Show gate immediately — onAuthStateChange(INITIAL_SESSION) will hide it if session exists
-    showAuthModal();
+    // onAuthStateChange(INITIAL_SESSION) will handle showing/hiding the gate.
+    // Fallback: if INITIAL_SESSION never fires within 6s, show the gate.
+    const fallback = setTimeout(() => {
+        if (authModal.style.display !== 'none') return; // already shown
+        logTrace('Auth timeout — showing gate.', true);
+        showAuthModal();
+    }, 6000);
+
+    // Clear fallback once onAuthStateChange fires (handled inside the listener)
+    window._authFallbackTimer = fallback;
 };
 
 // ─── TRACE PANEL DRAG RESIZE ────────────────────────────────────────────────
