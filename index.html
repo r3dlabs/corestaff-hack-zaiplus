@@ -1402,7 +1402,7 @@ function populateUserUI(session) {
 }
 
 function clearUserUI() {
-    userAvatarBtn.parentElement.style.display = 'none';
+    userAvatarBtn.style.display = 'none';
     userDropdown.style.display = 'none';
     userAvatarImg.src = '';
     userFullName.textContent = '';
@@ -2096,12 +2096,7 @@ window.onload = async () => {
         }
     } catch(e) {
         console.warn('Auth check failed:', e);
-        hideAuthModal();
-        if (!founderName || !startupDesc) {
-            document.getElementById('startup-modal').style.display = 'flex';
-        } else {
-            initializeBoardroom();
-        }
+        showAuthModal();
     }
 };
 
