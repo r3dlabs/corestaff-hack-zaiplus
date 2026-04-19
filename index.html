@@ -1095,6 +1095,19 @@
                 <button id="btn-close-customize" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;">×</button>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Rename your team members and upload custom photos. Changes are saved to your account.</p>
+
+            <!-- ── Set All ─────────────────────────────────────────── -->
+            <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set All</span>
+                <select id="set-all-provider" style="flex:1;min-width:100px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;" onchange="onSetAllProviderChange()">
+                    <option value="">— provider —</option>
+                </select>
+                <select id="set-all-model" style="flex:2;min-width:120px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                    <option value="">— model —</option>
+                </select>
+                <button onclick="applyToAll()" class="btn-primary" style="padding:5px 12px;font-size:12px;white-space:nowrap;">Apply to All</button>
+            </div>
+
             <div style="max-height:420px;overflow-y:auto;padding-right:4px;">
                 
                         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
@@ -2856,11 +2869,11 @@ function populateProviderDropdowns() {
         if (current) populateModelDropdown(key, current);
 
         // On provider change, repopulate model dropdown
-        sel.onchange = () => populateModelDropdown(key, sel.value);
+        sel.onchange = () => populateModelDropdown(key, sel.value, true);
     });
 }
 
-function populateModelDropdown(staffKey, providerKey) {
+function populateModelDropdown(staffKey, providerKey, forceDefault = false) {
     const modelSel = document.getElementById('custom-model-' + staffKey);
     if (!modelSel) return;
 
@@ -2871,7 +2884,14 @@ function populateModelDropdown(staffKey, providerKey) {
 
     const provConf = window.providerConfigs[providerKey];
     const def = PROVIDER_DEFS[providerKey];
-    const savedModel = window.staffAssignments[staffKey]?.model || provConf?.model || def?.preferred || '';
+
+    // If provider changed, default to the new provider's preferred model
+    // forceDefault=true when called from onchange
+    const currentAssignedProvider = window.staffAssignments[staffKey]?.provider;
+    const providerChanged = forceDefault || (currentAssignedProvider && currentAssignedProvider !== providerKey);
+    const savedModel = providerChanged
+        ? (provConf?.model || def?.preferred || '')
+        : (window.staffAssignments[staffKey]?.model || provConf?.model || def?.preferred || '');
 
     let models = [];
     if (providerKey === 'anthropic') {
@@ -2939,6 +2959,77 @@ async function saveStaffAssignments() {
     }
 }
 
+// ── Set All provider/model ────────────────────────────────────────────────────
+function populateSetAllDropdown() {
+    const provSel = document.getElementById('set-all-provider');
+    if (!provSel) return;
+    const configuredProviders = Object.keys(window.providerConfigs || {});
+    provSel.innerHTML = '<option value="">— provider —</option>' +
+        Object.entries(PROVIDER_DEFS)
+            .filter(([k]) => configuredProviders.includes(k))
+            .map(([k, def]) => `<option value="${k}">${def.label}</option>`)
+            .join('');
+    document.getElementById('set-all-model').innerHTML = '<option value="">— model —</option>';
+}
+
+function onSetAllProviderChange() {
+    const provSel = document.getElementById('set-all-provider');
+    const modelSel = document.getElementById('set-all-model');
+    const providerKey = provSel.value;
+    if (!providerKey) { modelSel.innerHTML = '<option value="">— model —</option>'; return; }
+
+    const provConf = window.providerConfigs[providerKey];
+    const def = PROVIDER_DEFS[providerKey];
+    const preferred = provConf?.model || def?.preferred || '';
+
+    let models = [];
+    if (providerKey === 'anthropic') {
+        models = typeof ANTHROPIC_MODELS !== 'undefined' ? ANTHROPIC_MODELS : [preferred];
+    } else {
+        const provModelSel = document.getElementById('pmodel-' + providerKey);
+        if (provModelSel && provModelSel.options.length > 1) {
+            models = Array.from(provModelSel.options).map(o => o.value).filter(Boolean);
+        } else {
+            models = [preferred];
+        }
+    }
+
+    modelSel.innerHTML = models.map(m =>
+        `<option value="${m}" ${m === preferred ? 'selected' : ''}>${m}</option>`
+    ).join('');
+}
+
+function applyToAll() {
+    const providerKey = document.getElementById('set-all-provider').value;
+    const model = document.getElementById('set-all-model').value;
+    if (!providerKey || !model) {
+        alert('Please select a provider and model first.');
+        return;
+    }
+    // Apply to all staff dropdowns
+    Object.keys(STAFF_DEFAULTS).forEach(key => {
+        const provSel = document.getElementById('custom-provider-' + key);
+        if (provSel) {
+            provSel.value = providerKey;
+            populateModelDropdown(key, providerKey, true);
+            // Override the auto-selected preferred with the chosen model
+            const modelSel = document.getElementById('custom-model-' + key);
+            if (modelSel) {
+                // Ensure the model option exists, then select it
+                const exists = Array.from(modelSel.options).some(o => o.value === model);
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = model; opt.textContent = model;
+                    modelSel.insertBefore(opt, modelSel.firstChild);
+                }
+                modelSel.value = model;
+            }
+        }
+    });
+    logTrace(`Applied ${providerKey}/${model.split('/').pop()} to all staff.`, true);
+}
+// ── Set All provider/model ────────────────────────────────────────────────────
+
 // ── Definitive btn-customize click handler ───────────────────────────────────
 document.getElementById('btn-customize').onclick = () => {
     if (!sbClient) { alert('Please sign in to customize your team.'); return; }
@@ -2949,6 +3040,7 @@ document.getElementById('btn-customize').onclick = () => {
         if (imgEl) imgEl.src = window.staffCustom[key]?.img || STAFF_DEFAULTS[key].img;
     });
     populateProviderDropdowns();
+    populateSetAllDropdown();
     document.getElementById('customize-modal').style.display = 'flex';
 };
 
