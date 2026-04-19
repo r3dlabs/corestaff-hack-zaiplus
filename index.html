@@ -1738,6 +1738,7 @@ const PROVIDERS = {
 // Old global API state removed — now per-staff via providerConfigs
 let chatHistory = [];
 let apiErrorCount = 0;
+window._apiErrors = {}; // tracks last error per staff key
 let founderName  = localStorage.getItem('founder_name')  || '';
 let startupDesc  = localStorage.getItem('startup_desc')   || '';
 let hqCountry    = localStorage.getItem('hq_country')     || '';
@@ -2084,7 +2085,7 @@ function getStaffImgForSender(sender) {
     return null;
 }
 
-function appendStaffBubble(name, text, isSynthesis = false) {
+function appendStaffBubble(name, text, isSynthesis = false, usage = null) {
     const chatWindow = document.getElementById('chat-window');
 
     // Find staff key by name to get color
@@ -2118,11 +2119,41 @@ function appendStaffBubble(name, text, isSynthesis = false) {
     nameLabel.style.cssText = `font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${color};margin-bottom:6px;font-family:'Geist Mono',monospace;display:flex;align-items:center;gap:6px;`;
     nameLabel.innerHTML = `${name}${isSynthesis ? ' <span style="opacity:0.6;font-weight:400;">· Synthesis</span>' : ''}`;
 
-    const content = document.createElement('div');
-    content.innerHTML = formatTextToHtml(text.replace(/\[DOCUMENT:[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
+    const contentEl = document.createElement('div');
+    contentEl.innerHTML = formatTextToHtml(text.replace(/\[DOCUMENT:[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
 
     bubble.appendChild(nameLabel);
-    bubble.appendChild(content);
+    bubble.appendChild(contentEl);
+
+    // ── Metadata footer ──────────────────────────────────────────────────────
+    const metaParts = [];
+
+    // Token usage
+    if (usage?.total) {
+        const parts = [];
+        if (usage.prompt)     parts.push(`↑${usage.prompt.toLocaleString()}`);
+        if (usage.completion) parts.push(`↓${usage.completion.toLocaleString()}`);
+        metaParts.push(`<span title="Tokens: ${usage.prompt||'?'} prompt + ${usage.completion||'?'} completion = ${usage.total} total">⬡ ${usage.total.toLocaleString()} tokens${parts.length ? ' (' + parts.join(' ') + ')' : ''}</span>`);
+    }
+
+    // Memory references — show if default or session memory was injected
+    if (defaultMemory) {
+        metaParts.push(`<span title="Default memory was included in this prompt">🧠 mem</span>`);
+    }
+    if (sessionMemory) {
+        metaParts.push(`<span title="Session summary was included in this prompt">📋 session</span>`);
+    }
+    if (hqCountry) {
+        metaParts.push(`<span title="HQ jurisdiction context: ${hqCountry}">${countryToFlag(hqCountry)} ${hqCountry}</span>`);
+    }
+
+    if (metaParts.length > 0) {
+        const meta = document.createElement('div');
+        meta.style.cssText = 'margin-top:8px;padding-top:6px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--text-muted);font-family:\'Geist Mono\',monospace;letter-spacing:0.02em;';
+        meta.innerHTML = metaParts.join('');
+        bubble.appendChild(meta);
+    }
+
     wrapper.appendChild(avatar);
     wrapper.appendChild(bubble);
     chatWindow.appendChild(wrapper);
@@ -2339,6 +2370,7 @@ document.getElementById('about-modal').addEventListener('click', e => {
 btnClear.addEventListener('click',()=>{
     chatHistory=[]; initializeBoardroom();
     traceWindow.innerHTML='';
+    window._apiErrors = {};
     logTrace('Boardroom cleared.');
     document.querySelectorAll('.connector-line').forEach(el=>el.classList.remove('active'));
     document.querySelectorAll('.node-circle').forEach(el=>el.classList.remove('active'));
@@ -3118,13 +3150,44 @@ async function callStaffModel(staffKey, messages, systemPrompt, maxTokens = 1024
     const resp = await fetch(url, options);
     if (!resp.ok) {
         let eb = {}; try { eb = await resp.json(); } catch(e) {}
-        throw new Error(`${label} API ${resp.status}: ${eb.error?.message || eb.message || resp.statusText}`);
+        const rawMsg = eb.error?.message || eb.message || resp.statusText || '';
+        const status = resp.status;
+        let friendly = rawMsg;
+        if (status === 429 || /rate.?limit|too many requests/i.test(rawMsg)) {
+            friendly = `Rate limit hit (429). Wait a moment and retry.`;
+        } else if (status === 402 || /quota|billing|insufficient.?funds|credits/i.test(rawMsg)) {
+            friendly = `Quota exceeded or billing issue. Check your ${label.split('(')[1]?.replace(')','') || 'provider'} dashboard.`;
+        } else if (status === 401 || /invalid.?api.?key|unauthorized|authentication/i.test(rawMsg)) {
+            friendly = `Invalid API key. Check your key in Providers settings.`;
+        } else if (status === 400 && /max.?token|context.?length|too.?long/i.test(rawMsg)) {
+            friendly = `Context too long or token limit exceeded. Try clearing the conversation.`;
+        } else if (status === 503 || status === 502) {
+            friendly = `${label.split('(')[1]?.replace(')','') || 'Provider'} server error (${status}). Try again shortly.`;
+        }
+        const err = new Error(`${label} — ${friendly}`);
+        err.staffKey = staffKey;
+        err.status = status;
+        err.raw = rawMsg;
+        window._apiErrors[staffKey] = { msg: friendly, status, time: new Date().toLocaleTimeString(), label };
+        throw err;
     }
     const data = await resp.json();
 
-    if (isAnthropic) return data.content?.[0]?.text || '';
-    if (isGoogle) return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    return data.choices?.[0]?.message?.content || '';
+    let text = '';
+    let usage = null;
+
+    if (isAnthropic) {
+        text = data.content?.[0]?.text || '';
+        if (data.usage) usage = { prompt: data.usage.input_tokens, completion: data.usage.output_tokens, total: (data.usage.input_tokens||0) + (data.usage.output_tokens||0) };
+    } else if (isGoogle) {
+        text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        if (data.usageMetadata) usage = { prompt: data.usageMetadata.promptTokenCount, completion: data.usageMetadata.candidatesTokenCount, total: data.usageMetadata.totalTokenCount };
+    } else {
+        text = data.choices?.[0]?.message?.content || '';
+        if (data.usage) usage = { prompt: data.usage.prompt_tokens, completion: data.usage.completion_tokens, total: data.usage.total_tokens };
+    }
+
+    return { text, usage, label };
 }
 
 // Build per-staff system prompt
@@ -3282,7 +3345,7 @@ async function summariseSession() {
     if (!assignment?.provider || !assignment?.model) return;
 
     try {
-        const summary = await callStaffModel(cosKey, [
+        const { text: summary } = await callStaffModel(cosKey, [
             { role: 'user', content: 'Summarise the following conversation in 3-5 bullet points. Focus on decisions made, key facts established, and open questions. Be concise.\n\n' + chatHistory.slice(-20).map(m => m.role + ': ' + m.content).join('\n') }
         ], 'You are a helpful assistant. Respond only with bullet points. No preamble.', 512);
         sessionMemory = summary;
@@ -3360,9 +3423,12 @@ async function sendChatAgentic() {
     const hasAssignments = Object.keys(window.staffAssignments || {}).length > 0;
     const hasProviderConfigs = Object.keys(window.providerConfigs || {}).length > 0;
 
+    logTrace(`sendChatAgentic: assignments=${Object.keys(window.staffAssignments||{}).length} providers=${Object.keys(window.providerConfigs||{}).length}`, true);
+
     if (!hasAssignments || !hasProviderConfigs) {
-        // Fall back to legacy single-model mode
-        return _originalSendChat();
+        logTrace('No assignments or providers — aborting', false);
+        appendMessage(window.staffCustom?.cos?.name || 'Donna', 'Please configure providers and assign models in Customize Team.');
+        return;
     }
 
     const docReq = detectDocRequest(userText);
@@ -3380,6 +3446,8 @@ async function sendChatAgentic() {
     try {
         // ── Phase 1: Ask Donna which specialists to consult ──────────────────
         const cosName = window.staffCustom?.cos?.name || 'Donna';
+        const cosAssign = window.staffAssignments?.cos;
+        logTrace(`Phase 1 setup: cos=${cosAssign?.provider}/${cosAssign?.model?.split('/').pop()}`, true);
         // Build team roster with role labels so COS knows who does what regardless of name
         const teamRoster = Object.entries(window.staffCustom || STAFF_DEFAULTS)
             .filter(([k]) => k !== 'cos')
@@ -3400,8 +3468,9 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
 
         logTrace(`Phase 1: Routing to ${cosName}...`, true);
         setDotActive('cos');
-        const phase1Response = await callStaffModel('cos', chatHistory, phase1System, 512);
+        const { text: phase1Response, usage: phase1Usage } = await callStaffModel('cos', chatHistory, phase1System, 512);
         setDotReady('cos');
+        logTrace(`Phase 1 tokens: ${phase1Usage?.total || '?'}`, false);
 
         // Extract which staff were consulted
         const staffNames = Object.values(window.staffCustom || STAFF_DEFAULTS).map(s => s.name);
@@ -3432,13 +3501,13 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
 
             try {
                 setDotActive(key);
-                const response = await callStaffModel(key, staffMessages, staffSystem, 1024);
-                specialistResponses[name] = response;
+                const { text: response, usage: specUsage } = await callStaffModel(key, staffMessages, staffSystem, 1024);
+                specialistResponses[name] = { text: response, usage: specUsage };
                 setDotReady(key);
-                logTrace(`✓ ${name} responded.`, false);
+                logTrace(`✓ ${name} responded. Tokens: ${specUsage?.total || '?'}`, false);
             } catch(e) {
                 setDotGray(key);
-                specialistResponses[name] = `[${name} unavailable: ${e.message}]`;
+                specialistResponses[name] = { text: `[${name} unavailable: ${e.message}]`, usage: null };
                 logTrace(`✗ ${name} error: ${e.message}`, false);
             }
         }
@@ -3460,17 +3529,19 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
 
         const phase3System = buildStaffSystemPrompt('cos');
         setDotActive('cos');
-        const synthesis = await callStaffModel('cos', phase3Messages, phase3System, 2048);
+        const { text: synthesis, usage: phase3Usage } = await callStaffModel('cos', phase3Messages, phase3System, 2048);
         setDotReady('cos');
+        logTrace(`Phase 3 tokens: ${phase3Usage?.total || '?'}`, false);
 
         // ── Render each specialist as their own bubble ───────────────────────
-        for (const [name, resp] of Object.entries(specialistResponses)) {
-            if (resp.startsWith('[') && resp.includes('unavailable')) continue; // skip errors silently
-            appendStaffBubble(name, resp);
+        for (const [name, respObj] of Object.entries(specialistResponses)) {
+            const resp = respObj.text || respObj;
+            if (typeof resp === 'string' && resp.startsWith('[') && resp.includes('unavailable')) continue;
+            appendStaffBubble(name, resp, false, respObj.usage);
         }
 
         // ── Donna synthesises last ───────────────────────────────────────────
-        appendStaffBubble(cosName, synthesis, true);
+        appendStaffBubble(cosName, synthesis, true, phase3Usage);
         chatHistory.push({ role: 'assistant', content: synthesis });
 
         if (docReq.type) {
@@ -3480,8 +3551,9 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
 
     } catch(error) {
         console.error(error);
-        logTrace(`Error: ${error.message}`, false);
-        appendMessage(window.staffCustom?.cos?.name || 'Chief of Staff', `Error: ${error.message}`);
+        logTrace(`ERROR: ${error.message}`, false);
+        logTrace(`Stack: ${error.stack?.split('\n')[1]?.trim() || 'N/A'}`, false);
+        appendMessage(window.staffCustom?.cos?.name || 'Chief of Staff', `Something went wrong: ${error.message}`);
     } finally {
         btnSend.disabled = false;
         btnSend.textContent = 'Execute';
@@ -3863,6 +3935,18 @@ async function runDiag() {
         log(NAMES[key], assignStr + ' [dot:' + dotStatus + ']', ok ? null : false);
         log('  pos', 'dot cx=' + dotCx + ' cy=' + dotCy + ' r=' + dotR + ' | border cx=' + borderCx + ' r=' + borderR, null);
         if (hasAssign && !hasKey) log('  → key missing for provider', assignment.provider, false);
+    }
+
+    // ── API ERRORS ──
+    head('API ERRORS');
+    const errKeys = Object.keys(window._apiErrors || {});
+    if (errKeys.length === 0) {
+        out.push('<span style="color:#aaa">· No errors recorded this session.</span>');
+    } else {
+        errKeys.forEach(k => {
+            const e = window._apiErrors[k];
+            log(`${NAMES[k] || k} [${e.time}]`, `${e.status} — ${e.msg}`, false);
+        });
     }
 
     // ── SVG NODE POSITIONS ──
