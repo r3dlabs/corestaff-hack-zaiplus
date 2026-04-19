@@ -3634,10 +3634,11 @@ async function runDiag() {
         const color = ok === true ? '#0f0' : ok === false ? '#f44' : '#aaa';
         out.push(`<span style="color:${color}">${icon} ${label}: ${val}</span>`);
     };
+    const head = (title) => { out.push(''); out.push(`<span style="color:#ff0;font-weight:600;">── ${title} ──</span>`); };
 
-    out.push('<span style="color:#ff0;font-weight:600;">── AUTH ──</span>');
+    // ── AUTH ──
+    head('AUTH');
     log('sbClient', sbClient ? 'loaded' : 'NULL', !!sbClient);
-
     if (sbClient) {
         try {
             const { data: { session }, error } = await sbClient.auth.getSession();
@@ -3649,48 +3650,90 @@ async function runDiag() {
                 log('avatar_url', session.user.user_metadata?.avatar_url ? 'present' : 'MISSING', !!session.user.user_metadata?.avatar_url);
                 log('token expires', new Date(session.expires_at * 1000).toLocaleTimeString(), true);
             }
-        } catch(e) {
-            log('getSession() THREW', e.message, false);
-        }
+        } catch(e) { log('getSession() THREW', e.message, false); }
     }
 
-    out.push('');
-    out.push('<span style="color:#ff0;font-weight:600;">── UI STATE ──</span>');
+    // ── UI STATE ──
+    head('UI STATE');
     const authModal = document.getElementById('auth-modal');
     const avatarWrapper = document.getElementById('user-avatar-btn');
-    const avatarBtn = document.getElementById('btn-user-avatar');
     const avatarImg = document.getElementById('user-avatar-img');
-
     log('auth-modal display', authModal?.style.display || 'N/A', authModal?.style.display === 'none');
     log('user-avatar-btn display', avatarWrapper?.style.display || 'N/A', avatarWrapper?.style.display !== 'none');
-    log('avatar img src', avatarImg?.src ? (avatarImg.src.length > 40 ? avatarImg.src.slice(0,40)+'…' : avatarImg.src) : 'EMPTY', !!avatarImg?.src);
-    log('avatar parent display', avatarWrapper?.parentElement?.style.display || 'computed', true);
+    log('avatar img src', avatarImg?.src ? avatarImg.src.slice(0,50)+'…' : 'EMPTY', !!avatarImg?.src);
 
-    out.push('');
-    out.push('<span style="color:#ff0;font-weight:600;">── PROVIDERS ──</span>');
+    // ── PROVIDERS ──
+    head('PROVIDERS');
     const provKeys = Object.keys(window.providerConfigs || {});
     log('providerConfigs', provKeys.length ? provKeys.join(', ') : 'NONE', provKeys.length > 0);
-    const assignKeys = Object.keys(window.staffAssignments || {});
-    log('staffAssignments', assignKeys.length ? assignKeys.length + ' staff' : 'NONE', assignKeys.length > 0);
+    provKeys.forEach(k => {
+        const cfg = window.providerConfigs[k];
+        log('  ' + k + ' key', cfg.api_key ? cfg.api_key.slice(0,8)+'…' : 'MISSING', !!cfg.api_key);
+    });
 
-    out.push('');
-    out.push('<span style="color:#ff0;font-weight:600;">── STAFF ──</span>');
-    log('staffCustom.cos.name', window.staffCustom?.cos?.name || 'N/A', true);
-    log('STAFF_DEFAULTS', typeof STAFF_DEFAULTS !== 'undefined' ? 'defined' : 'MISSING', typeof STAFF_DEFAULTS !== 'undefined');
-    log('initializeBoardroom', typeof initializeBoardroom === 'function' ? 'defined' : 'MISSING', typeof initializeBoardroom === 'function');
+    // ── STAFF ASSIGNMENTS & STATUS DOTS ──
+    head('STAFF STATUS');
+    const KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+    const NAMES = { cos:'Donna', tony:'Tony', mike:'Mike', steve:'Steve', harvey:'Harvey', leonardo:'Leonardo', sigmund:'Rachel' };
+    for (const key of KEYS) {
+        const assignment = window.staffAssignments?.[key];
+        const dot = document.getElementById('status-dot-' + key);
+        const dotColor = dot?.getAttribute('fill') || 'none';
+        const dotStatus = dotColor === '#22c55e' ? 'GREEN' : dotColor === '#ef4444' ? 'RED' : dotColor === '#6b7280' ? 'GRAY' : dotColor;
+        const hasAssign = assignment?.provider && assignment?.model;
+        const provCfg = window.providerConfigs?.[assignment?.provider];
+        const hasKey = !!provCfg?.api_key;
+        const assignStr = hasAssign ? assignment.provider + '/' + assignment.model.split('/').pop().slice(0,20) : 'NOT ASSIGNED';
+        const ok = hasAssign && hasKey;
+        log(NAMES[key], assignStr + ' [dot:' + dotStatus + ']', ok ? null : false);
+        if (hasAssign && !hasKey) log('  → key missing', assignment.provider, false);
+    }
 
-    out.push('');
-    out.push('<span style="color:#ff0;font-weight:600;">── HEADER BUTTONS ──</span>');
+    // ── LIVE PROBE (runs actual HTTP checks) ──
+    head('LIVE PROBE');
+    out.push('<span style="color:#aaa">· Running probes…</span>');
+    document.getElementById('diag-output').innerHTML = out.join('\n');
+
+    for (const key of KEYS) {
+        const assignment = window.staffAssignments?.[key];
+        if (!assignment?.provider || !assignment?.model) {
+            log(NAMES[key] + ' probe', 'skipped — not assigned', null);
+            continue;
+        }
+        const provCfg = window.providerConfigs?.[assignment.provider];
+        if (!provCfg?.api_key) {
+            log(NAMES[key] + ' probe', 'skipped — no API key', false);
+            continue;
+        }
+        try {
+            const result = await probeStaffConnection(key);
+            log(NAMES[key] + ' probe', result ? 'CONNECTED' : 'FAILED', result);
+        } catch(e) {
+            log(NAMES[key] + ' probe', 'ERROR: ' + e.message, false);
+        }
+        // Update display mid-loop
+        document.getElementById('diag-output').innerHTML = out.join('\n');
+    }
+
+    // ── MEMORY ──
+    head('MEMORY');
+    log('defaultMemory', defaultMemory ? defaultMemory.slice(0,60)+'…' : 'EMPTY', !!defaultMemory);
+    log('sessionMemory', sessionMemory ? sessionMemory.slice(0,60)+'…' : 'EMPTY', null);
+    log('sessionTurn', sessionTurn, null);
+    log('_prevAssignments', Object.keys(_prevAssignments).length + ' keys', Object.keys(_prevAssignments).length > 0);
+
+    // ── HEADER ──
+    head('HEADER BUTTONS');
     const headerBtns = Array.from(document.querySelectorAll('#app-header button'));
     const tops = headerBtns.map(b => Math.round(b.getBoundingClientRect().top)).filter(t => t > 0);
     log('button count', headerBtns.length, headerBtns.length > 0);
-    log('single row', tops.length ? (Math.max(...tops) - Math.min(...tops) <= 10 ? 'YES' : 'NO (' + tops + ')') : 'N/A', tops.length ? Math.max(...tops) - Math.min(...tops) <= 10 : null);
+    log('single row', tops.length ? (Math.max(...tops) - Math.min(...tops) <= 10 ? 'YES' : 'NO') : 'N/A', tops.length ? Math.max(...tops) - Math.min(...tops) <= 10 : null);
 
     out.push('');
     out.push(`<span style="color:#888;">── ${new Date().toLocaleTimeString()} ──</span>`);
-
     document.getElementById('diag-output').innerHTML = out.join('\n');
 }
+
 
 // ─── ONBOARDING ───────────────────────────────────────────────────────────────
 let obStep = 1;
