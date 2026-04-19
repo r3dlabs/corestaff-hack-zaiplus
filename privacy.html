@@ -189,11 +189,24 @@
   </section>
 
   <section>
-    <h2>03 — API keys</h2>
+    <h2>03 — API keys &amp; technical handling</h2>
     <div class="highlight-box">
-      <p>Your AI provider API keys (OpenAI, Anthropic, DeepSeek, Groq, Mistral, Google) are stored in our database. While we implement standard security practices, <strong>we strongly recommend using keys with usage limits and monitoring your provider dashboards</strong>. Treat your API keys like passwords.</p>
+      <p>You may connect third-party AI provider API keys (OpenAI, Anthropic, Google, DeepSeek, Groq, Mistral, GMI Cloud) to use Startup Staff. Here is exactly how your keys are handled — no ambiguity.</p>
     </div>
-    <p>Your keys are used solely to make requests to AI providers on your behalf, within the Startup Staff application. We do not use them for any other purpose.</p>
+
+    <p><strong>Storage.</strong> Your keys are stored in our database (Supabase), encrypted at rest, and protected by row-level security — only your authenticated account can read your own rows. No other user can access your keys.</p>
+
+    <p><strong>In-browser use.</strong> When you interact with the app, your keys are loaded into browser memory for the duration of your session to make API calls directly to the AI provider. They are never written to localStorage, cookies, or any other persistent browser storage.</p>
+
+    <p><strong>In transit.</strong> All communication between your browser, our servers, and AI providers is encrypted via TLS (HTTPS). Keys are transmitted only as request headers to the relevant provider endpoint.</p>
+
+    <p><strong>Direct exposure risk.</strong> Because API calls are made directly from your browser to the AI provider, your keys are technically visible in your browser's Network tab during an active session. This is standard practice for browser-based AI tools, but it means you should never use Startup Staff on a shared, public, or untrusted device. Do not leave an active session unattended.</p>
+
+    <p><strong>What we do not do.</strong> We do not log, cache, proxy, or use your API keys for any purpose other than making requests on your behalf within the application. We do not have access to your usage on those providers' platforms.</p>
+
+    <div class="highlight-box" style="margin-top:14px;">
+      <p><strong>Our recommendations:</strong> Set monthly spending limits on each provider dashboard. Use dedicated keys for Startup Staff — separate from keys used in other projects — so you can rotate them independently if needed. Monitor your provider dashboards periodically for unexpected usage.</p>
+    </div>
   </section>
 
   <section>
@@ -244,7 +257,7 @@
 
   <section>
     <h2>10 — Contact</h2>
-    <p>Modular Technology Solutions Pte Ltd<br>Singapore<br>Email: <strong>help@modulartechnologysolutions.com</strong></p>
+    <p>Modular Technology Solutions Pte Ltd<br>Singapore<br>Email: <strong>privacy@modular.technology</strong></p>
   </section>
 </main>
 
