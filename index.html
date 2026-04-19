@@ -271,7 +271,7 @@
         .consult-block.agent-leonardo { border-left-color: var(--color-leonardo); }
         .consult-block.agent-donna    { border-left-color: var(--color-donna);    }
 
-        /* ── Soleil synthesis block ── */
+        /* ── COS synthesis block ── */
         .synthesis-block {
             border-top: 1px solid var(--border);
             padding-top: 12px;
@@ -627,7 +627,7 @@
                 <!-- What it is -->
                 <div style="margin-bottom:20px;">
                     <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-family:'Geist Mono',monospace;">What is Startup Staff?</p>
-                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Startup Staff is an agentic AI-powered solution designed to give founders instant access to a cross-functional core team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before Soleil, your Chief of Staff, synthesises a unified strategic response.</p>
+                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Startup Staff is an agentic AI-powered solution designed to give founders instant access to a cross-functional core team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before your Chief of Staff synthesises a unified strategic response.</p>
                 </div>
 
                 <!-- The Core Team -->
@@ -719,7 +719,7 @@
                             <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">3</div>
                             <div>
                                 <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Ask anything</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Type a strategic question in the Soleil Interface. The team will consult, deliberate, and respond with a synthesised recommendation.</div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Type a strategic question in the Staff Interface. The team will consult, deliberate, and respond with a synthesised recommendation.</div>
                             </div>
                         </div>
 
@@ -1428,7 +1428,7 @@
             <div id="chat-window" style="flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:20px;"></div>
             <div style="padding:16px;border-top:1px solid var(--border);background:var(--bg-base);">
                 <div style="display:flex;gap:10px;">
-                    <input type="text" id="chat-input" class="input-field" style="flex:1;" placeholder="Direct Soleil… (e.g. 'generate a document: go-to-market plan')">
+                    <input type="text" id="chat-input" class="input-field" style="flex:1;" placeholder="Ask your team… (e.g. 'generate a document: go-to-market plan')">
                     <button id="btn-send" class="btn-primary" style="padding:10px 20px;white-space:nowrap;">Execute</button>
                 </div>
             </div>
@@ -1827,7 +1827,7 @@ async function generateDocx(rawDocBlock, filename) {
             children.push(new Paragraph({ children: [new TextRun({ text: line.trim(), size:24 })], spacing: { after:120 } }));
         }
     }
-    children.push(new Paragraph({ children: [new TextRun({ text:`— Confidential. Prepared by Soleil, Chief of Staff —`, italics:true, color:'999999', size:18 })], alignment: AlignmentType.CENTER, spacing: { before:600 } }));
+    children.push(new Paragraph({ children: [new TextRun({ text:`— Confidential. Prepared by your Chief of Staff —`, italics:true, color:'999999', size:18 })], alignment: AlignmentType.CENTER, spacing: { before:600 } }));
     const doc = new Document({
         creator:'Startup Staff', title: docTitle,
         styles: {
@@ -1935,7 +1935,7 @@ function injectDownloadCard(docType, filename, rawDocBlock) {
 }
 
 // ─── SYSTEM PROMPT ───────────────────────────────────────────────────────────
-const BASE_SYSTEM_PROMPT = `You are Soleil, the Chief of Staff for a high-stakes startup. You are diplomatic, strategic, and an orchestrator.
+const BASE_SYSTEM_PROMPT = `You are the Chief of Staff for a high-stakes startup. You are diplomatic, strategic, and an orchestrator.
 You manage a boardroom of 6 specialists. When the user asks a question, you MUST consult the relevant specialists using the exact format: [CONSULT: Name].
 
 STRICT FORMATTING RULES:
@@ -1951,7 +1951,7 @@ RESPONSE FORMAT:
 Name: Their insight. 2-4 sentences.
 [Source: URL]
 
-Soleil: Your synthesis. Short paragraphs, bullet action items. Direct.
+Chief of Staff: Your synthesis. Short paragraphs, bullet action items. Direct.
 
 Specialists:
 - ${window.staffCustom.tony.name} (Engineering): First-principles, blunt, technical. Owns engineering execution, deployment, product feasibility, and build vs. buy decisions. Works hand-in-hand with ${window.staffCustom.leonardo.name}.
@@ -2170,7 +2170,7 @@ function parseSoleilResponse(text) {
     // Stagger animations — each staff member fires 800ms after the previous
     matches.forEach((m, i) => animateConnection(m[1], i * 800));
 
-    const blockRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]\\s*\\n\\s*\\1:\\s*([\\s\\S]*?)(?=\\n\\s*\\[Source:|\\n\\s*\\[CONSULT:|\\n\\s*Soleil:|$)', 'gi');
+    const blockRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]\\s*\\n\\s*\\1:\\s*([\\s\\S]*?)(?=\\n\\s*\\[Source:|\\n\\s*\\[CONSULT:|\\n\\s*' + cosName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ':|\\n\\s*Chief of Staff:|$)', 'gi');
     const sourceRegex = /\[Source:\s*(https?:\/\/[^\s]+)\]/gi;
 
     let lastIndex=0, match;
@@ -2188,10 +2188,12 @@ function parseSoleilResponse(text) {
         lastIndex=match.index+match[0].length;
     }
 
-    const synthMatch = text.match(/Soleil:\s*([\s\S]*?)$/i);
+        const cosName = window.staffCustom?.cos?.name || 'Donna';
+    const synthRegex = new RegExp('(?:' + cosName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '|Chief of Staff):\\s*([\\s\\S]*?)$', 'i');
+    const synthMatch = text.match(synthRegex);
     if (synthMatch) {
         html+=`<div class="synthesis-block">
-            <div style="font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:8px;">Soleil Synthesis</div>
+            <div style="font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:8px;">${window.staffCustom?.cos?.name || 'Chief of Staff'} Synthesis</div>
             <div style="font-size:13.5px;color:var(--text-primary);line-height:1.65;font-weight:500;">${formatTextToHtml(synthMatch[1].trim())}</div>
         </div>`;
     } else if (lastIndex<text.length) {
@@ -3037,24 +3039,94 @@ function buildStaffSystemPrompt(staffKey) {
     const def = STAFF_DEFAULTS[staffKey];
     const custom = window.staffCustom?.[staffKey] || def;
     const name = custom.name || def.name;
-    const role = def.role;
-    const founderCtx = (founderName || startupDesc) ?
-        `\n\nFOUNDER CONTEXT:\nFounder: ${founderName || 'Unknown'}\nBusiness: ${startupDesc || 'Not specified'}` : '';
 
-    const personas = {
-        cos:      `You are ${name}, Chief of Staff. You are diplomatic, strategic, and an orchestrator. You synthesise specialist input into unified recommendations.`,
-        tony:     `You are ${name}, Head of Engineering. First-principles thinker. You focus on technical feasibility, architecture decisions, build vs buy, and engineering execution.`,
-        mike:     `You are ${name}, Head of Finance & Accounting. Burn-rate obsessed, ROI-focused, conservative. You focus on financial modelling, unit economics, and fundraising.`,
-        steve:    `You are ${name}, Head of Marketing. Narrative-driven, growth-hacker. You focus on go-to-market strategy, brand positioning, and customer acquisition.`,
-        harvey:   `You are ${name}, Head of Legal. Precise, risk-averse, equity-protective. You focus on contracts, IP protection, and regulatory compliance.`,
-        leonardo: `You are ${name}, Head of Architecture. Systems design expert. You focus on technical architecture, infrastructure planning, and long-term platform thinking.`,
-        sigmund:  `You are ${name}, Head of Human Resources. Empathetic and compliance focused. You focus on hiring strategy, team structure, compensation, and people operations.`,
+    // Get colleague first names for cross-referencing
+    const c = window.staffCustom || STAFF_DEFAULTS;
+    const colleagues = {
+        cos:      { tony: (c.tony?.name||'Tony'), mike: (c.mike?.name||'Mike'), steve: (c.steve?.name||'Steve'), harvey: (c.harvey?.name||'Harvey'), leo: (c.leonardo?.name||'Leonardo'), rachel: (c.sigmund?.name||'Rachel') },
+        tony:     { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike'), leo: (c.leonardo?.name||'Leonardo') },
+        mike:     { donna: (c.cos?.name||'Donna'), harvey: (c.harvey?.name||'Harvey'), tony: (c.tony?.name||'Tony') },
+        steve:    { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike'), tony: (c.tony?.name||'Tony') },
+        harvey:   { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike') },
+        leonardo: { tony: (c.tony?.name||'Tony'), donna: (c.cos?.name||'Donna') },
+        sigmund:  { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike') },
+    };
+    const col = colleagues[staffKey] || {};
+
+    const roleDefs = {
+        cos: {
+            system: `You are ${name}, Chief of Staff at this startup. You know everyone on the team by first name and work closely with all of them every day.
+
+Your job is to pull the right people in, synthesise what they're saying, and give the founder a clear path forward. You're the connective tissue of this team — you know what ${col.tony} is building, what ${col.mike} is worried about, what ${col.harvey} flagged last week.
+
+Tone: Warm but sharp. Decisive. You speak like a trusted colleague who's been in the trenches with this team. Use first names naturally. Don't be formal — be direct and human.
+
+When you synthesise: briefly mention who said what, connect the dots, and give a clear recommendation. "Based on what ${col.harvey} and ${col.mike} said, here's what I think we should do..."`,
+        },
+        tony: {
+            system: `You are ${name}, the engineering lead at this startup. You sit next to ${col.donna} and ${col.leo}, you've argued with ${col.mike} about infrastructure costs, and you care deeply about building things right.
+
+You speak plainly and technically. No fluff. If something's overengineered, you'll say so. If a timeline is fantasy, you'll say that too. You reference your teammates naturally — "that's really a question for ${col.mike}" or "I'd loop in ${col.leo} on the architecture side."
+
+Tone: Direct, a bit blunt, technically confident. You're not unfriendly — you just cut to the point. Use first names. Think out loud.`,
+        },
+        mike: {
+            system: `You are ${name}, the finance person at this startup. You know the burn rate, the runway, and the unit economics better than anyone. You've had the "we need to talk about spending" conversation with ${col.donna} more than once.
+
+You're not a pessimist — you're the person who keeps the company alive. You flag risks early but you also help find the path. You reference the team naturally: "the question ${col.harvey} should weigh in on is..." or "this depends on what ${col.tony} can ship by when."
+
+Tone: Measured, data-informed, occasionally dry. Friendly but firm on numbers. Use first names.`,
+        },
+        steve: {
+            system: `You are ${name}, the marketing lead at this startup. You think about customers, narrative, and growth constantly. You know the product (thanks to ${col.tony}) and the budget constraints (thanks to ${col.mike}), and you work within them creatively.
+
+You're energetic and idea-driven but you back it with logic. You speak like someone who's shipped campaigns, talked to customers, and knows what actually moves the needle vs what sounds good in a deck.
+
+Tone: Enthusiastic but grounded. Creative but practical. Use first names. Reference the team when relevant.`,
+        },
+        harvey: {
+            system: `You are ${name}, the legal mind on this team. You've reviewed the contracts, flagged the risks, and had the uncomfortable conversations with ${col.donna} and ${col.mike} about what the company actually agreed to.
+
+You don't talk in legalese with your team. You translate. "Here's what that clause actually means for us..." You're direct about risk but you're not a blocker — you help find the legal path forward. You know when to say "get a proper lawyer on this" and when you can handle it in-house.
+
+Tone: Precise but plain-spoken. Collegial. Not stiff. Use first names.`,
+        },
+        leonardo: {
+            system: `You are ${name}, the architecture and systems person. You and ${col.tony} go back and forth on technical decisions constantly — you take the longer view, ${col.tony} keeps it pragmatic. That tension is healthy.
+
+You think in systems, scale, and tradeoffs. You're the person who asks "but what does this look like at 10x?" You explain complex concepts simply and you enjoy it. You reference the team when context matters.
+
+Tone: Thoughtful, curious, collaborative. You're not a lone genius — you build with the team. Use first names.`,
+        },
+        sigmund: {
+            system: `You are ${name}, the people and HR lead. You know everyone on this team personally — their working styles, their motivations, what's keeping them up at night. You work closely with ${col.donna} on team dynamics and with ${col.mike} on comp.
+
+You're the person who catches the human stuff that falls through the cracks: when someone's burning out, when a hire is wrong for culture, when a policy creates more problems than it solves. You care deeply about people AND the company — you know they're not in conflict.
+
+Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use first names.`,
+        },
     };
 
-    return (personas[staffKey] || `You are ${name}, a specialist advisor.`) +
-        `\n\nRespond concisely and professionally. 2-4 sentences max unless detail is required. No markdown tables. Use bullet points sparingly.` +
-        founderCtx +
-        buildMemoryBlock();
+    const rd = roleDefs[staffKey];
+    if (!rd) return `You are ${name}, a trusted colleague on this startup team. Be direct, helpful, and use first names with your teammates.`;
+
+    const hqCtx = hqCountry
+        ? `\n\nJURISDICTION: This startup is HQ'd in ${hqCountry}. Default legal, tax, and compliance context to ${hqCountry} unless told otherwise.`
+        : '';
+
+    const founderCtx = (founderName || startupDesc)
+        ? `\n\nCOMPANY CONTEXT:\nFounder: ${founderName || 'Unknown'}\nBusiness: ${startupDesc || 'Not specified'}${hqCtx}`
+        : hqCtx;
+
+    return `${rd.system}
+
+GROUND RULES:
+- First name basis always. No titles in conversation.
+- No markdown tables. Keep formatting clean and light.
+- Be concise — this is a conversation, not a report. Elaborate only when depth is needed.
+- Stay in your lane but acknowledge when a teammate's angle matters.
+- Sound like a person, not a department.
+${founderCtx}${buildMemoryBlock()}`;
 }
 
 
@@ -3215,20 +3287,23 @@ async function sendChatAgentic() {
     try {
         // ── Phase 1: Ask Donna which specialists to consult ──────────────────
         const cosName = window.staffCustom?.cos?.name || 'Donna';
-        const allStaffNames = Object.values(window.staffCustom || STAFF_DEFAULTS).map(s => s.name).join(', ');
+        // Build team roster with role labels so COS knows who does what regardless of name
+        const teamRoster = Object.entries(window.staffCustom || STAFF_DEFAULTS)
+            .filter(([k]) => k !== 'cos')
+            .map(([k, s]) => `${s.name || STAFF_DEFAULTS[k]?.name} (${STAFF_DEFAULTS[k]?.role || k})`)
+            .join(', ');
 
         const phase1System = buildStaffSystemPrompt('cos') + `
 
-Your team: ${allStaffNames}.
-When answering, decide which specialists are relevant. Format their consultation as:
-[CONSULT: Name]
-Then provide the final synthesis.
+YOUR TEAM (loop them in by first name):
+${teamRoster}
 
-STRICT RULES:
-1. Never use markdown tables
-2. Use plain bullet points with "- " 
-3. Bold key terms with **term** only
-4. Keep responses concise` + (handoffBlock ? `\n\n${handoffBlock}` : '');
+When the founder asks something, think about who on the team needs to weigh in. Loop them in naturally using:
+[CONSULT: FirstName]
+
+Then pull it all together in your own voice — connect the dots, give a clear take. Sound like you're in the room together, not filing a report.
+
+Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBlock}` : '');
 
         logTrace(`Phase 1: Routing to ${cosName}...`, true);
         setDotActive('cos');
@@ -3313,7 +3388,7 @@ STRICT RULES:
     } catch(error) {
         console.error(error);
         logTrace(`Error: ${error.message}`, false);
-        appendMessage('Soleil', `Error: ${error.message}`);
+        appendMessage(window.staffCustom?.cos?.name || 'Chief of Staff', `Error: ${error.message}`);
     } finally {
         btnSend.disabled = false;
         btnSend.textContent = 'Execute';
@@ -3668,7 +3743,7 @@ async function runDiag() {
     log('providerConfigs', provKeys.length ? provKeys.join(', ') : 'NONE', provKeys.length > 0);
     provKeys.forEach(k => {
         const cfg = window.providerConfigs[k];
-        log('  ' + k + ' key', cfg.api_key ? cfg.api_key.slice(0,8)+'…' : 'MISSING', !!cfg.api_key);
+        log('  ' + k + ' key', cfg.apiKey ? cfg.apiKey.slice(0,8)+'…' : 'MISSING', !!cfg.apiKey);
     });
 
     // ── STAFF ASSIGNMENTS & STATUS DOTS ──
@@ -3682,11 +3757,11 @@ async function runDiag() {
         const dotStatus = dotColor === '#22c55e' ? 'GREEN' : dotColor === '#ef4444' ? 'RED' : dotColor === '#6b7280' ? 'GRAY' : dotColor;
         const hasAssign = assignment?.provider && assignment?.model;
         const provCfg = window.providerConfigs?.[assignment?.provider];
-        const hasKey = !!provCfg?.api_key;
+        const hasKey = !!provCfg?.apiKey;
         const assignStr = hasAssign ? assignment.provider + '/' + assignment.model.split('/').pop().slice(0,20) : 'NOT ASSIGNED';
         const ok = hasAssign && hasKey;
         log(NAMES[key], assignStr + ' [dot:' + dotStatus + ']', ok ? null : false);
-        if (hasAssign && !hasKey) log('  → key missing', assignment.provider, false);
+        if (hasAssign && !hasKey) log('  → key missing for provider', assignment.provider, false);
     }
 
     // ── LIVE PROBE (runs actual HTTP checks) ──
@@ -3701,7 +3776,7 @@ async function runDiag() {
             continue;
         }
         const provCfg = window.providerConfigs?.[assignment.provider];
-        if (!provCfg?.api_key) {
+        if (!provCfg?.apiKey) {
             log(NAMES[key] + ' probe', 'skipped — no API key', false);
             continue;
         }
@@ -3952,18 +4027,18 @@ async function probeStaffConnection(key) {
     const assignment = window.staffAssignments?.[key];
     if (!assignment?.provider || !assignment?.model) { setDotGray(key); return false; }
     const provCfg = window.providerConfigs?.[assignment.provider];
-    if (!provCfg?.api_key) { setDotGray(key); return false; }
+    if (!provCfg?.apiKey) { setDotGray(key); return false; }
     const PDEF = PROVIDER_DEFS[assignment.provider];
     if (!PDEF) { setDotGray(key); return false; }
     try {
-        const baseEndpoint = (provCfg.endpoint_url || PDEF.endpoint).replace(/\/$/, '');
+        const baseEndpoint = (provCfg.endpoint || PDEF.endpoint).replace(/\/$/, '');
         const isAnthropic = assignment.provider === 'anthropic';
         const isGoogle = assignment.provider === 'google';
         const headers = { 'Content-Type': 'application/json' };
-        if (isAnthropic) { headers['x-api-key'] = provCfg.api_key; headers['anthropic-version'] = '2023-06-01'; }
-        else { headers['Authorization'] = 'Bearer ' + provCfg.api_key; }
+        if (isAnthropic) { headers['x-api-key'] = provCfg.apiKey; headers['anthropic-version'] = '2023-06-01'; }
+        else { headers['Authorization'] = 'Bearer ' + provCfg.apiKey; }
         const endpoint = isGoogle
-            ? `${baseEndpoint}/models/${assignment.model}:generateContent?key=${provCfg.api_key}`
+            ? `${baseEndpoint}/models/${assignment.model}:generateContent?key=${provCfg.apiKey}`
             : `${baseEndpoint}/chat/completions`;
         const body = isAnthropic
             ? { model: assignment.model, max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }
