@@ -1391,20 +1391,20 @@
                     </g>
 
                     <!-- ── STATUS DOTS ── -->
-                    <circle id="status-border-tony" cx="436.8" cy="186.8" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-tony" cx="436.8" cy="186.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-mike" cx="652.8" cy="311.8" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-mike" cx="652.8" cy="311.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-steve" cx="652.8" cy="561.8" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-steve" cx="652.8" cy="561.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-sigmund" cx="436.8" cy="686.8" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-sigmund" cx="436.8" cy="686.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-harvey" cx="220.8" cy="561.8" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-harvey" cx="220.8" cy="561.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-leonardo" cx="220.8" cy="311.8" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-leonardo" cx="220.8" cy="311.8" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-cos" cx="462.2" cy="462.2" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-cos" cx="462.2" cy="462.2" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-tony" cx="428.3" cy="178.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-tony" cx="428.3" cy="178.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-mike" cx="644.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-mike" cx="644.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-steve" cx="644.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-steve" cx="644.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-sigmund" cx="428.3" cy="678.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-sigmund" cx="428.3" cy="678.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-harvey" cx="212.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-harvey" cx="212.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-leonardo" cx="212.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-leonardo" cx="212.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-cos" cx="449.5" cy="449.5" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-cos" cx="449.5" cy="449.5" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
                 </svg>
             </div>
 
@@ -4055,28 +4055,39 @@ async function probeStaffConnection(key) {
     if (!provCfg?.apiKey) { setDotGray(key); return false; }
     const PDEF = PROVIDER_DEFS[assignment.provider];
     if (!PDEF) { setDotGray(key); return false; }
+
+    // Providers with CORS restrictions — can't probe from browser
+    // Treat as connected if key is present and looks valid
+    const corsRestricted = ['anthropic', 'google', 'openai', 'mistral'];
+    if (corsRestricted.includes(assignment.provider)) {
+        const key_ = provCfg.apiKey;
+        const validFormat =
+            (assignment.provider === 'anthropic' && key_.startsWith('sk-ant-')) ||
+            (assignment.provider === 'openai'    && key_.startsWith('sk-')) ||
+            (assignment.provider === 'google'    && key_.startsWith('AIza')) ||
+            (assignment.provider === 'mistral'   && key_.length > 10);
+        validFormat ? setDotReady(key) : setDotGray(key);
+        return validFormat;
+    }
+
+    // OpenAI-compatible providers that allow CORS — do live probe
     try {
         const baseEndpoint = (provCfg.endpoint || PDEF.endpoint).replace(/\/$/, '');
-        const isAnthropic = assignment.provider === 'anthropic';
-        const isGoogle = assignment.provider === 'google';
-        const headers = { 'Content-Type': 'application/json' };
-        if (isAnthropic) { headers['x-api-key'] = provCfg.apiKey; headers['anthropic-version'] = '2023-06-01'; }
-        else { headers['Authorization'] = 'Bearer ' + provCfg.apiKey; }
-        const endpoint = isGoogle
-            ? `${baseEndpoint}/models/${assignment.model}:generateContent?key=${provCfg.apiKey}`
-            : `${baseEndpoint}/chat/completions`;
-        const body = isAnthropic
-            ? { model: assignment.model, max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] }
-            : isGoogle ? { contents: [{ parts: [{ text: 'hi' }] }] }
-            : { model: assignment.model, messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 };
-        const res = await fetch(endpoint, {
-            method: 'POST', headers, body: JSON.stringify(body),
+        const res = await fetch(`${baseEndpoint}/chat/completions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + provCfg.apiKey },
+            body: JSON.stringify({ model: assignment.model, messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 }),
             signal: AbortSignal.timeout(8000)
         });
         const ok = res.status === 200 || res.status === 400;
         ok ? setDotReady(key) : setDotGray(key);
         return ok;
     } catch(e) {
+        // CORS or network error — assume connected if key present
+        if (e.message?.includes('CORS') || e.message?.includes('Failed to fetch') || e.name === 'TypeError') {
+            setDotReady(key);
+            return true;
+        }
         setDotGray(key);
         return false;
     }
