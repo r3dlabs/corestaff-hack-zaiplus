@@ -3747,21 +3747,46 @@ async function runDiag() {
     });
 
     // ── STAFF ASSIGNMENTS & STATUS DOTS ──
-    head('STAFF STATUS');
+    head('STAFF STATUS + POSITIONS');
     const KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
     const NAMES = { cos:'Donna', tony:'Tony', mike:'Mike', steve:'Steve', harvey:'Harvey', leonardo:'Leonardo', sigmund:'Rachel' };
     for (const key of KEYS) {
         const assignment = window.staffAssignments?.[key];
         const dot = document.getElementById('status-dot-' + key);
+        const border = document.getElementById('status-border-' + key);
         const dotColor = dot?.getAttribute('fill') || 'none';
         const dotStatus = dotColor === '#22c55e' ? 'GREEN' : dotColor === '#ef4444' ? 'RED' : dotColor === '#6b7280' ? 'GRAY' : dotColor;
+        const dotCx = dot?.getAttribute('cx') || 'N/A';
+        const dotCy = dot?.getAttribute('cy') || 'N/A';
+        const dotR  = dot?.getAttribute('r')  || 'N/A';
+        const borderCx = border?.getAttribute('cx') || 'N/A';
+        const borderR  = border?.getAttribute('r')  || 'N/A';
         const hasAssign = assignment?.provider && assignment?.model;
         const provCfg = window.providerConfigs?.[assignment?.provider];
         const hasKey = !!provCfg?.apiKey;
         const assignStr = hasAssign ? assignment.provider + '/' + assignment.model.split('/').pop().slice(0,20) : 'NOT ASSIGNED';
         const ok = hasAssign && hasKey;
         log(NAMES[key], assignStr + ' [dot:' + dotStatus + ']', ok ? null : false);
+        log('  pos', 'dot cx=' + dotCx + ' cy=' + dotCy + ' r=' + dotR + ' | border cx=' + borderCx + ' r=' + borderR, null);
         if (hasAssign && !hasKey) log('  → key missing for provider', assignment.provider, false);
+    }
+
+    // ── SVG NODE POSITIONS ──
+    head('SVG NODE CIRCLES');
+    const nodeMap = { cos:'soleil', tony:'elon', mike:'isaac', steve:'steve', harvey:'harvey', leonardo:'leonardo', sigmund:'donna' };
+    for (const [key, nodeId] of Object.entries(nodeMap)) {
+        const circle = document.querySelector(`#node-${nodeId} circle`);
+        const cx = circle?.getAttribute('cx') || 'N/A';
+        const cy = circle?.getAttribute('cy') || 'N/A';
+        const r  = circle?.getAttribute('r')  || 'N/A';
+        // dot position
+        const dot = document.getElementById('status-dot-' + key);
+        const dcx = dot?.getAttribute('cx') || 'N/A';
+        const dcy = dot?.getAttribute('cy') || 'N/A';
+        // expected dot position = cx + r*cos(45°), cy + r*sin(45°)
+        const expected = circle ? (parseFloat(cx) + parseFloat(r) * 0.707).toFixed(1) : 'N/A';
+        const match = Math.abs(parseFloat(dcx) - parseFloat(expected)) < 2;
+        log(NAMES[key], 'node(' + cx + ',' + cy + ' r=' + r + ') dot(' + dcx + ',' + dcy + ') expected~(' + expected + ')', match ? null : false);
     }
 
     // ── LIVE PROBE (runs actual HTTP checks) ──
