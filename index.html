@@ -2211,13 +2211,14 @@ function appendMessage(sender, text) {
 
 function parseSoleilResponse(text) {
     let html = '';
+    const cosDisplayName = window.staffCustom?.cos?.name || 'Donna';
     const allNames = Object.values(window.staffCustom).map(s=>s.name).filter(Boolean).join('|');
     const consultRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]', 'gi');
     const matches = [...text.matchAll(consultRegex)];
     // Stagger animations — each staff member fires 800ms after the previous
     matches.forEach((m, i) => animateConnection(m[1], i * 800));
 
-    const blockRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]\\s*\\n\\s*\\1:\\s*([\\s\\S]*?)(?=\\n\\s*\\[Source:|\\n\\s*\\[CONSULT:|\\n\\s*' + cosName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ':|\\n\\s*Chief of Staff:|$)', 'gi');
+    const blockRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]\\s*\\n\\s*\\1:\\s*([\\s\\S]*?)(?=\\n\\s*\\[Source:|\\n\\s*\\[CONSULT:|\\n\\s*' + cosDisplayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ':|\\n\\s*Chief of Staff:|$)', 'gi');
     const sourceRegex = /\[Source:\s*(https?:\/\/[^\s]+)\]/gi;
 
     let lastIndex=0, match;
@@ -2235,8 +2236,7 @@ function parseSoleilResponse(text) {
         lastIndex=match.index+match[0].length;
     }
 
-        const cosName = window.staffCustom?.cos?.name || 'Donna';
-    const synthRegex = new RegExp('(?:' + cosName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '|Chief of Staff):\\s*([\\s\\S]*?)$', 'i');
+    const synthRegex = new RegExp('(?:' + cosDisplayName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '|Chief of Staff):\\s*([\\s\\S]*?)$', 'i');
     const synthMatch = text.match(synthRegex);
     if (synthMatch) {
         html+=`<div class="synthesis-block">
