@@ -1636,7 +1636,8 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
         loadStaffAssignments();
         loadStaffKb();
     loadDefaultMemory();
-    setTimeout(startStatusPolling, 2000); // slight delay to let configs load
+    // Start the 5-minute polling interval (initial probe runs after assignments load)
+    if (!_statusInterval) _statusInterval = setInterval(checkAllConnections, 5 * 60 * 1000);
         if (!document.getElementById('chat-window').children.length) {
             if (!founderName || !startupDesc) {
                 obCheckAndOpen(session.user.user_metadata?.full_name || session.user.email);
@@ -2905,6 +2906,9 @@ async function loadStaffAssignments() {
         logTrace('Staff model assignments loaded.', false);
         // Snapshot for model-change handoff detection
         _prevAssignments = JSON.parse(JSON.stringify(window.staffAssignments));
+        // Run connection check immediately now that assignments are loaded
+        initStatusDots();
+        checkAllConnections();
     } catch(e) {
         console.warn('Failed to load staff assignments:', e);
     }
