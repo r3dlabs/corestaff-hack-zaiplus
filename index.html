@@ -2290,6 +2290,7 @@ function initializeBoardroom() {
 async function sendChat() {
     const userText = chatInput.value.trim();
     if (!userText) return;
+    logTrace('sendChat triggered', false);
 
     // Check if any provider is configured
     const hasProvider = window.providerConfigs && Object.keys(window.providerConfigs).length > 0;
@@ -2319,8 +2320,8 @@ document.getElementById('about-modal').addEventListener('click', e => {
 });
 
 // ─── EVENT LISTENERS ─────────────────────────────────────────────────────────
-btnSend.addEventListener('click',sendChat);
-chatInput.addEventListener('keypress',e=>{ if(e.key==='Enter') sendChat(); });
+// Send button wired via window.sendChat below
+// chatInput.keypress wired via window.sendChat below
 
 btnClear.addEventListener('click',()=>{
     chatHistory=[]; initializeBoardroom();
@@ -3397,7 +3398,8 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
 
 // Replace sendChat with agentic version
 window.sendChat = sendChatAgentic;
-btnSend.onclick = () => window.sendChat();
+btnSend.onclick = null;
+btnSend.addEventListener('click', () => window.sendChat());
 document.getElementById('chat-input').onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendChat(); } };
 
 // ─── CHUNK 4: PER-STAFF KNOWLEDGE BASE ───────────────────────────────────────
