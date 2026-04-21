@@ -1619,24 +1619,40 @@ function applyTheme(theme) {
 
 applyTheme(currentTheme);
 
-// ─── DOCUMENT DETECTION ─────────────────────────────────────────────────────
+// ─── REQUEST INTENT PARSER ───────────────────────────────────────────────────
+// Detects doc type, topic, and action hints (email, sms etc.) independently
+// so they can be used alone or combined in one message.
 function detectDocRequest(text) {
-    if (/\b(generate|create|make|write|produce|draft)\b.{0,40}\b(document|doc|word|report|brief|memo|proposal|plan)\b/i.test(text) || /\.docx\b/i.test(text)) {
-        const m = text.match(/(?:document|doc|word|report|brief|memo|proposal|plan)[:\s]+(.+)/i);
+    return parseRequestIntent(text);
+}
+
+function parseRequestIntent(text) {
+    const result = { type: null, filename: null, topic: null, email: null };
+
+    // ── Detect email recipient ──────────────────────────────────────────────
+    // Matches: "email it to x@y.com", "send to x@y.com", "send it to x@y.com"
+    const emailMatch = text.match(/(?:email|send)(?:\s+it)?\s+to\s+([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/i);
+    if (emailMatch) result.email = emailMatch[1].trim();
+
+    // ── Detect doc type ─────────────────────────────────────────────────────
+    if (/\b(generate|create|make|write|produce|draft)\b.{0,60}\b(document|doc|word|report|brief|memo|proposal|plan)\b/i.test(text) || /\.docx\b/i.test(text)) {
+        const m = text.match(/(?:document|doc|word|report|brief|memo|proposal|plan)[:\s]+([^,.\n]+)/i);
         const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-output';
-        return { type: 'docx', filename: topic.replace(/\s+/g,'-').toLowerCase() + '.docx', topic };
-    }
-    if (/\b(generate|create|make|build|produce)\b.{0,40}\b(spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)\b/i.test(text) || /\.xlsx\b/i.test(text)) {
-        const m = text.match(/(?:spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)[:\s]+(.+)/i);
+        result.type = 'docx'; result.topic = topic;
+        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.docx';
+    } else if (/\b(generate|create|make|build|produce)\b.{0,60}\b(spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)\b/i.test(text) || /\.xlsx\b/i.test(text)) {
+        const m = text.match(/(?:spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)[:\s]+([^,.\n]+)/i);
         const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-data';
-        return { type: 'xlsx', filename: topic.replace(/\s+/g,'-').toLowerCase() + '.xlsx', topic };
-    }
-    if (/\b(generate|create|make|build|produce|write)\b.{0,40}\b(html|webpage|web page|landing page|page|site)\b/i.test(text) || /\.html\b/i.test(text)) {
-        const m = text.match(/(?:html|webpage|web page|landing page|page|site)[:\s]+(.+)/i);
+        result.type = 'xlsx'; result.topic = topic;
+        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.xlsx';
+    } else if (/\b(generate|create|make|build|produce|write)\b.{0,60}\b(html|webpage|web page|landing page|page|site)\b/i.test(text) || /\.html\b/i.test(text)) {
+        const m = text.match(/(?:html|webpage|web page|landing page|page|site)[:\s]+([^,.\n]+)/i);
         const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-page';
-        return { type: 'html', filename: topic.replace(/\s+/g,'-').toLowerCase() + '.html', topic };
+        result.type = 'html'; result.topic = topic;
+        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.html';
     }
-    return { type: null };
+
+    return result;
 }
 
 function getDocSystemAddition(docType, topic) {
@@ -4233,7 +4249,8 @@ PLATFORM CONTEXT — critical facts about this environment:
 - NEVER assign future tasks like "Tony will do this by tomorrow" or "we'll have this ready in 48 hours." That is not how this works. If something needs to be done, do it now or confirm it is being done now.
 - File generation is already built in: the system can produce and download .docx (Word), .xlsx (Excel), and .html files natively. If the founder asks for a document, it gets generated immediately — not scheduled.
 - Each staff member streams responses directly into the chat in real time.
-- Do NOT use project management language (deliverables, timelines, sprints, EOD) unless the founder is explicitly asking you to help plan a project for their human team outside this system.`;
+- Do NOT use project management language (deliverables, timelines, sprints, EOD) unless the founder is explicitly asking you to help plan a project for their human team outside this system.
+- Email delivery is available: the founder can say "email it to x@y.com" and the generated file will be sent automatically via Resend. You do not need to do anything — the system handles it.`;
 
     return `${rd.system}${platformCtx}
 
@@ -4428,25 +4445,50 @@ ${docHint}`
         logTrace(`Doc fast path: ${docReq.type} → ${docStaffName}`, true);
         const docNodeEl = document.getElementById('visual-' + { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' }[docStaffKey]);
         if (docNodeEl) docNodeEl.classList.add('active');
-        try {
-            const { text: docResponse } = await streamStaffModel(docStaffKey, docMessages, docSystem, 4096, docStaffName, false);
-            chatHistory.push({ role: 'assistant', content: docResponse });
-            const extracted = extractDocBlock(docResponse);
-            if (extracted) {
-                injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock);
-            } else {
-                // Model didn't produce the block — show error and let user retry
-                logTrace('⚠ Model did not output document block — retrying may help', false);
-            }
-        } catch(e) {
-            logTrace('Doc generation error: ' + e.message, false);
-            appendMessage(docStaffName, 'Something went wrong generating the file: ' + e.message);
-        } finally {
-            btnSend.disabled = false;
-            btnSend.textContent = 'Execute';
-            if (docNodeEl) docNodeEl.classList.remove('active');
-        }
-        return;
+         try {
+             const { text: docResponse } = await streamStaffModel(docStaffKey, docMessages, docSystem, 4096, docStaffName, false);
+             chatHistory.push({ role: 'assistant', content: docResponse });
+             const extracted = extractDocBlock(docResponse);
+             if (extracted) {
+                 injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock);
+
+                 // ── Email action ──────────────────────────────────────────
+                 if (docReq.email) {
+                     logTrace(`Sending to ${docReq.email}…`, true);
+                     try {
+                         let emailHtml, emailSubject;
+                         if (extracted.docType === 'html') {
+                             // Send the full HTML page as email body
+                             emailHtml = extracted.rawBlock;
+                             emailSubject = docReq.topic || 'Your file from Startup Staff';
+                         } else {
+                             // For docx/xlsx send a notification with download prompt
+                             emailHtml = `<p>Hi,</p><p>Your <strong>${(extracted.docType||docReq.type).toUpperCase()}</strong> file <em>${docReq.filename}</em> has been generated by your Startup Staff team.</p><p>Download it from your Startup Staff boardroom.</p>`;
+                             emailSubject = `Your ${(extracted.docType||docReq.type).toUpperCase()} file is ready: ${docReq.topic}`;
+                         }
+                         await window.sendEmail({ to: docReq.email, subject: emailSubject, html: emailHtml });
+                         // Inject a small confirmation into chat
+                         const cosName2 = window.staffCustom?.cos?.name || 'Helen';
+                         appendStaffBubble(cosName2, `Sent to ${docReq.email} ✓`, false, null, null);
+                         logTrace(`Email sent to ${docReq.email}`, true);
+                     } catch(emailErr) {
+                         logTrace(`Email failed: ${emailErr.message}`, false);
+                         const cosName2 = window.staffCustom?.cos?.name || 'Helen';
+                         appendStaffBubble(cosName2, `Couldn't send the email: ${emailErr.message}`, false, null, null);
+                     }
+                 }
+             } else {
+                 logTrace('⚠ Model did not output document block — retrying may help', false);
+             }
+         } catch(e) {
+             logTrace('Doc generation error: ' + e.message, false);
+             appendMessage(docStaffName, 'Something went wrong generating the file: ' + e.message);
+         } finally {
+             btnSend.disabled = false;
+             btnSend.textContent = 'Execute';
+             if (docNodeEl) docNodeEl.classList.remove('active');
+         }
+         return;
     }
 
     btnSend.textContent = 'Routing…';
