@@ -3044,7 +3044,7 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 
     // ── xAI Grok — hardcoded known models (CORS blocks /models from browser) ──
     if (key === 'xai') {
-        const valid = apiKey.startsWith('xai-') && apiKey.length > 20;
+        const valid = apiKey.length > 20;
         const grokModels = [
             'grok-3',
             'grok-3-fast',
@@ -3056,7 +3056,10 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
         modelSelect.innerHTML = grokModels.map(m =>
             `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
         ).join('');
-        setProviderStatus(key, valid ? 'Key format valid. Select a model.' : 'Key should start with xai-', valid);
+        const selectedModel = modelSelect.value;
+        const statusMsg = !valid ? 'API key too short — check your xAI key.'
+            : selectedModel ? `Connected · ${selectedModel}` : 'Key valid — select a model above.';
+        setProviderStatus(key, statusMsg, valid);
         return;
     }
 
@@ -3221,6 +3224,10 @@ async function loadProviderConfigs() {
                     newOpt.selected = true;
                     modelSelect.prepend(newOpt);
                 }
+            }
+            // For xai: refresh status now that saved model is selected
+            if (key === 'xai' && row.preferred_model) {
+                setProviderStatus(key, `Connected · ${row.preferred_model}`, true);
             }
         }
         logTrace('Provider configs loaded.', false);
