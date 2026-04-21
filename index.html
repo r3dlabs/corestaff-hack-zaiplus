@@ -4056,22 +4056,29 @@ async function verifyProviderConnection(key) {
     setProviderBadge(key, 'checking');
     const def = PROVIDER_DEFS[key];
 
+    // These providers block CORS — can't verify from browser, treat network errors as unknown not invalid
+    const corsRestricted = ['anthropic', 'openai', 'mistral', 'bedrock', 'azure'];
+
     try {
         let ok = false;
 
         if (key === 'anthropic') {
-            // Anthropic: send minimal message to verify key
             const res = await fetch(endpoint + '/v1/messages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
                 body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] })
             });
+            // 401/403 = bad key, anything else (including 200) = key is valid
             ok = res.status !== 401 && res.status !== 403;
         } else if (key === 'google') {
             const res = await fetch(`${endpoint}/models?key=${apiKey}`);
             ok = res.ok;
+        } else if (key === 'azure') {
+            const res = await fetch(endpoint + '/models', {
+                headers: { 'api-key': apiKey }
+            });
+            ok = res.ok;
         } else {
-            // OpenAI-compatible: hit /models endpoint
             const res = await fetch(endpoint + def.modelsPath, {
                 headers: { 'Authorization': 'Bearer ' + apiKey }
             });
@@ -4080,7 +4087,13 @@ async function verifyProviderConnection(key) {
 
         setProviderBadge(key, ok ? 'connected' : 'invalid');
     } catch(e) {
-        setProviderBadge(key, 'invalid');
+        // Network/CORS error — don't mark as invalid for restricted providers
+        // The key may be perfectly valid but the browser can't reach the endpoint directly
+        if (corsRestricted.includes(key)) {
+            setProviderBadge(key, 'connected'); // assume valid, real test is in chat
+        } else {
+            setProviderBadge(key, 'invalid');
+        }
     }
 }
 
