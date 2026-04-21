@@ -466,6 +466,29 @@
 
         /* Chat formatted content */
         .chat-bubble-ai ul { list-style: disc; padding-left: 18px; margin: 6px 0; space-y: 2px; }
+
+        /* ── Customize modal responsive grid ── */
+        @media (max-width: 600px) {
+            #customize-cards-grid { grid-template-columns: 1fr !important; padding: 12px !important; }
+        }
+        .staff-hero-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.15s;
+        }
+        .staff-hero-card:hover { border-color: var(--border-strong); }
+        .staff-hero-header {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; cursor: pointer; user-select: none;
+        }
+        .staff-hero-header:hover { background: rgba(255,255,255,0.02); }
+        .staff-hero-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+        .staff-section-label {
+            font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--text-muted); font-family: 'Geist Mono', monospace; margin-bottom: 5px;
+        }
         .chat-bubble-ai ol { list-style: decimal; padding-left: 18px; margin: 6px 0; }
         .chat-bubble-ai li { margin-bottom: 3px; }
         .chat-bubble-ai p { margin-bottom: 6px; }
@@ -641,286 +664,9 @@
         </div>
     </div>
 
-    <!-- ── ABOUT MODAL ───────────────────────────────────────── -->
-    <div id="about-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box modal-box-lg" style="max-width:560px;max-height:85vh;display:flex;flex-direction:column;">
-            <div style="flex:1;overflow-y:auto;padding-right:4px;">
-
-                <!-- Header -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;font-family:'Geist Mono',monospace;">About</p>
-                    <h2 style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Startup Staff</h2>
-                    <p style="font-size:13px;color:var(--text-secondary);">AI-powered boardroom for founders and builders.</p>
-                </div>
-                <hr class="divider" style="margin:0 0 20px;">
-
-                <!-- What it is -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-family:'Geist Mono',monospace;">What is Startup Staff?</p>
-                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Startup Staff is an agentic AI-powered solution designed to give founders instant access to a cross-functional core team. Rather than consulting a single AI, your query is routed through a team of six specialist personas — each bringing a distinct professional lens — before your Chief of Staff synthesises a unified strategic response.</p>
-                </div>
-
-                <!-- The Core Team -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">The Core Team</p>
-                    <div style="display:flex;flex-direction:column;gap:8px;">
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img id="about-img-cos" src="/cos.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #06b6d4;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#06b6d4;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">C</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;" id="about-name-cos">Chief Of Staff <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Chief of Staff</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Orchestrates the boardroom. Routes queries, synthesises insights, and delivers unified strategic recommendations.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img id="about-img-tony" src="/engineering.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #ef4444;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ef4444;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;" id="about-fallback-tony">T</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:2px;" id="about-name-tony">Engineering Lead <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Engineering</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">First-principles thinker. Technical engineering, product feasibility, deployment strategy, and build vs. buy decisions. Works closely with Architecture to ensure design and build are harmonious.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img id="about-img-mike" src="/finance-accounting.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #22c55e;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#22c55e;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;" id="about-fallback-mike">M</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#22c55e;margin-bottom:2px;" id="about-name-mike">Finance & Accounting <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Finance</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Burn-rate focused. Financial modelling, ROI analysis, fundraising strategy, and unit economics.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img id="about-img-steve" src="/marketing.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #3b82f6;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#3b82f6;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">S</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#3b82f6;margin-bottom:2px;" id="about-name-steve">Marketing Lead <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Marketing</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Narrative and growth. Go-to-market strategy, brand positioning, and customer acquisition.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img id="about-img-harvey" src="/legal.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #eab308;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#eab308;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">H</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#eab308;margin-bottom:2px;" id="about-name-harvey">Legal Lead <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Legal</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Risk and compliance. Contracts, equity structure, IP protection, and regulatory considerations.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img id="about-img-leonardo" src="/architecture.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #a855f7;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#a855f7;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">L</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#a855f7;margin-bottom:2px;" id="about-name-leonardo">Architecture Lead <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Architecture</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Systems design and architecture. Technical architecture, infrastructure planning, technical debt, and long-term platform thinking. Works closely with Elon to ensure design and build are harmonious.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
-                            <img id="about-img-sigmund" src="/hr.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #ec4899;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ec4899;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;" id="about-fallback-sigmund">R</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:#ec4899;margin-bottom:2px;" id="about-name-sigmund">Human Resource Lead <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Human Resources</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">People and culture. Hiring strategy, team structure, compensation, and compliance.</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- How to Use -->
-                <div style="margin-bottom:20px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">How to Use</p>
-                    <div style="display:flex;flex-direction:column;gap:6px;">
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">1</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Configure your API</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Click ⚙ API Config, select a provider (GMI, Claude, ChatGPT, DeepSeek, or Mistral), enter your API key, and select a model.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">2</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Set your Startup Profile</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Click ✏ Profile to enter your name and a brief description of your startup. This context is injected into every query.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">3</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Ask anything</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Type a strategic question in the Staff Interface. The team will consult, deliberate, and respond with a synthesised recommendation.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">4</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Generate documents</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Prefix your request with "generate a document:", "create a spreadsheet:", or "build an HTML page:" to produce downloadable files.</div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);align-items:flex-start;">
-                            <div style="width:20px;height:20px;border-radius:50%;background:var(--bg-hover);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text-secondary);flex-shrink:0;margin-top:1px;">5</div>
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Add context</div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Use ⊞ Knowledge Base to upload internal documents or reference URLs the team will consult before responding.</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Credits -->
-                <div style="margin-bottom:8px;">
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:'Geist Mono',monospace;">Credits</p>
-                    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-                            <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Created by</div>
-                                <div style="font-size:13px;color:var(--text-secondary);font-weight:500;">Modular Technology Solutions Pte Ltd</div>
-                                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Singapore</div>
-                            </div>
-                            <span style="font-family:'Geist Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.1em;color:var(--text-muted);background:var(--bg-base);border:1px solid var(--border);border-radius:5px;padding:3px 9px;white-space:nowrap;">v.alpha-01 · experimental</span>
-                        </div>
-                        <hr class="divider" style="margin:0;">
-                        <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Icons</div>
-                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">Agent avatar icons sourced from <a href="https://www.flaticon.com/free-icons/person" title="person icons" target="_blank" style="color:var(--text-primary);text-decoration:underline;">Flaticon</a>. Person icons created by Freepik.</div>
-                        </div>
-                        <hr class="divider" style="margin:0;">
-                        <div>
-                            <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Built with</div>
-                            <div style="font-size:12px;color:var(--text-secondary);">HTML · CSS · Vanilla JS · docx.js · SheetJS</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <hr class="divider">
-            <div style="display:flex;justify-content:flex-end;">
-                <button id="btn-close-about" class="btn-primary" style="padding:9px 24px;">Close</button>
-            </div>
-        </div>
-    </div>
 
     <!-- ── HEADER ──────────────────────────────────────────── -->
 
-    <!-- ── STAFF KNOWLEDGE BASE MODAL ───────────────────────────── -->
-    <div id="staff-kb-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box modal-box-lg" style="max-width:560px;width:100%;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Staff Knowledge Base</p>
-                <button id="btn-close-staff-kb" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;">×</button>
-            </div>
-            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Add URLs and documents for each staff member. This context is injected into their prompt whenever they are consulted.</p>
-            <!-- Tabs -->
-            <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;overflow-x:auto;">
-                <button id="skb-tab-btn-cos" onclick="switchStaffKbTab('cos')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">COS</button><button id="skb-tab-btn-tony" onclick="switchStaffKbTab('tony')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">TONY</button><button id="skb-tab-btn-mike" onclick="switchStaffKbTab('mike')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">MIKE</button><button id="skb-tab-btn-steve" onclick="switchStaffKbTab('steve')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">STEVE</button><button id="skb-tab-btn-harvey" onclick="switchStaffKbTab('harvey')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">HARVEY</button><button id="skb-tab-btn-leonardo" onclick="switchStaffKbTab('leonardo')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">LEONARDO</button><button id="skb-tab-btn-sigmund" onclick="switchStaffKbTab('sigmund')" style="padding:6px 12px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;transition:color 0.15s,border-color 0.15s;">SIGMUND</button>
-            </div>
-            <!-- Panels -->
-            <div style="min-height:220px;">
-                
-                <div id="skb-panel-cos" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Chief of Staff</p>
-                    <div style="margin-bottom:12px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
-                        <textarea id="skb-urls-cos" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
-                    </div>
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
-                        <input type="file" id="skb-files-cos" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
-                        <div id="skb-filelist-cos" style="display:flex;flex-direction:column;gap:4px;"></div>
-                    </div>
-                    <div id="skb-status-cos" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                </div>
-                <div id="skb-panel-tony" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Engineering</p>
-                    <div style="margin-bottom:12px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
-                        <textarea id="skb-urls-tony" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
-                    </div>
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
-                        <input type="file" id="skb-files-tony" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
-                        <div id="skb-filelist-tony" style="display:flex;flex-direction:column;gap:4px;"></div>
-                    </div>
-                    <div id="skb-status-tony" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                </div>
-                <div id="skb-panel-mike" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Finance & Accounting</p>
-                    <div style="margin-bottom:12px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
-                        <textarea id="skb-urls-mike" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
-                    </div>
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
-                        <input type="file" id="skb-files-mike" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
-                        <div id="skb-filelist-mike" style="display:flex;flex-direction:column;gap:4px;"></div>
-                    </div>
-                    <div id="skb-status-mike" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                </div>
-                <div id="skb-panel-steve" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Marketing</p>
-                    <div style="margin-bottom:12px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
-                        <textarea id="skb-urls-steve" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
-                    </div>
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
-                        <input type="file" id="skb-files-steve" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
-                        <div id="skb-filelist-steve" style="display:flex;flex-direction:column;gap:4px;"></div>
-                    </div>
-                    <div id="skb-status-steve" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                </div>
-                <div id="skb-panel-harvey" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Legal</p>
-                    <div style="margin-bottom:12px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
-                        <textarea id="skb-urls-harvey" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
-                    </div>
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
-                        <input type="file" id="skb-files-harvey" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
-                        <div id="skb-filelist-harvey" style="display:flex;flex-direction:column;gap:4px;"></div>
-                    </div>
-                    <div id="skb-status-harvey" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                </div>
-                <div id="skb-panel-leonardo" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Architecture</p>
-                    <div style="margin-bottom:12px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
-                        <textarea id="skb-urls-leonardo" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
-                    </div>
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
-                        <input type="file" id="skb-files-leonardo" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
-                        <div id="skb-filelist-leonardo" style="display:flex;flex-direction:column;gap:4px;"></div>
-                    </div>
-                    <div id="skb-status-leonardo" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                </div>
-                <div id="skb-panel-sigmund" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Human Resources</p>
-                    <div style="margin-bottom:12px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
-                        <textarea id="skb-urls-sigmund" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
-                    </div>
-                    <div style="margin-bottom:8px;">
-                        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Upload Documents (.txt, .md, .csv, .json)</div>
-                        <input type="file" id="skb-files-sigmund" multiple accept=".txt,.md,.csv,.json" style="width:100%;font-size:12px;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">
-                        <div id="skb-filelist-sigmund" style="display:flex;flex-direction:column;gap:4px;"></div>
-                    </div>
-                    <div id="skb-status-sigmund" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                </div>
-            </div>
-            <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end;">
-                <button id="btn-fetch-staff-kb" class="btn-secondary" style="padding:8px 16px;">Fetch URLs</button>
-                <button id="btn-save-staff-kb" class="btn-primary" style="padding:8px 20px;">Save</button>
-            </div>
-            <div id="staff-kb-status" style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;min-height:16px;"></div>
-        </div>
-    </div>
 
     <!-- ── PROVIDERS MODAL ───────────────────────────────────── -->
     <div id="providers-modal" class="modal-overlay" style="display:none;">
@@ -1122,190 +868,42 @@
 
     <!-- ── CUSTOMIZE TEAM MODAL ──────────────────────────────── -->
     <div id="customize-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box" style="max-width:460px;width:100%;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Customize Team</p>
-                <button id="btn-close-customize" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;">×</button>
-            </div>
-            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Rename your team members and upload custom photos. Changes are saved to your account.</p>
+        <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:16px;width:95vw;max-width:860px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,0.4);animation:slideUp 0.25s ease;overflow:hidden;">
 
-            <!-- ── Set All ─────────────────────────────────────────── -->
-            <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <span style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set All</span>
-                <select id="set-all-provider" style="flex:1;min-width:100px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;" onchange="onSetAllProviderChange()">
+            <!-- Header -->
+            <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+                <div>
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Customize Team</p>
+                    <p style="font-size:13px;color:var(--text-secondary);">Configure each staff member's identity, model, focus areas and reference knowledge.</p>
+                </div>
+                <button id="btn-close-customize" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">&#x2715;</button>
+            </div>
+
+            <!-- Toolbar: Set All -->
+            <div style="padding:10px 24px;border-bottom:1px solid var(--border);background:var(--bg-elevated);display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0;">
+                <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set All</span>
+                <select id="set-all-provider" style="flex:1;min-width:110px;max-width:160px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;" onchange="onSetAllProviderChange()">
                     <option value="">— provider —</option>
                 </select>
-                <select id="set-all-model" style="flex:2;min-width:120px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                <select id="set-all-model" style="flex:2;min-width:140px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                     <option value="">— model —</option>
                 </select>
-                <button onclick="applyToAll()" class="btn-primary" style="padding:5px 12px;font-size:12px;white-space:nowrap;">Apply to All</button>
+                <button onclick="applyToAll()" class="btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;">Apply to All</button>
+                <button onclick="document.getElementById('restore-defaults-modal').style.display='flex'" title="Restore default names &amp; photos" style="margin-left:auto;width:28px;height:28px;border-radius:50%;background:transparent;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#ef4444';this.style.borderColor='#ef4444'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </button>
             </div>
 
-            <div style="max-height:420px;overflow-y:auto;padding-right:4px;">
-                
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-                            <div style="position:relative;flex-shrink:0;">
-                                <img id="custom-img-cos" src="/cos.png" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #06b6d4;" onerror="this.src=''">
-                                <label for="custom-upload-cos" style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;" title="Upload photo">+</label>
-                                <input type="file" id="custom-upload-cos" data-key="cos" accept="image/*" style="display:none;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Chief of Staff</div>
-                                <input id="custom-name-cos" type="text" value="Chief Of Staff" placeholder="Chief Of Staff" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                                <div style="margin-top:6px;">
-                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
-                                    <div style="display:flex;gap:4px;">
-                                        <select id="custom-provider-cos" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— provider —</option>
-                                        </select>
-                                        <select id="custom-model-cos" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— model —</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-                            <div style="position:relative;flex-shrink:0;">
-                                <img id="custom-img-tony" src="/engineering.png" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #ef4444;" onerror="this.src=''">
-                                <label for="custom-upload-tony" style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;" title="Upload photo">+</label>
-                                <input type="file" id="custom-upload-tony" data-key="tony" accept="image/*" style="display:none;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Engineering</div>
-                                <input id="custom-name-tony" type="text" value="Engineering Lead" placeholder="Engineering Lead" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                                <div style="margin-top:6px;">
-                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
-                                    <div style="display:flex;gap:4px;">
-                                        <select id="custom-provider-tony" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— provider —</option>
-                                        </select>
-                                        <select id="custom-model-tony" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— model —</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-                            <div style="position:relative;flex-shrink:0;">
-                                <img id="custom-img-mike" src="/finance-accounting.png" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #22c55e;" onerror="this.src=''">
-                                <label for="custom-upload-mike" style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;" title="Upload photo">+</label>
-                                <input type="file" id="custom-upload-mike" data-key="mike" accept="image/*" style="display:none;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Finance</div>
-                                <input id="custom-name-mike" type="text" value="Finance &amp; Accounting Lead" placeholder="Finance &amp; Accounting Lead" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                                <div style="margin-top:6px;">
-                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
-                                    <div style="display:flex;gap:4px;">
-                                        <select id="custom-provider-mike" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— provider —</option>
-                                        </select>
-                                        <select id="custom-model-mike" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— model —</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-                            <div style="position:relative;flex-shrink:0;">
-                                <img id="custom-img-steve" src="/marketing.png" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #3b82f6;" onerror="this.src=''">
-                                <label for="custom-upload-steve" style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;" title="Upload photo">+</label>
-                                <input type="file" id="custom-upload-steve" data-key="steve" accept="image/*" style="display:none;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Marketing</div>
-                                <input id="custom-name-steve" type="text" value="Marketing Lead" placeholder="Marketing Lead" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                                <div style="margin-top:6px;">
-                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
-                                    <div style="display:flex;gap:4px;">
-                                        <select id="custom-provider-steve" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— provider —</option>
-                                        </select>
-                                        <select id="custom-model-steve" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— model —</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-                            <div style="position:relative;flex-shrink:0;">
-                                <img id="custom-img-harvey" src="/legal.png" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #eab308;" onerror="this.src=''">
-                                <label for="custom-upload-harvey" style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;" title="Upload photo">+</label>
-                                <input type="file" id="custom-upload-harvey" data-key="harvey" accept="image/*" style="display:none;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Legal</div>
-                                <input id="custom-name-harvey" type="text" value="Legal Lead" placeholder="Legal Lead" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                                <div style="margin-top:6px;">
-                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
-                                    <div style="display:flex;gap:4px;">
-                                        <select id="custom-provider-harvey" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— provider —</option>
-                                        </select>
-                                        <select id="custom-model-harvey" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— model —</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-                            <div style="position:relative;flex-shrink:0;">
-                                <img id="custom-img-leonardo" src="/architecture.png" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #a855f7;" onerror="this.src=''">
-                                <label for="custom-upload-leonardo" style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;" title="Upload photo">+</label>
-                                <input type="file" id="custom-upload-leonardo" data-key="leonardo" accept="image/*" style="display:none;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Architecture</div>
-                                <input id="custom-name-leonardo" type="text" value="Architecture Lead" placeholder="Architecture Lead" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                                <div style="margin-top:6px;">
-                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
-                                    <div style="display:flex;gap:4px;">
-                                        <select id="custom-provider-leonardo" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— provider —</option>
-                                        </select>
-                                        <select id="custom-model-leonardo" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— model —</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-                            <div style="position:relative;flex-shrink:0;">
-                                <img id="custom-img-sigmund" src="/hr.png" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #ec4899;" onerror="this.src=''">
-                                <label for="custom-upload-sigmund" style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;" title="Upload photo">+</label>
-                                <input type="file" id="custom-upload-sigmund" data-key="sigmund" accept="image/*" style="display:none;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Human Resources</div>
-                                <input id="custom-name-sigmund" type="text" value="Human Resource Lead" placeholder="Human Resource Lead" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                                <div style="margin-top:6px;">
-                                    <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
-                                    <div style="display:flex;gap:4px;">
-                                        <select id="custom-provider-sigmund" style="flex:1;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— provider —</option>
-                                        </select>
-                                        <select id="custom-model-sigmund" style="flex:2;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                            <option value="">— model —</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Hero card grid — populated by renderCustomizeCards() -->
+            <div id="customize-cards-grid" style="flex:1;overflow-y:auto;padding:16px 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
             </div>
-            <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end;align-items:center;">
-                <button onclick="document.getElementById('restore-defaults-modal').style.display='flex'" title="Restore default names &amp; photos" style="width:30px;height:30px;border-radius:50%;background:transparent;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);margin-right:auto;transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#ef4444';this.style.borderColor='#ef4444'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                </button>
-                <button id="btn-cancel-customize" class="btn-secondary" style="padding:8px 16px;">Cancel</button>
-                <button id="btn-save-customize" class="btn-primary" style="padding:8px 20px;">Save Changes</button>
+
+            <!-- Footer -->
+            <div style="padding:12px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-shrink:0;background:var(--bg-elevated);">
+                <button id="btn-cancel-customize" class="btn-ghost">Cancel</button>
+                <button id="btn-save-customize" class="btn-primary" style="padding:10px 24px;">Save Changes</button>
             </div>
-            <div id="customize-status" style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;min-height:16px;"></div>
+            <div id="customize-status" style="font-size:11px;color:var(--text-muted);text-align:center;padding:4px 24px 10px;min-height:20px;background:var(--bg-elevated);"></div>
         </div>
     </div>
 
@@ -1315,6 +913,10 @@
             <div id="user-full-name" style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:1px;"></div>
             <div id="user-email" style="font-size:11px;color:var(--text-muted);font-family:'Geist Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;"></div>
         </div>
+        <button class="user-dropdown-item" onclick="window.open('/about.html','_blank');document.getElementById('user-dropdown').style.display='none';">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            About
+        </button>
         <button class="user-dropdown-item danger" id="btn-logout">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sign out
@@ -1331,16 +933,12 @@
         </div>
         <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">
             <button id="btn-edit-startup" title="Business Profile" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></button>
-            <button id="btn-staff-kb" title="Staff Knowledge Base" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </button>
             <button id="btn-providers" title="AI Providers" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
             <button id="btn-customize" title="Customize Team" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </button>
-            <button id="btn-about" title="About" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></button>
             <button id="btn-theme-toggle" title="Toggle theme" style="width:32px;height:32px;border:1px solid var(--border);border-radius:7px;background:var(--bg-elevated);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;" onclick="applyTheme(currentTheme==='dark'?'light':'dark')">
                 <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -2645,18 +2243,6 @@ async function sendChat() {
 
 // ─── MODEL FETCH & RENDER ────────────────────────────────────────────────────
 // About modal
-document.getElementById('btn-about').addEventListener('click', () => {
-    document.getElementById('about-modal').style.display = 'flex';
-});
-document.getElementById('btn-close-about').addEventListener('click', () => {
-    document.getElementById('about-modal').style.display = 'none';
-});
-// Close on overlay click
-document.getElementById('about-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('about-modal'))
-        document.getElementById('about-modal').style.display = 'none';
-});
-
 // ─── EVENT LISTENERS ─────────────────────────────────────────────────────────
 // Send button wired via window.sendChat below
 // chatInput.keypress wired via window.sendChat below
@@ -2852,6 +2438,13 @@ async function loadStaffCustomizations() {
                 return;
             }
             if (row.staff_key === '__onboarding_skip__') return;
+            // Roles & responsibilities rows
+            if (row.staff_key.startsWith('__roles__')) {
+                const staffKey = row.staff_key.replace('__roles__', '');
+                if (!window.staffRoles) window.staffRoles = {};
+                window.staffRoles[staffKey] = row.custom_name || '';
+                return;
+            }
             // Staff customization rows
             custom[row.staff_key] = {
                 name:  row.custom_name || STAFF_DEFAULTS[row.staff_key]?.name,
@@ -2896,16 +2489,48 @@ async function saveStaffCustomizations() {
     showCustomizeStatus('');
 
     try {
-        const upserts = Object.keys(STAFF_DEFAULTS).map(key => ({
+        // ── 1. Save staff customizations (name + photo) ───────────────────
+        const customUpserts = Object.keys(STAFF_DEFAULTS).map(key => ({
             user_id:     user.id,
             staff_key:   key,
             custom_name: (document.getElementById('custom-name-' + key)?.value.trim()) || STAFF_DEFAULTS[key].name,
             photo_url:   window.staffCustom[key]?.img || STAFF_DEFAULTS[key].img,
         }));
+        const { error: custErr } = await sbClient.from('staff_customizations').upsert(customUpserts, { onConflict: 'user_id,staff_key' });
+        if (custErr) throw custErr;
 
-        const { error } = await sbClient.from('staff_customizations').upsert(upserts, { onConflict: 'user_id,staff_key' });
-        if (error) throw error;
+        // ── 2. Save roles & responsibilities as __roles__<key> entries ────
+        const rolesUpserts = Object.keys(STAFF_DEFAULTS).map(key => ({
+            user_id:    user.id,
+            staff_key:  '__roles__' + key,
+            custom_name: document.getElementById('custom-roles-' + key)?.value.trim() || '',
+            photo_url:  null,
+        }));
+        await sbClient.from('staff_customizations').upsert(rolesUpserts, { onConflict: 'user_id,staff_key' });
+        // Update in-memory
+        Object.keys(STAFF_DEFAULTS).forEach(key => {
+            if (!window.staffRoles) window.staffRoles = {};
+            window.staffRoles[key] = document.getElementById('custom-roles-' + key)?.value.trim() || '';
+        });
 
+        // ── 3. Save KB URLs from card textareas ───────────────────────────
+        const kbUpserts = Object.keys(STAFF_DEFAULTS).map(key => {
+            const urlsEl = document.getElementById('skb-urls-' + key);
+            const urls = urlsEl?.value.trim() || '';
+            if (!window.staffKb) window.staffKb = {};
+            if (!window.staffKb[key]) window.staffKb[key] = { urls: '', urlContent: '', files: [] };
+            window.staffKb[key].urls = urls;
+            return {
+                user_id:     user.id,
+                staff_key:   key,
+                urls:        urls,
+                url_content: window.staffKb[key].urlContent || '',
+                files_json:  JSON.stringify(window.staffKb[key].files || []),
+            };
+        });
+        await sbClient.from('staff_knowledge').upsert(kbUpserts, { onConflict: 'user_id,staff_key' });
+
+        // ── 4. Apply customizations in-memory ─────────────────────────────
         const custom = {};
         Object.keys(STAFF_DEFAULTS).forEach(key => {
             custom[key] = {
@@ -2916,7 +2541,7 @@ async function saveStaffCustomizations() {
         });
         applyStaffCustomizations(custom);
         initializeBoardroom();
-        showCustomizeStatus('Saved successfully.');
+        showCustomizeStatus('✓ Saved successfully.');
         setTimeout(() => { document.getElementById('customize-modal').style.display = 'none'; }, 800);
     } catch(e) {
         showCustomizeStatus('Error: ' + e.message, true);
@@ -3012,11 +2637,6 @@ document.getElementById('customize-modal').addEventListener('click', e => { if (
 document.getElementById('restore-defaults-modal').addEventListener('click', e => {
     if (e.target === document.getElementById('restore-defaults-modal'))
         document.getElementById('restore-defaults-modal').style.display = 'none';
-});
-
-Object.keys(STAFF_DEFAULTS).forEach(key => {
-    const input = document.getElementById('custom-upload-' + key);
-    if (input) input.addEventListener('change', e => { if (e.target.files[0]) handlePhotoUpload(key, e.target.files[0]); });
 });
 
 // ─── PROVIDER CONFIGS ────────────────────────────────────────────────────────
@@ -3421,17 +3041,151 @@ function applyToAll() {
 }
 // ── Set All provider/model ────────────────────────────────────────────────────
 
+// ── renderCustomizeCards — builds hero card grid ─────────────────────────────
+function renderCustomizeCards() {
+    const grid = document.getElementById('customize-cards-grid');
+    if (!grid) return;
+
+    const STAFF_ORDER = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+
+    grid.innerHTML = STAFF_ORDER.map((key, idx) => {
+        const def    = STAFF_DEFAULTS[key];
+        const custom = window.staffCustom?.[key] || def;
+        const color  = def.color;
+        const isFirst = idx === 0;
+
+        // Status chip
+        const assigned = window.staffAssignments?.[key];
+        const statusDot = assigned?.provider && assigned?.model_id
+            ? `<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px;"></span><span style="font-size:9px;color:#22c55e;font-family:'Geist Mono',monospace;">configured</span>`
+            : `<span style="width:6px;height:6px;border-radius:50%;background:#6b7280;display:inline-block;margin-right:4px;"></span><span style="font-size:9px;color:var(--text-muted);font-family:'Geist Mono',monospace;">not set</span>`;
+
+        // KB urls
+        const kbUrls = window.staffKb?.[key]?.urls || '';
+        const rolesVal = (window.staffRoles?.[key] || '').replace(/"/g, '&quot;');
+        const nameVal  = (custom.name || def.name).replace(/"/g, '&quot;');
+
+        return `
+        <div class="staff-hero-card" id="hero-card-${key}" style="border-top:3px solid ${color};">
+            <!-- Hero header (click to toggle) -->
+            <div class="staff-hero-header" onclick="toggleHeroCard('${key}')">
+                <div style="position:relative;flex-shrink:0;">
+                    <img id="custom-img-${key}" src="${custom.img || def.img}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid ${color};" onerror="this.src=''">
+                    <label for="custom-upload-${key}" onclick="event.stopPropagation()" style="position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:9px;" title="Upload photo">+</label>
+                    <input type="file" id="custom-upload-${key}" data-key="${key}" accept="image/*" style="display:none;">
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:700;color:${color};line-height:1.2;" id="hero-name-display-${key}">${custom.name || def.name}</div>
+                    <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:1px;">${def.role}</div>
+                    <div style="display:flex;align-items:center;margin-top:3px;">${statusDot}</div>
+                </div>
+                <svg id="hero-chevron-${key}" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;transform:${isFirst ? 'rotate(180deg)' : 'rotate(0deg)'}"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+
+            <!-- Expandable body -->
+            <div id="hero-body-${key}" style="display:${isFirst ? 'flex' : 'none'};flex-direction:column;gap:12px;padding:0 14px 14px;">
+
+                <!-- Divider -->
+                <div style="border-top:1px solid var(--border);"></div>
+
+                <!-- Name -->
+                <div>
+                    <div class="staff-section-label">Display Name</div>
+                    <input id="custom-name-${key}" type="text" value="${nameVal}" placeholder="${def.name}" maxlength="30"
+                        oninput="document.getElementById('hero-name-display-${key}').textContent=this.value||'${def.name}'"
+                        style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;transition:border-color 0.15s;"
+                        onfocus="this.style.borderColor='var(--border-strong)'" onblur="this.style.borderColor='var(--border)'">
+                </div>
+
+                <!-- AI Model -->
+                <div>
+                    <div class="staff-section-label">AI Model</div>
+                    <div style="display:flex;gap:6px;">
+                        <select id="custom-provider-${key}" style="flex:1;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                            <option value="">— provider —</option>
+                        </select>
+                        <select id="custom-model-${key}" style="flex:2;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
+                            <option value="">— model —</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Roles & Responsibilities -->
+                <div>
+                    <div class="staff-section-label">Roles &amp; Responsibilities</div>
+                    <textarea id="custom-roles-${key}" rows="3" placeholder="Describe specific focus areas, priorities, or constraints for this persona…"
+                        style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;resize:vertical;line-height:1.5;transition:border-color 0.15s;"
+                        onfocus="this.style.borderColor='var(--border-strong)'" onblur="this.style.borderColor='var(--border)'">${rolesVal}</textarea>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">Added to this persona's system prompt to sharpen their focus.</div>
+                </div>
+
+                <!-- Reference URLs -->
+                <div>
+                    <div class="staff-section-label">Reference URLs</div>
+                    <textarea id="skb-urls-${key}" rows="3" placeholder="One URL per line&#10;https://docs.example.com"
+                        style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;line-height:1.5;transition:border-color 0.15s;"
+                        onfocus="this.style.borderColor='var(--border-strong)'" onblur="this.style.borderColor='var(--border)'">${kbUrls.replace(/</g,'&lt;')}</textarea>
+                    <button onclick="fetchKbUrlsForKey('${key}')" style="margin-top:4px;background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text-secondary);cursor:pointer;font-family:'Geist Mono',monospace;transition:background 0.15s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">Fetch URLs</button>
+                    <span id="skb-status-${key}" style="font-size:10px;color:var(--text-muted);margin-left:8px;font-family:'Geist Mono',monospace;"></span>
+                </div>
+
+            </div>
+        </div>`;
+    }).join('');
+
+    // Wire up file upload listeners for newly rendered inputs
+    STAFF_ORDER.forEach(key => {
+        const input = document.getElementById('custom-upload-' + key);
+        if (input) {
+            input.onchange = e => { if (e.target.files[0]) handlePhotoUpload(key, e.target.files[0]); };
+        }
+    });
+
+    // Populate provider/model dropdowns after cards are rendered
+    populateProviderDropdowns();
+    populateSetAllDropdown();
+}
+
+function toggleHeroCard(key) {
+    const body    = document.getElementById('hero-body-' + key);
+    const chevron = document.getElementById('hero-chevron-' + key);
+    if (!body) return;
+    const isOpen = body.style.display !== 'none';
+    body.style.display    = isOpen ? 'none' : 'flex';
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+async function fetchKbUrlsForKey(key) {
+    const urlsEl = document.getElementById('skb-urls-' + key);
+    const statusEl = document.getElementById('skb-status-' + key);
+    if (!urlsEl) return;
+    const urls = urlsEl.value.trim().split('\n').map(u => u.trim()).filter(u => u.startsWith('http'));
+    if (urls.length === 0) { if (statusEl) statusEl.textContent = 'No valid URLs.'; return; }
+    if (statusEl) statusEl.textContent = 'Fetching…';
+    let combined = '', fetched = 0;
+    for (const url of urls) {
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const text = await res.text();
+            const clean = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 8000);
+            combined += `--- ${url} ---\n${clean}\n--- End ---\n\n`;
+            fetched++;
+        } catch(e) {
+            combined += `--- ${url} ---\n[Fetch failed: ${e.message}]\n--- End ---\n\n`;
+        }
+    }
+    if (!window.staffKb) window.staffKb = {};
+    if (!window.staffKb[key]) window.staffKb[key] = { urls: '', urlContent: '', files: [] };
+    window.staffKb[key].urlContent = combined;
+    window.staffKb[key].urls = urlsEl.value.trim();
+    if (statusEl) statusEl.textContent = `✓ ${fetched}/${urls.length} fetched`;
+}
+
 // ── Definitive btn-customize click handler ───────────────────────────────────
 document.getElementById('btn-customize').onclick = () => {
     if (!sbClient) { alert('Please sign in to customize your team.'); return; }
-    Object.keys(STAFF_DEFAULTS).forEach(key => {
-        const nameEl = document.getElementById('custom-name-' + key);
-        if (nameEl) nameEl.value = window.staffCustom[key]?.name || STAFF_DEFAULTS[key].name;
-        const imgEl = document.getElementById('custom-img-' + key);
-        if (imgEl) imgEl.src = window.staffCustom[key]?.img || STAFF_DEFAULTS[key].img;
-    });
-    populateProviderDropdowns();
-    populateSetAllDropdown();
+    renderCustomizeCards();
     document.getElementById('customize-modal').style.display = 'flex';
 };
 
@@ -3633,6 +3387,11 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
         ? `\n\nCOMPANY CONTEXT:\nFounder: ${founderName || 'Unknown'}\nBusiness: ${startupDesc || 'Not specified'}${hqCtx}`
         : hqCtx;
 
+    // Inject custom roles & responsibilities if set
+    const rolesCtx = window.staffRoles?.[staffKey]
+        ? `\n\n[FOCUS AREAS — defined by the founder]\n${window.staffRoles[staffKey]}\n[END FOCUS AREAS]`
+        : '';
+
     return `${rd.system}
 
 GROUND RULES:
@@ -3641,7 +3400,7 @@ GROUND RULES:
 - Be concise — this is a conversation, not a report. Elaborate only when depth is needed.
 - Stay in your lane but acknowledge when a teammate's angle matters.
 - Sound like a person, not a department.
-${founderCtx}${buildMemoryBlock()}`;
+${founderCtx}${rolesCtx}${buildMemoryBlock()}`;
 }
 
 
@@ -3929,124 +3688,14 @@ document.getElementById('chat-input').onkeydown = e => { if (e.key === 'Enter' &
 
 const STAFF_KB_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
 
-// In-memory: { cos: { urls: '', files: [{name, content}], urlContent: '' }, ... }
+// In-memory KB: { cos: { urls: '', files: [], urlContent: '' }, ... }
 window.staffKb = {};
 STAFF_KB_KEYS.forEach(k => { window.staffKb[k] = { urls: '', files: [], urlContent: '' }; });
 
-let activeStaffKbTab = 'cos';
+// In-memory roles & responsibilities per staff key
+window.staffRoles = {};
+STAFF_KB_KEYS.forEach(k => { window.staffRoles[k] = ''; });
 
-function switchStaffKbTab(key) {
-    STAFF_KB_KEYS.forEach(k => {
-        const panel = document.getElementById('skb-panel-' + k);
-        const btn = document.getElementById('skb-tab-btn-' + k);
-        if (panel) panel.style.display = k === key ? 'block' : 'none';
-        if (btn) {
-            btn.style.color = k === key ? 'var(--text-primary)' : 'var(--text-muted)';
-            btn.style.borderBottomColor = k === key ? 'var(--text-primary)' : 'transparent';
-        }
-    });
-    activeStaffKbTab = key;
-    renderStaffKbFileList(key);
-}
-
-function renderStaffKbFileList(key) {
-    const listEl = document.getElementById('skb-filelist-' + key);
-    if (!listEl) return;
-    const files = window.staffKb[key]?.files || [];
-    if (files.length === 0) { listEl.innerHTML = ''; return; }
-    listEl.innerHTML = files.map((f, i) => `
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg-elevated);border-radius:5px;font-size:11px;color:var(--text-secondary);font-family:'Geist Mono',monospace;">
-            <span>${f.name} (${Math.round(f.content.length/1024*10)/10}kb)</span>
-            <button onclick="removeStaffKbFile('${key}',${i})" style="background:transparent;border:none;cursor:pointer;color:#ef4444;font-size:13px;line-height:1;">×</button>
-        </div>`).join('');
-}
-
-function removeStaffKbFile(key, idx) {
-    window.staffKb[key].files.splice(idx, 1);
-    renderStaffKbFileList(key);
-}
-
-function setStaffKbStatus(msg, isError=false) {
-    const el = document.getElementById('staff-kb-status');
-    if (!el) return;
-    el.textContent = msg;
-    el.style.color = isError ? '#ef4444' : '#22c55e';
-}
-
-async function fetchStaffKbUrls() {
-    const key = activeStaffKbTab;
-    const urlsEl = document.getElementById('skb-urls-' + key);
-    if (!urlsEl) return;
-    const urls = urlsEl.value.trim().split('\n').map(u => u.trim()).filter(u => u.startsWith('http'));
-    if (urls.length === 0) { setStaffKbStatus('No valid URLs to fetch.', true); return; }
-
-    setStaffKbStatus('Fetching ' + urls.length + ' URL(s)...');
-    let combined = '';
-    let fetched = 0;
-
-    for (const url of urls) {
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const text = await res.text();
-            // Strip HTML tags roughly
-            const clean = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 8000);
-            combined += `--- ${url} ---\n${clean}\n--- End ---\n\n`;
-            fetched++;
-        } catch(e) {
-            combined += `--- ${url} ---\n[Fetch failed: ${e.message}]\n--- End ---\n\n`;
-        }
-    }
-
-    window.staffKb[key].urlContent = combined;
-    setStaffKbStatus(`✓ Fetched ${fetched}/${urls.length} URL(s).`);
-}
-
-async function saveStaffKb() {
-    if (!sbClient) { setStaffKbStatus('Not signed in.', true); return; }
-    const { data: { user } } = await sbClient.auth.getUser();
-    if (!user) { setStaffKbStatus('Not signed in.', true); return; }
-
-    const btn = document.getElementById('btn-save-staff-kb');
-    btn.disabled = true; btn.textContent = 'Saving...';
-
-    try {
-        // Read any newly selected files
-        for (const key of STAFF_KB_KEYS) {
-            const fileInput = document.getElementById('skb-files-' + key);
-            if (fileInput?.files?.length > 0) {
-                for (const file of fileInput.files) {
-                    const text = await file.text();
-                    const truncated = text.slice(0, 50000); // 50kb max per file
-                    window.staffKb[key].files.push({ name: file.name, content: truncated });
-                }
-                fileInput.value = '';
-            }
-            // Save URLs from textarea
-            const urlsEl = document.getElementById('skb-urls-' + key);
-            if (urlsEl) window.staffKb[key].urls = urlsEl.value.trim();
-            renderStaffKbFileList(key);
-        }
-
-        const upserts = STAFF_KB_KEYS.map(key => ({
-            user_id:     user.id,
-            staff_key:   key,
-            urls:        window.staffKb[key].urls || '',
-            url_content: window.staffKb[key].urlContent || '',
-            files_json:  JSON.stringify(window.staffKb[key].files || []),
-        }));
-
-        const { error } = await sbClient.from('staff_knowledge').upsert(upserts, { onConflict: 'user_id,staff_key' });
-        if (error) throw error;
-
-        setStaffKbStatus('✓ Staff knowledge base saved.');
-        setTimeout(() => { document.getElementById('staff-kb-modal').style.display = 'none'; }, 800);
-    } catch(e) {
-        setStaffKbStatus('Error: ' + e.message, true);
-    } finally {
-        btn.disabled = false; btn.textContent = 'Save';
-    }
-}
 
 async function loadStaffKb() {
     if (!sbClient) return;
@@ -4064,10 +3713,6 @@ async function loadStaffKb() {
                 urlContent: row.url_content || '',
                 files:      JSON.parse(row.files_json || '[]'),
             };
-            // Populate textarea
-            const urlsEl = document.getElementById('skb-urls-' + key);
-            if (urlsEl) urlsEl.value = row.urls || '';
-            renderStaffKbFileList(key);
         });
         logTrace('Staff knowledge base loaded.', false);
     } catch(e) {
@@ -4100,24 +3745,6 @@ window.buildStaffSystemPrompt = function(staffKey) {
 
 // Also patch callStaffModel to use updated buildStaffSystemPrompt
 // (already done since we replaced window.buildStaffSystemPrompt)
-
-// ── Staff KB modal wiring ─────────────────────────────────────────────────────
-document.getElementById('btn-staff-kb').addEventListener('click', () => {
-    if (!sbClient) { alert('Please sign in to manage staff knowledge.'); return; }
-    switchStaffKbTab('cos');
-    document.getElementById('staff-kb-modal').style.display = 'flex';
-});
-document.getElementById('btn-close-staff-kb').addEventListener('click', () => {
-    document.getElementById('staff-kb-modal').style.display = 'none';
-});
-document.getElementById('staff-kb-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('staff-kb-modal')) document.getElementById('staff-kb-modal').style.display = 'none';
-});
-document.getElementById('btn-save-staff-kb').addEventListener('click', saveStaffKb);
-document.getElementById('btn-fetch-staff-kb').addEventListener('click', fetchStaffKbUrls);
-
-// Init first tab
-switchStaffKbTab('cos');
 
 // ─── PROVIDER CONNECTION STATUS ───────────────────────────────────────────────
 
