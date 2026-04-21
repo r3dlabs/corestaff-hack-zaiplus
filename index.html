@@ -1355,6 +1355,9 @@ function clearUserUI() {
     userAvatarImg.src = '';
     userFullName.textContent = '';
     userEmail.textContent = '';
+    localStorage.removeItem('has_providers'); // clear fast path on sign out
+    window.providerConfigs = {};
+    window.staffAssignments = {};
 }
 
 // LinkedIn OAuth login
@@ -2374,7 +2377,7 @@ function initializeBoardroom() {
     updateHqFlag(hqCountry);
 
     const isInitialised = (businessName || startupDesc) &&
-        Object.keys(window.providerConfigs || {}).length > 0;
+        (Object.keys(window.providerConfigs || {}).length > 0 || localStorage.getItem('has_providers') === '1');
 
     if (!isInitialised) {
         showBoardroomStateA();
@@ -3205,6 +3208,7 @@ async function saveProviderConfigs() {
     if (upserts.length > 0) {
         const { error } = await sbClient.from('provider_configs').upsert(upserts, { onConflict: 'user_id,provider' });
         if (error) throw error;
+        localStorage.setItem('has_providers', '1'); // fast path for refresh
     }
 }
 
@@ -4043,11 +4047,17 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
 
     return `${rd.system}
 
+IDENTITY RULES — follow these absolutely:
+- You are ${name} and ONLY ${name}. Never speak as, for, or on behalf of any other team member.
+- Do NOT address other team members directly in your response (no "Tony, what do you think..." or "I'd ask Mike to...").
+- Do NOT try to answer for other people's domains. If something is outside your mandate, say so briefly and move on.
+- Do NOT roleplay a team meeting or simulate what others might say.
+- Respond only from your own expertise and perspective, in first person.
+
 GROUND RULES:
 - First name basis always. No titles in conversation.
 - No markdown tables. Keep formatting clean and light.
 - Be concise — this is a conversation, not a report. Elaborate only when depth is needed.
-- Stay in your lane but acknowledge when a teammate's angle matters.
 - Sound like a person, not a department.
 ${founderCtx}${rolesCtx}${buildMemoryBlock()}`;
 }
@@ -4293,7 +4303,8 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
              consultedKeys.push(key);
 
              const staffSystem = buildStaffSystemPrompt(key);
-             const staffMessages = [{ role: 'user', content: userText }];
+             // Frame the question so the model responds only as this specific staff member
+             const staffMessages = [{ role: 'user', content: `The founder has asked: "${userText}"\n\nRespond ONLY as ${name}. Give your honest take from your specific domain. Do NOT speak for other team members, do NOT address them directly, and do NOT try to cover angles outside your mandate. Speak in first person as yourself.` }];
 
              try {
                  // animation handled by createStreamingBubble
