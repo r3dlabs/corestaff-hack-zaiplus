@@ -918,7 +918,7 @@
             </button>
             <div id="user-avatar-btn" style="display:none;flex-shrink:0;display:flex;align-items:center;gap:6px;">
                 <!-- HQ country flag -->
-                <div id="hq-flag-badge" title="" style="display:none;width:32px;height:32px;border-radius:7px;border:1px solid var(--border);background:var(--bg-elevated);flex-shrink:0;align-items:center;justify-content:center;font-size:17px;line-height:1;cursor:default;"></div>
+                <div id="hq-flag-badge" title="" style="display:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg-elevated);flex-shrink:0;align-items:center;justify-content:center;font-size:17px;line-height:1;cursor:default;overflow:hidden;"></div>
                 <!-- Avatar with status dot -->
                 <div style="position:relative;display:inline-flex;flex-shrink:0;">
                 <button id="btn-user-avatar" title="Account" style="width:30px;height:30px;border-radius:50%;border:2px solid #a0a0a0;overflow:hidden;cursor:pointer;padding:0;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;">
@@ -1791,7 +1791,7 @@ function getStaffImgForSender(sender) {
     return null;
 }
 
-function appendStaffBubble(name, text, isSynthesis = false, usage = null) {
+function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls = null) {
     const chatWindow = document.getElementById('chat-window');
 
     // Find staff key by name to get color
@@ -1852,33 +1852,38 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null) {
     // ── Metadata footer ──────────────────────────────────────────────────────
     const metaParts = [];
 
-    // Token usage
-    if (usage?.total) {
-        const parts = [];
-        if (usage.prompt)     parts.push(`↑${usage.prompt.toLocaleString()}`);
-        if (usage.completion) parts.push(`↓${usage.completion.toLocaleString()}`);
-        metaParts.push(`<span title="Tokens: ${usage.prompt||'?'} prompt + ${usage.completion||'?'} completion = ${usage.total} total">⬡ ${usage.total.toLocaleString()} tokens${parts.length ? ' (' + parts.join(' ') + ')' : ''}</span>`);
+    // Provider + model from staff assignment
+    const staffKey2 = getStaffKeyByName(name);
+    const assignment = window.staffAssignments?.[staffKey2];
+    const providerKey = assignment?.provider;
+    const modelId = assignment?.model_id;
+    const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
+
+    if (provLabel && modelId) {
+        metaParts.push(`<span style="opacity:0.8;">${provLabel} · ${modelId}</span>`);
     }
 
-    // Memory references — show if default or session memory was injected
-    if (defaultMemory) {
-        metaParts.push(`<span title="Default memory was included in this prompt">🧠 mem</span>`);
+    // Token usage
+    if (usage?.total) {
+        metaParts.push(`<span title="Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}">⬡ ${usage.total.toLocaleString()} tokens</span>`);
     }
-    if (sessionMemory) {
-        metaParts.push(`<span title="Session summary was included in this prompt">📋 session</span>`);
-    }
-    if (hqCountry) {
-        const flagUrl = countryFlagUrl(hqCountry);
-        const flagHtml = flagUrl
-            ? `<img src="${flagUrl}" style="width:14px;height:14px;object-fit:cover;border-radius:2px;vertical-align:middle;" onerror="this.outerHTML='${countryToFlag(hqCountry)}'"> ${hqCountry}`
-            : `${countryToFlag(hqCountry)} ${hqCountry}`;
-        metaParts.push(`<span title="HQ jurisdiction context: ${hqCountry}">${flagHtml}</span>`);
+
+    // URLs referred or internal training knowledge
+    const urlList = urls ? urls.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')) : [];
+    if (urlList.length > 0) {
+        const urlLinks = urlList.map(u => {
+            const short = u.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0, 50);
+            return `<a href="${u}" target="_blank" rel="noopener" style="display:block;color:var(--text-secondary);text-decoration:none;margin-top:2px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">· ${short}</a>`;
+        }).join('');
+        metaParts.push(`<span>🔗 Sources referred:<br>${urlLinks}</span>`);
+    } else {
+        metaParts.push(`<span style="opacity:0.6;">Internal Training Knowledge</span>`);
     }
 
     if (metaParts.length > 0) {
         const meta = document.createElement('div');
-        meta.style.cssText = `margin-top:8px;padding-top:6px;border-top:1px solid ${bubble.dataset.metaBorder||'var(--border)'};display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.02em;`;
-        meta.innerHTML = metaParts.join('');
+        meta.style.cssText = `margin-top:8px;padding-top:6px;border-top:1px solid ${bubble.dataset.metaBorder||'var(--border)'};display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.02em;`;
+        meta.innerHTML = metaParts.join('<span style="opacity:0.3;">·</span>');
         bubble.appendChild(meta);
     }
 
@@ -3802,11 +3807,14 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
         for (const [name, respObj] of Object.entries(specialistResponses)) {
             const resp = respObj.text || respObj;
             if (typeof resp === 'string' && resp.startsWith('[') && resp.includes('unavailable')) continue;
-            appendStaffBubble(name, resp, false, respObj.usage);
+            const sKey = getStaffKeyByName(name);
+            const sUrls = window.staffKb?.[sKey]?.urls || null;
+            appendStaffBubble(name, resp, false, respObj.usage, sUrls);
         }
 
         // ── Chief of Staff synthesises last ──────────────────────────────────
-        appendStaffBubble(cosName, synthesis, true, phase3Usage);
+        const cosUrls = window.staffKb?.['cos']?.urls || null;
+        appendStaffBubble(cosName, synthesis, true, phase3Usage, cosUrls);
         chatHistory.push({ role: 'assistant', content: synthesis });
 
         if (docReq.type) {
@@ -4419,7 +4427,7 @@ function updateHqFlag(country) {
     if (!country) { badge.style.display = 'none'; return; }
     const url = countryFlagUrl(country);
     if (url) {
-        badge.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:7px;" onerror="this.parentElement.textContent='${countryToFlag(country)}'">`;
+        badge.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${countryToFlag(country)}'">`;
         badge.title = country;
         badge.style.display = 'flex';
     } else {
