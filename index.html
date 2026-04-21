@@ -800,6 +800,34 @@
                             <div id="pmodel-section-gmi" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-gmi" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
                             <div id="pstatus-msg-gmi" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                         </div>
+                        <!-- bedrock -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/bedrock.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="bedrock" class="prov-svg-icon">
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">AWS Bedrock</span>
+                                <div id="pstatus-bedrock" style="width:8px;height:8px;border-radius:50%;background:#f90;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
+                                <div id="pconnect-badge-bedrock" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-bedrock" onclick="testProvider('bedrock')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-bedrock" type="text" value="https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://bedrock-runtime.{region}.amazonaws.com/openai/v1"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-bedrock" type="password" placeholder="AWS Bedrock API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-bedrock" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-bedrock" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-bedrock" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- azure -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/azure.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="azure" class="prov-svg-icon">
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Azure AI Foundry</span>
+                                <div id="pstatus-azure" style="width:8px;height:8px;border-radius:50%;background:#0078d4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
+                                <div id="pconnect-badge-azure" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-azure" onclick="testProvider('azure')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint <span style="font-size:9px;color:var(--text-muted);font-weight:400;">(replace YOUR-RESOURCE-NAME)</span></div><input id="pendpoint-azure" type="text" value="" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://YOUR-RESOURCE-NAME.openai.azure.com/openai/v1"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-azure" type="password" placeholder="Azure API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-azure" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-azure" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-azure" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
                         </div><!-- /provider-cards-grid -->
                     </div><!-- /provider-cards-grid -->
                 </div>
@@ -2705,7 +2733,9 @@ const PROVIDER_DEFS = {
     deepseek:  { label:'DeepSeek',   endpoint:'https://api.deepseek.com/v1',                     modelsPath:'/models',  preferred:'deepseek-chat',            color:'#5b6ef5', auth:'bearer'    },
     groq:      { label:'Groq',       endpoint:'https://api.groq.com/openai/v1',                  modelsPath:'/models',  preferred:'llama-3.3-70b-versatile',  color:'#f55036', auth:'bearer'    },
     mistral:   { label:'Mistral',    endpoint:'https://api.mistral.ai/v1',                       modelsPath:'/models',  preferred:'mistral-large-latest',     color:'#ff7000', auth:'bearer'    },
-    gmi:       { label:'GMI Cloud',  endpoint:'https://api.gmi-serving.com/v1',                  modelsPath:'/models',  preferred:'meta-llama/Llama-4-Scout-17B-16E-Instruct', color:'#7c3aed', auth:'bearer'    },
+    gmi:       { label:'GMI Cloud',       endpoint:'https://api.gmi-serving.com/v1',                              modelsPath:'/models',  preferred:'meta-llama/Llama-4-Scout-17B-16E-Instruct', color:'#7c3aed', auth:'bearer' },
+    bedrock:   { label:'AWS Bedrock',     endpoint:'https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1',   modelsPath:'/models',  preferred:'anthropic.claude-3-5-sonnet-20241022-v2:0',  color:'#f90',    auth:'bearer' },
+    azure:     { label:'Azure AI Foundry',endpoint:'',                                                             modelsPath:'/models',  preferred:'gpt-4o',                                    color:'#0078d4', auth:'bearer' },
 };
 
 const ANTHROPIC_MODELS = [
