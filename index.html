@@ -660,282 +660,203 @@
 
 
     <!-- ── PROVIDERS MODAL ───────────────────────────────────── -->
-    <div id="providers-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-box" style="max-width:500px;width:100%;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-                <p style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">AI Providers</p>
-                <button id="btn-close-providers" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;">×</button>
-            </div>
-            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;">Configure API keys for each provider. Keys are saved to your account and shared across all staff members using that provider.</p>
-            <div style="max-height:500px;overflow-y:auto;padding-right:4px;">
-                
-                    <div class="provider-card" id="pcard-openai" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#10a37f;flex-shrink:0;" id="pstatus-openai"></div>
-                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">OpenAI</span>
-                                <span id="pconnect-badge-openai" style="font-size:10px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);">not configured</span>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button id="ptest-openai" onclick="testProvider('openai')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                                <button id="pclear-openai" onclick="clearProvider('openai')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:6px;">
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
-                                <input id="pendpoint-openai" type="text" value="https://api.openai.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
-                                <input id="papikey-openai" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div id="pmodel-section-openai" style="display:none;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
-                                <select id="pmodel-openai" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                    <option value="">— select model —</option>
-                                </select>
-                            </div>
-                            <div id="pstatus-msg-openai" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                    </div>
-                    <div class="provider-card" id="pcard-anthropic" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#d4763b;flex-shrink:0;" id="pstatus-anthropic"></div>
-                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Anthropic</span>
-                                <span id="pconnect-badge-anthropic" style="font-size:10px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);">not configured</span>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button id="ptest-anthropic" onclick="testProvider('anthropic')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                                <button id="pclear-anthropic" onclick="clearProvider('anthropic')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:6px;">
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
-                                <input id="pendpoint-anthropic" type="text" value="https://api.anthropic.com" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
-                                <input id="papikey-anthropic" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div id="pmodel-section-anthropic" style="display:none;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
-                                <select id="pmodel-anthropic" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                    <option value="">— select model —</option>
-                                </select>
-                            </div>
-                            <div id="pstatus-msg-anthropic" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                    </div>
-                    <div class="provider-card" id="pcard-google" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;" id="pstatus-google"></div>
-                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Google</span>
-                                <span id="pconnect-badge-google" style="font-size:10px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);">not configured</span>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button id="ptest-google" onclick="testProvider('google')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                                <button id="pclear-google" onclick="clearProvider('google')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:6px;">
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
-                                <input id="pendpoint-google" type="text" value="https://generativelanguage.googleapis.com/v1beta" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
-                                <input id="papikey-google" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div id="pmodel-section-google" style="display:none;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
-                                <select id="pmodel-google" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                    <option value="">— select model —</option>
-                                </select>
-                            </div>
-                            <div id="pstatus-msg-google" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                    </div>
-                    <div class="provider-card" id="pcard-deepseek" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#5b6ef5;flex-shrink:0;" id="pstatus-deepseek"></div>
-                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">DeepSeek</span>
-                                <span id="pconnect-badge-deepseek" style="font-size:10px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);">not configured</span>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button id="ptest-deepseek" onclick="testProvider('deepseek')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                                <button id="pclear-deepseek" onclick="clearProvider('deepseek')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:6px;">
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
-                                <input id="pendpoint-deepseek" type="text" value="https://api.deepseek.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
-                                <input id="papikey-deepseek" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div id="pmodel-section-deepseek" style="display:none;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
-                                <select id="pmodel-deepseek" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                    <option value="">— select model —</option>
-                                </select>
-                            </div>
-                            <div id="pstatus-msg-deepseek" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                    </div>
-                    <div class="provider-card" id="pcard-groq" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#f55036;flex-shrink:0;" id="pstatus-groq"></div>
-                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Groq</span>
-                                <span id="pconnect-badge-groq" style="font-size:10px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);">not configured</span>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button id="ptest-groq" onclick="testProvider('groq')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                                <button id="pclear-groq" onclick="clearProvider('groq')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:6px;">
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
-                                <input id="pendpoint-groq" type="text" value="https://api.groq.com/openai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
-                                <input id="papikey-groq" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div id="pmodel-section-groq" style="display:none;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
-                                <select id="pmodel-groq" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                    <option value="">— select model —</option>
-                                </select>
-                            </div>
-                            <div id="pstatus-msg-groq" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                    </div>
-                    <div class="provider-card" id="pcard-mistral" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#ff7000;flex-shrink:0;" id="pstatus-mistral"></div>
-                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Mistral</span>
-                                <span id="pconnect-badge-mistral" style="font-size:10px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:10px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);">not configured</span>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button id="ptest-mistral" onclick="testProvider('mistral')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                                <button id="pclear-mistral" onclick="clearProvider('mistral')" style="font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Clear</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:6px;">
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Endpoint</div>
-                                <input id="pendpoint-mistral" type="text" value="https://api.mistral.ai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div>
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">API Key</div>
-                                <input id="papikey-mistral" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;">
-                            </div>
-                            <div id="pmodel-section-mistral" style="display:none;">
-                                <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Default Model</div>
-                                <select id="pmodel-mistral" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;">
-                                    <option value="">— select model —</option>
-                                </select>
-                            </div>
-                            <div id="pstatus-msg-mistral" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                    </div>
-            </div>
-            <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
-                <button id="btn-save-providers" class="btn-primary" style="padding:8px 20px;">Save All</button>
-            </div>
-            <div id="providers-status" style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;min-height:16px;"></div>
-        </div>
-    </div>
-
-    <!-- ── CUSTOMIZE TEAM MODAL ──────────────────────────────── -->
-    <div id="customize-modal" class="modal-overlay" style="display:none;">
-        <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:16px;width:95vw;max-width:860px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,0.4);animation:slideUp 0.25s ease;overflow:hidden;">
+    <!-- ── SETTINGS MODAL ──────────────────────────────────────────────── -->
+    <div id="settings-modal" class="modal-overlay" style="display:none;">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:16px;width:95vw;max-width:980px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,0.4);animation:slideUp 0.25s ease;overflow:hidden;">
 
             <!-- Header -->
             <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
                 <div>
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Team &amp; Startup Settings</p>
-                    <p style="font-size:13px;color:var(--text-secondary);">Configure your startup context and each staff member's identity, model and knowledge.</p>
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Settings</p>
+                    <p style="font-size:13px;color:var(--text-secondary);">Configure providers, your business context, and your AI team.</p>
                 </div>
-                <button id="btn-close-customize" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">&#x2715;</button>
+                <button id="btn-close-settings" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">&#x2715;</button>
             </div>
 
-            <!-- Toolbar: Set All -->
-            <div style="padding:10px 24px;border-bottom:1px solid var(--border);background:var(--bg-elevated);display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0;">
-                <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set All</span>
-                <select id="set-all-provider" style="flex:1;min-width:110px;max-width:160px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;" onchange="onSetAllProviderChange()">
-                    <option value="">— provider —</option>
-                </select>
-                <select id="set-all-model" style="flex:2;min-width:140px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
-                    <option value="">— model —</option>
-                </select>
-                <button onclick="applyToAll()" class="btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;">Apply to All</button>
-                <button onclick="document.getElementById('restore-defaults-modal').style.display='flex'" title="Restore default names &amp; photos" style="margin-left:auto;width:28px;height:28px;border-radius:50%;background:transparent;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#ef4444';this.style.borderColor='#ef4444'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                </button>
-            </div>
+            <!-- Scrollable body -->
+            <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
 
-            <!-- Hero card grid — populated by renderCustomizeCards() -->
-            <div id="customize-cards-grid" style="flex:1;overflow-y:auto;padding:16px 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-
-                <!-- Startup Context card — spans full width, first item in grid -->
-                <div id="startup-context-card" style="grid-column:1/-1;border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:4px;">
-
-                    <!-- Collapsed summary (shown when configured) -->
-                    <div id="startup-ctx-summary" style="display:none;padding:12px 16px;cursor:pointer;display:none;align-items:center;gap:12px;background:var(--bg-elevated);" onclick="toggleStartupContext()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                <!-- ── SECTION 1: AI PROVIDERS ─────────────────────────────── -->
+                <div id="settings-section-providers" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+                    <!-- Section header -->
+                    <div id="settings-hdr-providers" onclick="toggleSettingsSection('providers')" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--bg-elevated);user-select:none;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                         <div style="flex:1;min-width:0;">
-                            <span id="startup-ctx-summary-text" style="font-size:12px;color:var(--text-primary);font-weight:500;"></span>
+                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">AI Providers</div>
+                            <div id="settings-summary-providers" style="font-size:11px;color:var(--text-muted);margin-top:1px;font-family:'Geist Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
                         </div>
-                        <svg id="startup-ctx-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
+                        <svg id="settings-chevron-providers" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
-
-                    <!-- Expanded form -->
-                    <div id="startup-ctx-body" style="padding:16px 20px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-                            <div>
-                                <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:2px;">Startup Context</div>
-                                <div style="font-size:11px;color:var(--text-muted);">This context is injected into every staff prompt.</div>
-                            </div>
-                            <button id="startup-ctx-collapse-btn" onclick="toggleStartupContext()" style="display:none;background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;padding:0 4px;">&#x2715;</button>
+                    <!-- Body -->
+                    <div id="settings-body-providers" style="padding:16px 18px;display:flex;flex-direction:column;gap:12px;">
+                        <!-- Set All toolbar -->
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
+                            <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set All</span>
+                            <select id="set-all-provider" style="flex:1;min-width:110px;max-width:160px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;" onchange="onSetAllProviderChange()"><option value="">— provider —</option></select>
+                            <select id="set-all-model" style="flex:2;min-width:140px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;"><option value="">— model —</option></select>
+                            <button onclick="applyToAll()" class="btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;">Apply to All</button>
                         </div>
+                        <!-- Provider cards grid -->
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;" id="provider-cards-grid">
+                        <!-- openai -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#10a37f;flex-shrink:0;" id="pstatus-openai"></div>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">OpenAI</span>
+                                <div id="pconnect-badge-openai" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-openai" onclick="testProvider('openai')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-openai" type="text" value="https://api.openai.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-openai" type="password" placeholder="sk-..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-openai" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-openai" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-openai" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- anthropic -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#d4763b;flex-shrink:0;" id="pstatus-anthropic"></div>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Anthropic</span>
+                                <div id="pconnect-badge-anthropic" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-anthropic" onclick="testProvider('anthropic')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-anthropic" type="text" value="https://api.anthropic.com" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-anthropic" type="password" placeholder="sk-ant-..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-anthropic" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-anthropic" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-anthropic" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- google -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;" id="pstatus-google"></div>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Google</span>
+                                <div id="pconnect-badge-google" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-google" onclick="testProvider('google')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-google" type="text" value="https://generativelanguage.googleapis.com/v1beta" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-google" type="password" placeholder="AIza..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-google" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-google" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-google" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- deepseek -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#5b6ef5;flex-shrink:0;" id="pstatus-deepseek"></div>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">DeepSeek</span>
+                                <div id="pconnect-badge-deepseek" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-deepseek" onclick="testProvider('deepseek')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-deepseek" type="text" value="https://api.deepseek.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-deepseek" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-deepseek" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-deepseek" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-deepseek" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- groq -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#f55036;flex-shrink:0;" id="pstatus-groq"></div>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Groq</span>
+                                <div id="pconnect-badge-groq" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-groq" onclick="testProvider('groq')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-groq" type="text" value="https://api.groq.com/openai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-groq" type="password" placeholder="gsk_..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-groq" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-groq" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-groq" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- mistral -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#ff7000;flex-shrink:0;" id="pstatus-mistral"></div>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Mistral</span>
+                                <div id="pconnect-badge-mistral" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-mistral" onclick="testProvider('mistral')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-mistral" type="text" value="https://api.mistral.ai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-mistral" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-mistral" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-mistral" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-mistral" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- gmi -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0;" id="pstatus-gmi"></div>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">GMI Cloud</span>
+                                <div id="pconnect-badge-gmi" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-gmi" onclick="testProvider('gmi')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-gmi" type="text" value="https://api.gmi-serving.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-gmi" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-gmi" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-gmi" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-gmi" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        </div><!-- /provider-cards-grid -->
+                        <div id="providers-status" style="font-size:11px;color:var(--text-muted);text-align:center;min-height:16px;font-family:'Geist Mono',monospace;"></div>
+                    </div>
+                </div>
+
+                <!-- ── SECTION 2: STARTUP & BUSINESS ───────────────────────── -->
+                <div id="settings-section-startup" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+                    <div id="settings-hdr-startup" onclick="toggleSettingsSection('startup')" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--bg-elevated);user-select:none;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Startup &amp; Business</div>
+                            <div id="settings-summary-startup" style="font-size:11px;color:var(--text-muted);margin-top:1px;font-family:'Geist Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                        </div>
+                        <svg id="settings-chevron-startup" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div id="settings-body-startup" style="padding:16px 18px;">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                             <div>
-                                <div class="staff-section-label">Your Name</div>
-                                <input id="ctx-founder-name" type="text" class="input-field" placeholder="e.g. Alex" style="font-size:13px;" value="">
+                                <div class="staff-section-label">Your Preferred Name</div>
+                                <input id="ctx-founder-name" type="text" class="input-field" placeholder="e.g. Alex" style="font-size:13px;">
                             </div>
                             <div>
-                                <div class="staff-section-label">HQ Country</div>
-                                <input id="ctx-hq-country" type="text" class="input-field" placeholder="e.g. Singapore" style="font-size:13px;" value="">
+                                <div class="staff-section-label">Business Name</div>
+                                <input id="ctx-business-name" type="text" class="input-field" placeholder="e.g. Startup Staff" style="font-size:13px;">
                             </div>
                             <div style="grid-column:1/-1;">
-                                <div class="staff-section-label">Startup Name &amp; Description</div>
-                                <textarea id="ctx-startup-desc" rows="3" class="input-field" style="resize:none;font-size:13px;" placeholder="e.g. TechFlow AI — a B2B SaaS platform automating customer onboarding using generative agents."></textarea>
+                                <div class="staff-section-label">Business Description</div>
+                                <textarea id="ctx-startup-desc" rows="3" class="input-field" style="resize:none;font-size:13px;" placeholder="e.g. Startup Staff is an AI-powered boardroom for founders — a cross-functional team of specialist personas that routes every query through the right expert and synthesises a unified strategic recommendation."></textarea>
+                            </div>
+                            <div>
+                                <div class="staff-section-label">Registered HQ Country</div>
+                                <input id="ctx-hq-country" type="text" class="input-field" placeholder="e.g. Singapore" style="font-size:13px;">
                             </div>
                         </div>
                     </div>
                 </div>
 
-            </div>
+                <!-- ── SECTION 3: TEAM CONFIGURATION ───────────────────────── -->
+                <div id="settings-section-team" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+                    <div id="settings-hdr-team" onclick="toggleSettingsSection('team')" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--bg-elevated);user-select:none;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Team Configuration</div>
+                            <div id="settings-summary-team" style="font-size:11px;color:var(--text-muted);margin-top:1px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <button onclick="event.stopPropagation();document.getElementById('restore-defaults-modal').style.display='flex'" title="Restore default names &amp; photos" style="width:26px;height:26px;border-radius:50%;background:transparent;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:color 0.15s,border-color 0.15s;" onmouseover="this.style.color='#ef4444';this.style.borderColor='#ef4444'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            </button>
+                            <svg id="settings-chevron-team" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                    </div>
+                    <div id="settings-body-team" style="padding:16px 18px;">
+                        <div id="customize-cards-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;"></div>
+                    </div>
+                </div>
+
+            </div><!-- /scrollable body -->
 
             <!-- Footer -->
             <div style="padding:12px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-shrink:0;background:var(--bg-elevated);">
-                <button id="btn-cancel-customize" class="btn-ghost">Cancel</button>
-                <button id="btn-save-customize" class="btn-primary" style="padding:10px 24px;">Save Changes</button>
+                <button id="btn-cancel-settings" class="btn-ghost">Cancel</button>
+                <button id="btn-save-settings" class="btn-primary" style="padding:10px 28px;">Save All</button>
             </div>
-            <div id="customize-status" style="font-size:11px;color:var(--text-muted);text-align:center;padding:4px 24px 10px;min-height:20px;background:var(--bg-elevated);"></div>
+            <div id="settings-status" style="font-size:11px;color:var(--text-muted);text-align:center;padding:4px 24px 10px;min-height:20px;background:var(--bg-elevated);"></div>
         </div>
     </div>
+
 
     <!-- User dropdown — outside header so overflow:hidden doesn't clip it -->
     <div id="user-dropdown" class="user-dropdown" style="display:none;">
@@ -962,11 +883,8 @@
             </div>
         </div>
         <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">
-            <button id="btn-providers" title="AI Providers" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
+            <button id="btn-settings" title="Settings" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            </button>
-            <button id="btn-customize" title="Customize Team" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </button>
             <button id="btn-theme-toggle" title="Toggle theme" style="width:32px;height:32px;border:1px solid var(--border);border-radius:7px;background:var(--bg-elevated);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;" onclick="applyTheme(currentTheme==='dark'?'light':'dark')">
                 <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -1377,11 +1295,7 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
     // Start the 5-minute polling interval (initial probe runs after assignments load)
     if (!_statusInterval) _statusInterval = setInterval(checkAllConnections, 5 * 60 * 1000);
         if (!document.getElementById('chat-window').children.length) {
-            if (!founderName || !startupDesc) {
-                obCheckAndOpen(session.user.user_metadata?.full_name || session.user.email);
-            } else {
-                initializeBoardroom();
-            }
+            initializeBoardroom();
         }
     } else if (event === 'SIGNED_OUT') {
         clearUserUI();
@@ -1464,7 +1378,8 @@ const PROVIDERS = {
 let chatHistory = [];
 let apiErrorCount = 0;
 window._apiErrors = {}; // tracks last error per staff key
-let founderName  = localStorage.getItem('founder_name')  || '';
+let founderName  = localStorage.getItem('founder_name')   || '';
+let businessName = localStorage.getItem('business_name')  || '';
 let startupDesc  = localStorage.getItem('startup_desc')   || '';
 let hqCountry    = localStorage.getItem('hq_country')     || '';
 
@@ -1701,15 +1616,15 @@ Specialists:
 
 function buildSystemPrompt(extra='') {
     let p = BASE_SYSTEM_PROMPT;
-    if (founderName||startupDesc||hqCountry) {
+    if (founderName||businessName||startupDesc||hqCountry) {
         p+='\n\n[STARTUP CONTEXT]\n';
-        if (founderName) p+=`Founder: ${founderName}\n`;
-        if (startupDesc) p+=`Business: ${startupDesc}\n`;
-        if (hqCountry)   p+=`Headquarters: ${hqCountry}\n`;
-        if (hqCountry)   p+=`Default jurisdiction: ${hqCountry}. For legal, tax, regulatory and compliance matters, assume ${hqCountry} law and regulations as the default unless the user explicitly specifies another jurisdiction.\n`;
+        if (founderName)  p+=`Founder: ${founderName}\n`;
+        if (businessName) p+=`Business Name: ${businessName}\n`;
+        if (startupDesc)  p+=`Business Description: ${startupDesc}\n`;
+        if (hqCountry)    p+=`Headquarters: ${hqCountry}\n`;
+        if (hqCountry)    p+=`Default jurisdiction: ${hqCountry}. For legal, tax, regulatory and compliance matters, assume ${hqCountry} law and regulations as the default unless the user explicitly specifies another jurisdiction.\n`;
         p+='[END STARTUP CONTEXT]';
     }
-
     if (extra) p+='\n\n'+extra;
     return p;
 }
@@ -2300,10 +2215,7 @@ window.onload = async () => {
         console.warn('Running without Supabase auth');
         hideAuthModal();
         if (!founderName || !startupDesc) {
-            obCheckAndOpen(founderName);
-        } else {
             initializeBoardroom();
-        }
         return;
     }
 
@@ -2456,6 +2368,10 @@ async function loadStaffCustomizations() {
                 if (row.custom_name) { startupDesc = row.custom_name; localStorage.setItem('startup_desc', startupDesc); }
                 return;
             }
+            if (row.staff_key === '__business_name__') {
+                if (row.custom_name) { businessName = row.custom_name; localStorage.setItem('business_name', businessName); }
+                return;
+            }
             if (row.staff_key === '__hq_country__') {
                 if (row.custom_name) { hqCountry = row.custom_name; localStorage.setItem('hq_country', hqCountry); updateHqFlag(hqCountry); }
                 return;
@@ -2469,7 +2385,8 @@ async function loadStaffCustomizations() {
             if (row.staff_key.startsWith('__roles__')) {
                 const staffKey = row.staff_key.replace('__roles__', '');
                 if (!window.staffRoles) window.staffRoles = {};
-                window.staffRoles[staffKey] = row.custom_name || '';
+                // Only override default if the user has actually customised it
+                window.staffRoles[staffKey] = row.custom_name || STAFF_ROLE_DEFAULTS[staffKey] || '';
                 return;
             }
             // Staff customization rows
@@ -2507,27 +2424,30 @@ async function saveFounderPrefs() {
 }
 
 async function saveStaffCustomizations() {
-    if (!sbClient) { showCustomizeStatus('Not signed in.', true); return; }
+    if (!sbClient) { showSettingsStatus('Not signed in.', true); return; }
     const { data: { user } } = await sbClient.auth.getUser();
-    if (!user) { showCustomizeStatus('Not signed in.', true); return; }
+    if (!user) { showSettingsStatus('Not signed in.', true); return; }
 
-    const btn = document.getElementById('btn-save-customize');
+    const btn = document.getElementById('btn-save-settings');
     btn.disabled = true; btn.textContent = 'Saving...';
-    showCustomizeStatus('');
+    showSettingsStatus('');
 
     try {
         // ── 0. Save startup context from the card inputs ──────────────────
-        const newFounderName = document.getElementById('ctx-founder-name')?.value.trim() || '';
-        const newStartupDesc = document.getElementById('ctx-startup-desc')?.value.trim() || '';
-        const newHqCountry   = document.getElementById('ctx-hq-country')?.value.trim()   || '';
-        founderName = newFounderName; localStorage.setItem('founder_name', founderName);
-        startupDesc = newStartupDesc; localStorage.setItem('startup_desc', startupDesc);
-        hqCountry   = newHqCountry;   localStorage.setItem('hq_country',   hqCountry);
+        const newFounderName  = document.getElementById('ctx-founder-name')?.value.trim()  || '';
+        const newBusinessName = document.getElementById('ctx-business-name')?.value.trim() || '';
+        const newStartupDesc  = document.getElementById('ctx-startup-desc')?.value.trim()  || '';
+        const newHqCountry    = document.getElementById('ctx-hq-country')?.value.trim()    || '';
+        founderName  = newFounderName;  localStorage.setItem('founder_name',  founderName);
+        businessName = newBusinessName; localStorage.setItem('business_name', businessName);
+        startupDesc  = newStartupDesc;  localStorage.setItem('startup_desc',  startupDesc);
+        hqCountry    = newHqCountry;    localStorage.setItem('hq_country',    hqCountry);
         updateHqFlag(hqCountry);
         await sbClient.from('staff_customizations').upsert([
-            { user_id: user.id, staff_key: '__founder_name__', custom_name: founderName, photo_url: null },
-            { user_id: user.id, staff_key: '__startup_desc__', custom_name: startupDesc, photo_url: null },
-            { user_id: user.id, staff_key: '__hq_country__',   custom_name: hqCountry,   photo_url: null },
+            { user_id: user.id, staff_key: '__founder_name__',  custom_name: founderName,  photo_url: null },
+            { user_id: user.id, staff_key: '__business_name__', custom_name: businessName, photo_url: null },
+            { user_id: user.id, staff_key: '__startup_desc__',  custom_name: startupDesc,  photo_url: null },
+            { user_id: user.id, staff_key: '__hq_country__',    custom_name: hqCountry,    photo_url: null },
         ], { onConflict: 'user_id,staff_key' });
 
         // ── 1. Save staff customizations (name + photo) ───────────────────
@@ -2551,7 +2471,7 @@ async function saveStaffCustomizations() {
         // Update in-memory
         Object.keys(STAFF_DEFAULTS).forEach(key => {
             if (!window.staffRoles) window.staffRoles = {};
-            window.staffRoles[key] = document.getElementById('custom-roles-' + key)?.value.trim() || '';
+            window.staffRoles[key] = document.getElementById('custom-roles-' + key)?.value.trim() || STAFF_ROLE_DEFAULTS[key] || '';
         });
 
         // ── 3. Save KB URLs from card textareas ───────────────────────────
@@ -2582,13 +2502,16 @@ async function saveStaffCustomizations() {
         });
         applyStaffCustomizations(custom);
         initializeBoardroom();
-        updateStartupContextCard();
-        showCustomizeStatus('✓ Saved successfully.');
-        setTimeout(() => { document.getElementById('customize-modal').style.display = 'none'; }, 800);
+        // Save model assignments and provider configs
+        await saveStaffAssignments();
+        await saveProviderConfigs();
+        updateSettingsSummaries();
+        showSettingsStatus('✓ Saved successfully.');
+        setTimeout(() => closeSettingsModal(), 800);
     } catch(e) {
-        showCustomizeStatus('Error: ' + e.message, true);
+        showSettingsStatus('Error: ' + e.message, true);
     } finally {
-        btn.disabled = false; btn.textContent = 'Save Changes';
+        btn.disabled = false; btn.textContent = 'Save All';
     }
 }
 
@@ -2626,7 +2549,7 @@ async function confirmRestoreDefaults() {
         document.getElementById('restore-defaults-modal').style.display = 'none';
 
         // Also close customize modal if it was open
-        const customizeModal = document.getElementById('customize-modal');
+        const customizeModal = document.getElementById('settings-modal');
         if (customizeModal?.style.display === 'flex') {
             customizeModal.style.display = 'none';
         }
@@ -2639,8 +2562,8 @@ async function confirmRestoreDefaults() {
     }
 }
 
-function showCustomizeStatus(msg, isError=false) {
-    const el = document.getElementById('customize-status');
+function showSettingsStatus(msg, isError=false) {
+    const el = document.getElementById('settings-status');
     if (!el) return;
     el.textContent = msg;
     el.style.color = isError ? '#ef4444' : '#22c55e';
@@ -2648,9 +2571,9 @@ function showCustomizeStatus(msg, isError=false) {
 
 async function handlePhotoUpload(key, file) {
     if (!sbClient) return;
-    if (!file || !file.type.startsWith('image/')) { showCustomizeStatus('Please select an image file.', true); return; }
-    if (file.size > 2 * 1024 * 1024) { showCustomizeStatus('Image must be under 2MB.', true); return; }
-    showCustomizeStatus('Uploading...');
+    if (!file || !file.type.startsWith('image/')) { showSettingsStatus('Please select an image file.', true); return; }
+    if (file.size > 2 * 1024 * 1024) { showSettingsStatus('Image must be under 2MB.', true); return; }
+    showSettingsStatus('Uploading...');
     try {
         const { data: { user } } = await sbClient.auth.getUser();
         const ext = file.name.split('.').pop();
@@ -2663,17 +2586,14 @@ async function handlePhotoUpload(key, file) {
         if (previewImg) previewImg.src = publicUrl;
         if (!window.staffCustom[key]) window.staffCustom[key] = {...STAFF_DEFAULTS[key]};
         window.staffCustom[key].img = publicUrl;
-        showCustomizeStatus('Photo uploaded. Click Save to apply.');
+        showSettingsStatus('Photo uploaded. Click Save to apply.');
     } catch(e) {
-        showCustomizeStatus('Upload failed: ' + e.message, true);
+        showSettingsStatus('Upload failed: ' + e.message, true);
     }
 }
 
-// ── Wiring (btn-customize click consolidated in chunk2) ─────────────────────
-document.getElementById('btn-close-customize').addEventListener('click', () => { document.getElementById('customize-modal').style.display = 'none'; });
-document.getElementById('btn-cancel-customize').addEventListener('click', () => { document.getElementById('customize-modal').style.display = 'none'; });
-document.getElementById('btn-save-customize').addEventListener('click', saveStaffCustomizations);
-document.getElementById('customize-modal').addEventListener('click', e => { if (e.target === document.getElementById('customize-modal')) document.getElementById('customize-modal').style.display = 'none'; });
+// ── Settings modal wiring ─────────────────────────────────────────────────────
+document.getElementById('settings-modal').addEventListener('click', e => { if (e.target === document.getElementById('settings-modal')) document.getElementById('settings-modal').style.display = 'none'; });
 
 // Restore defaults modal — close on overlay click
 document.getElementById('restore-defaults-modal').addEventListener('click', e => {
@@ -2799,39 +2719,23 @@ function clearProvider(key) {
 }
 
 async function saveProviderConfigs() {
-    if (!sbClient) { document.getElementById('providers-status').textContent = 'Not signed in.'; return; }
+    if (!sbClient) return;
     const { data: { user } } = await sbClient.auth.getUser();
     if (!user) return;
 
-    const btn = document.getElementById('btn-save-providers');
-    btn.disabled = true; btn.textContent = 'Saving...';
+    const upserts = [];
+    for (const key of Object.keys(PROVIDER_DEFS)) {
+        const apiKey   = document.getElementById('papikey-' + key)?.value.trim();
+        const endpoint = document.getElementById('pendpoint-' + key)?.value.trim();
+        const model    = document.getElementById('pmodel-' + key)?.value.trim();
+        if (!apiKey) continue;
+        upserts.push({ user_id: user.id, provider: key, api_key: apiKey, endpoint_url: endpoint, preferred_model: model || PROVIDER_DEFS[key].preferred });
+        window.providerConfigs[key] = { apiKey, endpoint, model: model || PROVIDER_DEFS[key].preferred };
+    }
 
-    try {
-        const upserts = [];
-        for (const key of Object.keys(PROVIDER_DEFS)) {
-            const apiKey   = document.getElementById('papikey-' + key)?.value.trim();
-            const endpoint = document.getElementById('pendpoint-' + key)?.value.trim();
-            const model    = document.getElementById('pmodel-' + key)?.value.trim();
-            if (!apiKey) continue; // only save configured providers
-            upserts.push({ user_id: user.id, provider: key, api_key: apiKey, endpoint_url: endpoint, preferred_model: model || PROVIDER_DEFS[key].preferred });
-            window.providerConfigs[key] = { apiKey, endpoint, model: model || PROVIDER_DEFS[key].preferred };
-        }
-
-        if (upserts.length > 0) {
-            const { error } = await sbClient.from('provider_configs').upsert(upserts, { onConflict: 'user_id,provider' });
-            if (error) throw error;
-        }
-
-        const statusEl = document.getElementById('providers-status');
-        statusEl.textContent = '✓ Saved successfully.';
-        statusEl.style.color = '#22c55e';
-        setTimeout(() => { document.getElementById('providers-modal').style.display = 'none'; }, 800);
-    } catch(e) {
-        const statusEl = document.getElementById('providers-status');
-        statusEl.textContent = 'Error: ' + e.message;
-        statusEl.style.color = '#ef4444';
-    } finally {
-        btn.disabled = false; btn.textContent = 'Save All';
+    if (upserts.length > 0) {
+        const { error } = await sbClient.from('provider_configs').upsert(upserts, { onConflict: 'user_id,provider' });
+        if (error) throw error;
     }
 }
 
@@ -2876,20 +2780,6 @@ async function loadProviderConfigs() {
         console.warn('Failed to load provider configs:', e);
     }
 }
-
-// ── Providers modal wiring ────────────────────────────────────────────────────
-document.getElementById('btn-providers').addEventListener('click', () => {
-    if (!sbClient) { alert('Please sign in to configure providers.'); return; }
-    document.getElementById('providers-modal').style.display = 'flex';
-});
-document.getElementById('btn-close-providers').addEventListener('click', () => {
-    document.getElementById('providers-modal').style.display = 'none';
-});
-document.getElementById('providers-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('providers-modal')) document.getElementById('providers-modal').style.display = 'none';
-});
-document.getElementById('btn-save-providers').addEventListener('click', saveProviderConfigs);
-
 // ─── CHUNK 2: PER-STAFF MODEL ASSIGNMENT ────────────────────────────────────
 
 // staff_assignments in memory: { cos: { provider, model_id }, tony: { provider, model_id }, ... }
@@ -2991,9 +2881,9 @@ async function loadStaffAssignments() {
 }
 
 async function saveStaffAssignments() {
-    if (!sbClient) { showCustomizeStatus('Not signed in.', true); return; }
+    if (!sbClient) { showSettingsStatus('Not signed in.', true); return; }
     const { data: { user } } = await sbClient.auth.getUser();
-    if (!user) { showCustomizeStatus('Not signed in.', true); return; }
+    if (!user) { showSettingsStatus('Not signed in.', true); return; }
 
     const STAFF_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
     const upserts = [];
@@ -3008,7 +2898,7 @@ async function saveStaffAssignments() {
 
     if (upserts.length > 0) {
         const { error } = await sbClient.from('staff_assignments').upsert(upserts, { onConflict: 'user_id,staff_key' });
-        if (error) { showCustomizeStatus('Error saving assignments: ' + error.message, true); return; }
+        if (error) { showSettingsStatus('Error saving assignments: ' + error.message, true); return; }
     }
 }
 
@@ -3087,62 +2977,14 @@ function applyToAll() {
 // ─── STARTUP CONTEXT IN CUSTOMIZE MODAL ─────────────────────────────────────
 
 function populateStartupContext() {
-    document.getElementById('ctx-founder-name').value  = founderName  || '';
-    document.getElementById('ctx-startup-desc').value  = startupDesc  || '';
-    document.getElementById('ctx-hq-country').value    = hqCountry    || '';
-    updateStartupContextCard();
-}
-
-function updateStartupContextCard() {
-    const hasData = founderName || startupDesc || hqCountry;
-    const summary  = document.getElementById('startup-ctx-summary');
-    const body     = document.getElementById('startup-ctx-body');
-    const collapseBtn = document.getElementById('startup-ctx-collapse-btn');
-    const summaryText = document.getElementById('startup-ctx-summary-text');
-    const chevron  = document.getElementById('startup-ctx-chevron');
-
-    if (hasData) {
-        // Show collapsed summary, hide expand body, show collapse X button
-        const parts = [];
-        if (founderName) parts.push(founderName);
-        if (startupDesc) parts.push(startupDesc.split(/[,—–-]/)[0].trim());
-        if (hqCountry)   parts.push(countryToFlag(hqCountry) + ' ' + hqCountry);
-        summaryText.textContent = parts.join('  ·  ');
-        summary.style.display = 'flex';
-        body.style.display    = 'none';
-        collapseBtn.style.display = 'none';
-        chevron.style.transform   = 'rotate(0deg)';
-    } else {
-        // No data — keep expanded, no summary
-        summary.style.display = 'none';
-        body.style.display    = 'block';
-        collapseBtn.style.display = 'none';
-    }
-}
-
-function toggleStartupContext() {
-    const summary  = document.getElementById('startup-ctx-summary');
-    const body     = document.getElementById('startup-ctx-body');
-    const collapseBtn = document.getElementById('startup-ctx-collapse-btn');
-    const chevron  = document.getElementById('startup-ctx-chevron');
-    const isExpanded = body.style.display !== 'none';
-
-    if (isExpanded) {
-        // Collapse — only if data exists
-        const fn = document.getElementById('ctx-founder-name')?.value.trim();
-        const sd = document.getElementById('ctx-startup-desc')?.value.trim();
-        const hq = document.getElementById('ctx-hq-country')?.value.trim();
-        if (!fn && !sd && !hq) return; // don't collapse if empty
-        body.style.display        = 'none';
-        summary.style.display     = 'flex';
-        collapseBtn.style.display = 'none';
-        chevron.style.transform   = 'rotate(0deg)';
-    } else {
-        body.style.display        = 'block';
-        summary.style.display     = 'none';
-        collapseBtn.style.display = 'block';
-        chevron.style.transform   = 'rotate(180deg)';
-    }
+    const fn = document.getElementById('ctx-founder-name');
+    const bn = document.getElementById('ctx-business-name');
+    const sd = document.getElementById('ctx-startup-desc');
+    const hq = document.getElementById('ctx-hq-country');
+    if (fn) fn.value = founderName  || '';
+    if (bn) bn.value = businessName || '';
+    if (sd) sd.value = startupDesc  || '';
+    if (hq) hq.value = hqCountry    || '';
 }
 
 function renderCustomizeCards() {
@@ -3294,22 +3136,6 @@ async function fetchKbUrlsForKey(key) {
     if (statusEl) statusEl.textContent = `✓ ${fetched}/${urls.length} fetched`;
 }
 
-// ── Definitive btn-customize click handler ───────────────────────────────────
-document.getElementById('btn-customize').onclick = () => {
-    if (!sbClient) { alert('Please sign in to customize your team.'); return; }
-    populateStartupContext();
-    renderCustomizeCards();
-    document.getElementById('customize-modal').style.display = 'flex';
-};
-
-// ── Patch saveStaffCustomizations to also save assignments ────────────────────
-const _origSaveCustomize = saveStaffCustomizations;
-window.saveStaffCustomizations = async function() {
-    await _origSaveCustomize();
-    await saveStaffAssignments();
-};
-document.getElementById('btn-save-customize').onclick = () => window.saveStaffCustomizations();
-
 // ─── CHUNK 3: PER-STAFF MODEL ROUTING ────────────────────────────────────────
 
 // Map staff key to their name (for matching CONSULT tags)
@@ -3439,6 +3265,8 @@ function buildStaffSystemPrompt(staffKey) {
         cos: {
             system: `You are ${name}, Chief of Staff at this startup. You know everyone on the team by first name and work closely with all of them every day.
 
+Primary mandate: Orchestration. Your core responsibilities are triage, meeting synthesis, challenging founder bias, and locking in next steps.
+
 Your job is to pull the right people in, synthesise what they're saying, and give the founder a clear path forward. You're the connective tissue of this team — you know what ${col.tony} is building, what ${col.mike} is worried about, what ${col.harvey} flagged last week.
 
 Tone: Warm but sharp. Decisive. You speak like a trusted colleague who's been in the trenches with this team. Use first names naturally. Don't be formal — be direct and human.
@@ -3448,12 +3276,16 @@ When you synthesise: briefly mention who said what, connect the dots, and give a
         tony: {
             system: `You are ${name}, the engineering lead at this startup. You sit next to ${col.donna} and ${col.leo}, you've argued with ${col.mike} about infrastructure costs, and you care deeply about building things right.
 
+Primary mandate: Delivery. Your core responsibilities are technical feasibility, build vs. buy decisions, managing tech debt, and defining realistic timelines.
+
 You speak plainly and technically. No fluff. If something's overengineered, you'll say so. If a timeline is fantasy, you'll say that too. You reference your teammates naturally — "that's really a question for ${col.mike}" or "I'd loop in ${col.leo} on the architecture side."
 
 Tone: Direct, a bit blunt, technically confident. You're not unfriendly — you just cut to the point. Use first names. Think out loud.`,
         },
         mike: {
-            system: `You are ${name}, the finance person at this startup. You know the burn rate, the runway, and the unit economics better than anyone. You've had the "we need to talk about spending" conversation with ${col.donna} more than once.
+            system: `You are ${name}, the finance and accounting lead at this startup. You know the burn rate, the runway, and the unit economics better than anyone. You've had the "we need to talk about spending" conversation with ${col.donna} more than once.
+
+Primary mandate: Capital. Your core responsibilities are tracking burn rate, modeling unit economics, managing day-to-day accounting, and prepping for fundraising.
 
 You're not a pessimist — you're the person who keeps the company alive. You flag risks early but you also help find the path. You reference the team naturally: "the question ${col.harvey} should weigh in on is..." or "this depends on what ${col.tony} can ship by when."
 
@@ -3462,26 +3294,34 @@ Tone: Measured, data-informed, occasionally dry. Friendly but firm on numbers. U
         steve: {
             system: `You are ${name}, the marketing lead at this startup. You think about customers, narrative, and growth constantly. You know the product (thanks to ${col.tony}) and the budget constraints (thanks to ${col.mike}), and you work within them creatively.
 
+Primary mandate: Growth. Your core responsibilities are defining value propositions, executing Go-To-Market strategies, optimizing ad spend, and analyzing competitors.
+
 You're energetic and idea-driven but you back it with logic. You speak like someone who's shipped campaigns, talked to customers, and knows what actually moves the needle vs what sounds good in a deck.
 
 Tone: Enthusiastic but grounded. Creative but practical. Use first names. Reference the team when relevant.`,
         },
         harvey: {
-            system: `You are ${name}, the legal mind on this team. You've reviewed the contracts, flagged the risks, and had the uncomfortable conversations with ${col.donna} and ${col.mike} about what the company actually agreed to.
+            system: `You are ${name}, the legal lead on this team. You've reviewed the contracts, flagged the risks, and had the uncomfortable conversations with ${col.donna} and ${col.mike} about what the company actually agreed to.
+
+Primary mandate: Risk. Your core responsibilities are drafting contracts, advising on corporate structure, protecting IP, and ensuring data privacy compliance (PDPA/GDPR/CCPA).
 
 You don't talk in legalese with your team. You translate. "Here's what that clause actually means for us..." You're direct about risk but you're not a blocker — you help find the legal path forward. You know when to say "get a proper lawyer on this" and when you can handle it in-house.
 
 Tone: Precise but plain-spoken. Collegial. Not stiff. Use first names.`,
         },
         leonardo: {
-            system: `You are ${name}, the architecture and systems person. You and ${col.tony} go back and forth on technical decisions constantly — you take the longer view, ${col.tony} keeps it pragmatic. That tension is healthy.
+            system: `You are ${name}, the architecture lead at this startup. You and ${col.tony} go back and forth on technical decisions constantly — you take the longer view, ${col.tony} keeps it pragmatic. That tension is healthy.
+
+Primary mandate: Foundation. Your core responsibilities are designing scalable systems, selecting infrastructure, defining API contracts, and shaping platform strategy.
 
 You think in systems, scale, and tradeoffs. You're the person who asks "but what does this look like at 10x?" You explain complex concepts simply and you enjoy it. You reference the team when context matters.
 
 Tone: Thoughtful, curious, collaborative. You're not a lone genius — you build with the team. Use first names.`,
         },
         sigmund: {
-            system: `You are ${name}, the people and HR lead. You know everyone on this team personally — their working styles, their motivations, what's keeping them up at night. You work closely with ${col.donna} on team dynamics and with ${col.mike} on comp.
+            system: `You are ${name}, the HR and people lead at this startup. You know everyone on this team personally — their working styles, their motivations, what's keeping them up at night. You work closely with ${col.donna} on team dynamics and with ${col.mike} on comp.
+
+Primary mandate: People. Your core responsibilities are sourcing talent, structuring compensation, managing performance, and mitigating cultural risk.
 
 You're the person who catches the human stuff that falls through the cracks: when someone's burning out, when a hire is wrong for culture, when a policy creates more problems than it solves. You care deeply about people AND the company — you know they're not in conflict.
 
@@ -3496,8 +3336,8 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
         ? `\n\nJURISDICTION: This startup is HQ'd in ${hqCountry}. Default legal, tax, and compliance context to ${hqCountry} unless told otherwise.`
         : '';
 
-    const founderCtx = (founderName || startupDesc)
-        ? `\n\nCOMPANY CONTEXT:\nFounder: ${founderName || 'Unknown'}\nBusiness: ${startupDesc || 'Not specified'}${hqCtx}`
+    const founderCtx = (founderName || businessName || startupDesc)
+        ? `\n\nCOMPANY CONTEXT:\nFounder: ${founderName || 'Unknown'}${businessName ? '\nBusiness Name: ' + businessName : ''}${startupDesc ? '\nBusiness Description: ' + startupDesc : ''}${hqCtx}`
         : hqCtx;
 
     // Inject custom roles & responsibilities if set
@@ -3805,9 +3645,68 @@ const STAFF_KB_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'
 window.staffKb = {};
 STAFF_KB_KEYS.forEach(k => { window.staffKb[k] = { urls: '', files: [], urlContent: '' }; });
 
-// In-memory roles & responsibilities per staff key
+// In-memory roles & responsibilities per staff key — pre-populated with defaults
+// V2 Detailed — shown in Settings UI for founder to read and customise
+const STAFF_ROLE_DEFAULTS = {
+    cos: `Orchestration & Routing: Acts as the central nervous system of the company. Intercepts incoming requests, filters out noise, and routes critical issues to the right leaders to protect the founder's time.
+
+Synthesis: Distills lengthy email threads, complex meetings, and disparate data points into actionable insights and executive summaries.
+
+Challenging Assumptions: Serves as an objective, trusted counterweight to founder bias. Stress-tests ideas, asks the hard questions, and ensures the team isn't operating in an echo chamber.
+
+Closing & Next Steps: Owns the execution follow-through. Ensures that every strategic decision translates into a documented "who is doing what by when" and ruthlessly tracks it to completion.`,
+
+    tony: `Feasibility & Timelines: Translates product vision into technical reality. Pushes back on impossible features and provides honest, padded timelines that account for testing and unknown variables.
+
+Build vs. Buy: Pragmatically decides when to write custom code versus leveraging existing third-party tools to accelerate time-to-market.
+
+Tech Debt Management: Balances the need for speed with code maintainability. Intentionally decides when to take on technical debt to hit a milestone and when to pause feature work to pay it down.
+
+Security & Operations: Establishes baseline security protocols to protect company assets and user data without crippling developer velocity.`,
+
+    mike: `Unit Economics & ROI: Obsessively models customer acquisition cost (CAC) against lifetime value (LTV) to ensure the business model is actually sustainable as it scales.
+
+Burn Rate Management: Monitors runway and cash flow. Acts as the financial brakes when necessary, providing early warnings for potential cash crunches.
+
+Fundraising Prep: Builds the financial models, cap table scenarios, and historical data rooms required for investor due diligence.
+
+Accounting Guidance: Ensures clean bookkeeping, tax compliance, and proper categorization of expenses to avoid costly audits down the line.`,
+
+    steve: `Value Proposition & Positioning: Sharpens the company's messaging so it cuts through the noise, stands out against competitors, and deeply resonates with the target audience.
+
+GTM Strategy: Orchestrates product launches and coordinates cross-functional efforts to ensure new features actually reach and activate users.
+
+Acquisition Channels: Tests, measures, and scales various marketing channels (organic, paid, partnerships) to find the most efficient paths to growth.
+
+Spend Efficiency: Rigorously tracks conversion rates and customer acquisition costs to ensure every advertising dollar yields a positive return.`,
+
+    harvey: `Contracts & IP: Protects the company's core assets through ironclad intellectual property assignments, NDAs, terms of service, and vendor agreements.
+
+Corporate Structure: Advises on entity formation, subsidiary structures, board governance, and the mechanics of equity distribution.
+
+Compliance & Privacy: Navigates the complex web of local and international data protection laws (like Singapore's PDPA, GDPR, or CCPA) ensuring the product architecture and data handling are compliant by design.
+
+Employment Law: Standardizes offer letters, contractor agreements, and termination procedures to minimize liability and ensure fair practices.`,
+
+    leonardo: `Systems Design & Scalability: Blueprints the technical stack, ensuring it can handle current loads while providing a clear, cost-effective path to scale as user adoption grows.
+
+Infrastructure Choices: Makes high-stakes decisions on cloud architecture, database paradigms, and deployment pipelines that the company will live with for years.
+
+API Contracts: Defines robust interfaces between microservices or frontend/backend teams to prevent integration bottlenecks and allow independent deployment.
+
+Platform Strategy: Looks over the horizon to anticipate future technical requirements, ensuring today's architecture won't block tomorrow's product roadmap.`,
+
+    sigmund: `Hiring & Org Design: Anticipates capacity bottlenecks, designs a scalable organizational chart, and manages the full-cycle recruiting process to secure top talent.
+
+Compensation: Develops competitive, equitable salary and stock option bands that align with the company's cash position and market realities.
+
+Culture Risk: Proactively monitors the mood of the team. Identifies burnout, misalignment, or toxicity early and intervenes before it impacts the broader organization.
+
+Performance Management: Implements lightweight, effective frameworks for feedback, goal setting, and performance reviews that drive growth rather than bureaucracy.`,
+};
+
 window.staffRoles = {};
-STAFF_KB_KEYS.forEach(k => { window.staffRoles[k] = ''; });
+STAFF_KB_KEYS.forEach(k => { window.staffRoles[k] = STAFF_ROLE_DEFAULTS[k] || ''; });
 
 
 async function loadStaffKb() {
@@ -3858,6 +3757,97 @@ window.buildStaffSystemPrompt = function(staffKey) {
 
 // Also patch callStaffModel to use updated buildStaffSystemPrompt
 // (already done since we replaced window.buildStaffSystemPrompt)
+
+// ─── SETTINGS MODAL WIRING ───────────────────────────────────────────────────
+
+function openSettingsModal() {
+    if (!sbClient) { alert('Please sign in to access settings.'); return; }
+    populateStartupContext();
+    renderCustomizeCards();
+    populateSetAllDropdown();
+    updateSettingsSummaries();
+    autoCollapseSettingSections();
+    document.getElementById('settings-modal').style.display = 'flex';
+    setTimeout(verifyAllConfiguredProviders, 300);
+}
+
+function closeSettingsModal() {
+    document.getElementById('settings-modal').style.display = 'none';
+}
+
+function toggleSettingsSection(section) {
+    const body    = document.getElementById('settings-body-' + section);
+    const chevron = document.getElementById('settings-chevron-' + section);
+    if (!body) return;
+    const isOpen = body.style.display !== 'none';
+    body.style.display      = isOpen ? 'none' : (section === 'team' ? 'block' : 'flex');
+    if (section !== 'team') body.style.flexDirection = 'column';
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function updateSettingsSummaries() {
+    // Providers summary
+    const configured = Object.keys(window.providerConfigs || {});
+    const provSummary = document.getElementById('settings-summary-providers');
+    if (provSummary) {
+        provSummary.textContent = configured.length
+            ? configured.length + ' connected · ' + configured.map(k => (PROVIDER_DEFS[k]?.label || k)).join(' · ')
+            : 'No providers configured';
+    }
+
+    // Startup summary
+    const startupSummary = document.getElementById('settings-summary-startup');
+    if (startupSummary) {
+        const parts = [];
+        if (founderName)  parts.push(founderName);
+        if (businessName) parts.push(businessName);
+        if (hqCountry)    parts.push(countryToFlag(hqCountry) + ' ' + hqCountry);
+        startupSummary.textContent = parts.length ? parts.join('  ·  ') : 'Not configured';
+    }
+
+    // Team summary
+    const teamSummary = document.getElementById('settings-summary-team');
+    if (teamSummary) {
+        const total = Object.keys(STAFF_DEFAULTS).length;
+        const assigned = Object.values(window.staffAssignments || {}).filter(a => a.provider && a.model_id).length;
+        teamSummary.textContent = assigned === total
+            ? `All ${total} members configured`
+            : `${assigned}/${total} members configured`;
+    }
+}
+
+// Auto-collapse configured sections on open, expand empty ones
+function autoCollapseSettingSections() {
+    const configured = Object.keys(window.providerConfigs || {});
+    const hasStartup  = founderName || businessName || startupDesc || hqCountry;
+    const hasTeam     = Object.values(window.staffAssignments || {}).some(a => a.provider);
+
+    // Providers: collapse if configured, expand if not
+    const pbody = document.getElementById('settings-body-providers');
+    const pchev = document.getElementById('settings-chevron-providers');
+    if (pbody && pchev) {
+        pbody.style.display    = configured.length ? 'none' : 'flex';
+        pbody.style.flexDirection = 'column';
+        pchev.style.transform  = configured.length ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+    // Startup: collapse if configured
+    const sbody = document.getElementById('settings-body-startup');
+    const schev = document.getElementById('settings-chevron-startup');
+    if (sbody && schev) {
+        sbody.style.display   = hasStartup ? 'none' : 'block';
+        schev.style.transform = hasStartup ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+    // Team: always starts open
+}
+
+// Wire up buttons
+document.getElementById('btn-settings').onclick = openSettingsModal;
+document.getElementById('btn-close-settings').addEventListener('click', closeSettingsModal);
+document.getElementById('btn-cancel-settings').addEventListener('click', closeSettingsModal);
+document.getElementById('settings-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('settings-modal')) closeSettingsModal();
+});
+document.getElementById('btn-save-settings').addEventListener('click', saveStaffCustomizations);
 
 // ─── PROVIDER CONNECTION STATUS ───────────────────────────────────────────────
 
@@ -3926,23 +3916,6 @@ async function verifyAllConfiguredProviders() {
         if (!window.providerConfigs?.[key]) setProviderBadge(key, 'unconfigured');
     }
 }
-
-// ── Patch providers modal open to auto-verify ─────────────────────────────────
-const _origProvidersOpen = document.getElementById('btn-providers').onclick;
-document.getElementById('btn-providers').onclick = () => {
-    if (!sbClient) { alert('Please sign in to configure providers.'); return; }
-    document.getElementById('providers-modal').style.display = 'flex';
-    // Auto-verify all configured providers when modal opens
-    setTimeout(verifyAllConfiguredProviders, 300);
-};
-
-// Also verify after saving
-const _origSaveProviders = saveProviderConfigs;
-window.saveProviderConfigs = async function() {
-    await _origSaveProviders();
-    setTimeout(verifyAllConfiguredProviders, 500);
-};
-document.getElementById('btn-save-providers').onclick = () => window.saveProviderConfigs();
 
 // Also verify after test button
 const _origTestProvider = testProvider;
@@ -4285,14 +4258,8 @@ function obNext() {
         document.getElementById('startup-modal').style.display = 'none';
         saveFounderPrefs();
         initializeBoardroom();
-        // Open customize modal so they can set up models — natural next step
-        setTimeout(() => {
-            if (sbClient) {
-                populateStartupContext();
-                renderCustomizeCards();
-                document.getElementById('customize-modal').style.display = 'flex';
-            }
-        }, 400);
+        // Open settings modal so they can set up models — natural next step
+        setTimeout(() => { if (sbClient) openSettingsModal(); }, 400);
     }
 }
 
