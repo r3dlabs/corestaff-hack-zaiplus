@@ -707,6 +707,63 @@
                         <button onclick="applyToAll()" class="btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;">Apply to All</button>
                     </div>
                         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;" id="provider-cards-grid">
+<!-- azure -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/azure.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="azure" class="prov-svg-icon">
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Azure AI Foundry</span>
+                                <div id="pstatus-azure" style="width:8px;height:8px;border-radius:50%;background:#0078d4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
+                                <div id="pconnect-badge-azure" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-azure" onclick="testProvider('azure')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-azure" type="text" value="" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://YOUR-RESOURCE-NAME.openai.azure.com"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-azure" type="password" placeholder="Azure API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Deployment Name <span style="font-size:9px;color:var(--text-muted);font-weight:400;">— your Azure deployment, e.g. gpt-4o-prod</span></div><input id="pdeployment-azure" type="text" placeholder="e.g. gpt-4o-prod" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pstatus-msg-azure" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        </div><!-- /provider-cards-grid -->
+<!-- bedrock -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/bedrock.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="bedrock" class="prov-svg-icon">
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">AWS Bedrock</span>
+                                <div id="pstatus-bedrock" style="width:8px;height:8px;border-radius:50%;background:#f90;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
+                                <div id="pconnect-badge-bedrock" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-bedrock" onclick="testProvider('bedrock')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-bedrock" type="text" value="https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://bedrock-runtime.{region}.amazonaws.com/openai/v1"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-bedrock" type="password" placeholder="AWS Bedrock API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-bedrock" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-bedrock" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-bedrock" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- google -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/google.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="google" class="prov-svg-icon">
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Google</span>
+                                <div id="pstatus-google" style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
+                                <div id="pconnect-badge-google" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-google" onclick="testProvider('google')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-google" type="text" value="https://generativelanguage.googleapis.com/v1beta" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-google" type="password" placeholder="AIza..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-google" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-google" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-google" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
+                        <!-- gmi -->
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">GMI Cloud</span>
+                                <div id="pstatus-gmi" style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
+                                <div id="pconnect-badge-gmi" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-gmi" onclick="testProvider('gmi')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-gmi" type="text" value="https://api.gmi-serving.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-gmi" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-gmi" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-gmi" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-gmi" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                        </div>
                         <!-- openai -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
@@ -734,20 +791,6 @@
                             <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-anthropic" type="password" placeholder="sk-ant-..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
                             <div id="pmodel-section-anthropic" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-anthropic" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
                             <div id="pstatus-msg-anthropic" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                        <!-- google -->
-                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/google.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="google" class="prov-svg-icon">
-                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Google</span>
-                                <div id="pstatus-google" style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
-                                <div id="pconnect-badge-google" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
-                                <button id="ptest-google" onclick="testProvider('google')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                            </div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-google" type="text" value="https://generativelanguage.googleapis.com/v1beta" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-google" type="password" placeholder="AIza..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div id="pmodel-section-google" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-google" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
-                            <div id="pstatus-msg-google" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                         </div>
                         <!-- deepseek -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
@@ -791,50 +834,21 @@
                             <div id="pmodel-section-mistral" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-mistral" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
                             <div id="pstatus-msg-mistral" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                         </div>
-                        <!-- gmi -->
+                        <!-- perplexity -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">GMI Cloud</span>
-                                <div id="pstatus-gmi" style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
-                                <div id="pconnect-badge-gmi" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
-                                <button id="ptest-gmi" onclick="testProvider('gmi')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/perplexity.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="perplexity" class="prov-svg-icon">
+                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Perplexity</span>
+                                <div id="pstatus-perplexity" style="width:8px;height:8px;border-radius:50%;background:#20b2aa;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
+                                <div id="pconnect-badge-perplexity" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                                <button id="ptest-perplexity" onclick="testProvider('perplexity')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-gmi" type="text" value="https://api.gmi-serving.com/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-gmi" type="password" placeholder="Enter API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div id="pmodel-section-gmi" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-gmi" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
-                            <div id="pstatus-msg-gmi" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                        <!-- bedrock -->
-                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/bedrock.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="bedrock" class="prov-svg-icon">
-                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">AWS Bedrock</span>
-                                <div id="pstatus-bedrock" style="width:8px;height:8px;border-radius:50%;background:#f90;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
-                                <div id="pconnect-badge-bedrock" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
-                                <button id="ptest-bedrock" onclick="testProvider('bedrock')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                            </div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-bedrock" type="text" value="https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://bedrock-runtime.{region}.amazonaws.com/openai/v1"></div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-bedrock" type="password" placeholder="AWS Bedrock API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div id="pmodel-section-bedrock" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-bedrock" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
-                            <div id="pstatus-msg-bedrock" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
-                        </div>
-                        <!-- azure -->
-                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/azure.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="azure" class="prov-svg-icon">
-                                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Azure AI Foundry</span>
-                                <div id="pstatus-azure" style="width:8px;height:8px;border-radius:50%;background:#0078d4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
-                                <div id="pconnect-badge-azure" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
-                                <button id="ptest-azure" onclick="testProvider('azure')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
-                            </div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-azure" type="text" value="" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://YOUR-RESOURCE-NAME.openai.azure.com"></div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-azure" type="password" placeholder="Azure API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Deployment Name <span style="font-size:9px;color:var(--text-muted);font-weight:400;">— your Azure deployment, e.g. gpt-4o-prod</span></div><input id="pdeployment-azure" type="text" placeholder="e.g. gpt-4o-prod" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div id="pstatus-msg-azure" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-perplexity" type="text" value="https://api.perplexity.ai" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-perplexity" type="password" placeholder="pplx-..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-perplexity" style="display:none;margin-bottom:6px;"><div class="staff-section-label">Default Model</div><select id="pmodel-perplexity" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— select model —</option></select></div>
+                            <div id="pstatus-msg-perplexity" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                         </div>
                         </div><!-- /provider-cards-grid -->
-                    </div><!-- /provider-cards-grid -->
                 </div>
 
                 <!-- PANE: STARTUP & BUSINESS -->
@@ -2738,15 +2752,16 @@ document.getElementById('restore-defaults-modal').addEventListener('click', e =>
 // ─── PROVIDER CONFIGS ────────────────────────────────────────────────────────
 
 const PROVIDER_DEFS = {
-    openai:    { label:'OpenAI',     endpoint:'https://api.openai.com/v1',                       modelsPath:'/models',  preferred:'gpt-4o',                  color:'#10a37f', auth:'bearer'    },
-    anthropic: { label:'Anthropic',  endpoint:'https://api.anthropic.com',                       modelsPath:null,       preferred:'claude-sonnet-4-5',        color:'#d4763b', auth:'x-api-key' },
-    google:    { label:'Google',     endpoint:'https://generativelanguage.googleapis.com/v1beta', modelsPath:'/models',  preferred:'gemini-1.5-pro',           color:'#4285f4', auth:'key'       },
-    deepseek:  { label:'DeepSeek',   endpoint:'https://api.deepseek.com/v1',                     modelsPath:'/models',  preferred:'deepseek-chat',            color:'#5b6ef5', auth:'bearer'    },
-    groq:      { label:'Groq',       endpoint:'https://api.groq.com/openai/v1',                  modelsPath:'/models',  preferred:'llama-3.3-70b-versatile',  color:'#f55036', auth:'bearer'    },
-    mistral:   { label:'Mistral',    endpoint:'https://api.mistral.ai/v1',                       modelsPath:'/models',  preferred:'mistral-large-latest',     color:'#ff7000', auth:'bearer'    },
-    gmi:       { label:'GMI Cloud',       endpoint:'https://api.gmi-serving.com/v1',                              modelsPath:'/models',  preferred:'meta-llama/Llama-4-Scout-17B-16E-Instruct', color:'#7c3aed', auth:'bearer' },
-    bedrock:   { label:'AWS Bedrock',     endpoint:'https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1',   modelsPath:'/models',  preferred:'anthropic.claude-3-5-sonnet-20241022-v2:0',  color:'#f90',    auth:'bearer' },
-    azure:     { label:'Azure AI Foundry',endpoint:'',                                                             modelsPath:'/models',  preferred:'gpt-4o',                                    color:'#0078d4', auth:'bearer' },
+    azure:     { label:'Azure AI Foundry',endpoint:'',                                                             modelsPath:'/models',  preferred:'gpt-4o',                                    color:'#0078d4', auth:'bearer'    },
+    bedrock:   { label:'AWS Bedrock',     endpoint:'https://bedrock-runtime.us-east-1.amazonaws.com/openai/v1',   modelsPath:'/models',  preferred:'anthropic.claude-3-5-sonnet-20241022-v2:0',  color:'#f90',    auth:'bearer'    },
+    google:    { label:'Google',          endpoint:'https://generativelanguage.googleapis.com/v1beta',             modelsPath:'/models',  preferred:'gemini-1.5-pro',                            color:'#4285f4', auth:'key'       },
+    gmi:       { label:'GMI Cloud',       endpoint:'https://api.gmi-serving.com/v1',                              modelsPath:'/models',  preferred:'meta-llama/Llama-4-Scout-17B-16E-Instruct', color:'#7c3aed', auth:'bearer'    },
+    openai:    { label:'OpenAI',          endpoint:'https://api.openai.com/v1',                                    modelsPath:'/models',  preferred:'gpt-4o',                                    color:'#10a37f', auth:'bearer'    },
+    anthropic: { label:'Anthropic',       endpoint:'https://api.anthropic.com',                                    modelsPath:null,       preferred:'claude-sonnet-4-5',                         color:'#d4763b', auth:'x-api-key' },
+    deepseek:  { label:'DeepSeek',        endpoint:'https://api.deepseek.com/v1',                                  modelsPath:'/models',  preferred:'deepseek-chat',                             color:'#5b6ef5', auth:'bearer'    },
+    groq:      { label:'Groq',            endpoint:'https://api.groq.com/openai/v1',                               modelsPath:'/models',  preferred:'llama-3.3-70b-versatile',                   color:'#f55036', auth:'bearer'    },
+    mistral:    { label:'Mistral',         endpoint:'https://api.mistral.ai/v1',                                    modelsPath:'/models',  preferred:'mistral-large-latest',                      color:'#ff7000', auth:'bearer'    },
+    perplexity: { label:'Perplexity',      endpoint:'https://api.perplexity.ai',                                    modelsPath:'/models',  preferred:'sonar-pro',                                 color:'#20808d', auth:'bearer'    },
 };
 
 const ANTHROPIC_MODELS = [
@@ -2798,6 +2813,33 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
             ).join('');
             setProviderStatus(key, 'Key format not verified (CORS) — using known models. ' + e.message, null);
         }
+        return;
+    }
+
+    // ── Perplexity — known model list ───────────────────────────────────────
+    if (key === 'perplexity') {
+        const valid = apiKey.startsWith('pplx-') && apiKey.length > 20;
+        const pplxModels = ['sonar-pro','sonar','sonar-reasoning','sonar-reasoning-pro','r1-1776'];
+        modelSelect.innerHTML = pplxModels.map(m =>
+            `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+        ).join('');
+        setProviderStatus(key, valid ? 'Key format valid. Select a model.' : 'Key should start with pplx-', valid ? true : false);
+        return;
+    }
+
+    // ── Perplexity — hardcoded model list (CORS blocks /models) ──
+    if (key === 'perplexity') {
+        const perplexityModels = [
+            'sonar-pro',
+            'sonar',
+            'sonar-reasoning-pro',
+            'sonar-reasoning',
+            'r1-1776',
+        ];
+        modelSelect.innerHTML = perplexityModels.map(m =>
+            `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+        ).join('');
+        setProviderStatus(key, `${perplexityModels.length} models loaded.`, true);
         return;
     }
 
