@@ -2765,15 +2765,77 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
     modelSelect.innerHTML = '<option value="">Loading...</option>';
     modelSection.style.display = 'block';
 
-    // Anthropic — hardcoded list
+    // ── Anthropic — live test via /v1/models, x-api-key header ──
     if (key === 'anthropic') {
-        modelSelect.innerHTML = ANTHROPIC_MODELS.map(m =>
-            `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
-        ).join('');
-        setProviderStatus(key, 'Models loaded.', true);
+        try {
+            const base = (endpoint || def.endpoint).replace(/\/$/, '');
+            const res = await fetch(base + '/v1/models', {
+                headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' }
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            const models = (data.data || []).map(m => m.id).filter(Boolean).sort();
+            const list = models.length > 0 ? models : ANTHROPIC_MODELS;
+            modelSelect.innerHTML = list.map(m =>
+                `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+            ).join('');
+            setProviderStatus(key, `${list.length} models loaded.`, true);
+        } catch(e) {
+            // CORS will block — fall back to hardcoded list but flag key as unverified
+            modelSelect.innerHTML = ANTHROPIC_MODELS.map(m =>
+                `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+            ).join('');
+            setProviderStatus(key, 'Key format not verified (CORS) — using known models. ' + e.message, null);
+        }
         return;
     }
 
+    // ── Bedrock — CORS blocked, validate key format + load known models ──
+    if (key === 'bedrock') {
+        const valid = apiKey.length > 20;
+        const bedrockModels = [
+            'anthropic.claude-3-5-sonnet-20241022-v2:0',
+            'anthropic.claude-3-5-haiku-20241022-v1:0',
+            'anthropic.claude-3-opus-20240229-v1:0',
+            'amazon.nova-pro-v1:0',
+            'amazon.nova-lite-v1:0',
+            'amazon.nova-micro-v1:0',
+            'meta.llama3-3-70b-instruct-v1:0',
+            'mistral.mistral-large-2402-v1:0',
+        ];
+        modelSelect.innerHTML = bedrockModels.map(m =>
+            `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+        ).join('');
+        setProviderStatus(key, valid
+            ? 'Key accepted — CORS prevents live verification. Select a model.'
+            : 'Key looks too short — check your Bedrock API key.', valid ? true : false);
+        return;
+    }
+
+    // ── Azure — uses api-key header, not Bearer ──
+    if (key === 'azure') {
+        if (!endpoint) { setProviderStatus(key, 'Enter your endpoint URL first.', false); return; }
+        try {
+            const base = endpoint.replace(/\/$/, '');
+            const res = await fetch(base + '/models', {
+                headers: { 'api-key': apiKey, 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            const models = (data.data || data.models || []).map(m => m.id || m.name).filter(Boolean).sort();
+            if (models.length === 0) throw new Error('No models returned');
+            modelSelect.innerHTML = models.map(m =>
+                `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+            ).join('');
+            setProviderStatus(key, `${models.length} models loaded.`, true);
+        } catch(e) {
+            modelSelect.innerHTML = `<option value="${def.preferred}" selected>${def.preferred}</option>`;
+            setProviderStatus(key, 'Could not fetch models — enter your deployment name manually. ' + e.message, null);
+        }
+        return;
+    }
+
+    // ── All other OpenAI-compatible providers (Bearer token) ──
     try {
         let url, headers = {};
         if (key === 'google') {
@@ -2805,14 +2867,12 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
             `<option value="${m}" ${m === def.preferred || m.includes(def.preferred) ? 'selected' : ''}>${m}</option>`
         ).join('');
 
-        // If preferred not in list, prepend it
         if (!models.find(m => m === def.preferred || m.includes(def.preferred))) {
             modelSelect.innerHTML = `<option value="${def.preferred}" selected>${def.preferred} (default)</option>` + modelSelect.innerHTML;
         }
 
         setProviderStatus(key, `${models.length} models loaded.`, true);
     } catch(e) {
-        // Fallback to preferred model
         modelSelect.innerHTML = `<option value="${def.preferred}" selected>${def.preferred}</option>`;
         setProviderStatus(key, 'Could not fetch models — using default. ' + e.message, null);
     }
@@ -3286,7 +3346,8 @@ function buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens) {
 
     const endpoint = (provConf.endpoint || PROVIDER_DEFS[providerKey].endpoint).replace(/\/$/, '');
     const isAnthropic = providerKey === 'anthropic';
-    const isGoogle = providerKey === 'google';
+    const isGoogle    = providerKey === 'google';
+    const isAzure     = providerKey === 'azure';
 
     let url, options;
     if (isAnthropic) {
@@ -3306,7 +3367,15 @@ function buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens) {
                 contents: messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }))
             })
         };
+    } else if (isAzure) {
+        url = endpoint + '/chat/completions';
+        options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'api-key': provConf.apiKey },
+            body: JSON.stringify({ model, messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
+        };
     } else {
+        // OpenAI-compatible (OpenAI, DeepSeek, Groq, Mistral, GMI, Bedrock, etc.)
         url = endpoint + '/chat/completions';
         options = {
             method: 'POST',
