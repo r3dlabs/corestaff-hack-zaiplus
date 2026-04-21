@@ -9,7 +9,27 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* ── Theme variables — exact match to index.html ── */
+  /* ── Theme variables ── */
+  :root {
+    /* Shared RGB values for personas */
+    --rgb-engineering: 239, 68, 68;
+    --rgb-finance:     34, 197, 94;
+    --rgb-steve:       59, 130, 246;
+    --rgb-harvey:      234, 179, 8;
+    --rgb-leonardo:    168, 85, 247;
+    --rgb-hr:          236, 72, 153;
+    --rgb-cos:         6, 182, 212;
+
+    /* Reconstruct legacy hex values via rgb() for fallback and text colors */
+    --color-engineering: rgb(var(--rgb-engineering));
+    --color-finance:     rgb(var(--rgb-finance));
+    --color-steve:       rgb(var(--rgb-steve));
+    --color-harvey:      rgb(var(--rgb-harvey));
+    --color-leonardo:    rgb(var(--rgb-leonardo));
+    --color-hr:          rgb(var(--rgb-hr));
+    --color-cos:         rgb(var(--rgb-cos));
+  }
+
   :root[data-theme="dark"] {
     --bg-base:       #0a0a0a;
     --bg-surface:    #111111;
@@ -22,13 +42,10 @@
     --text-muted:    #606060;
     --accent:        #f5f5f5;
     --accent-muted:  #2a2a2a;
-    --color-engineering: #ef4444;
-    --color-finance:     #22c55e;
-    --color-steve:       #3b82f6;
-    --color-harvey:      #eab308;
-    --color-leonardo:    #a855f7;
-    --color-hr:          #ec4899;
-    --color-cos:         #06b6d4;
+    
+    /* Persona Card Tints */
+    --card-tint-alpha: 0.06;
+    --card-border-alpha: 0.25;
   }
   :root[data-theme="light"] {
     --bg-base:       #fafafa;
@@ -42,13 +59,10 @@
     --text-muted:    #999999;
     --accent:        #0a0a0a;
     --accent-muted:  #f0f0f0;
-    --color-engineering: #ef4444;
-    --color-finance:     #22c55e;
-    --color-steve:       #3b82f6;
-    --color-harvey:      #eab308;
-    --color-leonardo:    #a855f7;
-    --color-hr:          #ec4899;
-    --color-cos:         #06b6d4;
+    
+    /* Persona Card Tints */
+    --card-tint-alpha: 0.09;
+    --card-border-alpha: 0.32;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -210,24 +224,38 @@
   /* ── Divider ── */
   .divider { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
 
-  /* ── Staff grid ── */
+  /* ── Staff grid & cards ── */
   .staff-grid {
     display: grid; grid-template-columns: repeat(2, 1fr);
     gap: 10px; margin: 20px 0;
   }
+  
   .staff-card {
-    background: var(--bg-surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 16px;
-    border-left: 3px solid var(--border-strong);
-    transition: border-color 0.15s;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: filter 0.15s, border-color 0.15s;
   }
+  .staff-card:hover { filter: brightness(1.03); }
+
+  /* Theme Tint Classes */
+  .theme-cos        { background: rgba(var(--rgb-cos), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-cos), var(--card-border-alpha)); }
+  .theme-engineering{ background: rgba(var(--rgb-engineering), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-engineering), var(--card-border-alpha)); }
+  .theme-finance    { background: rgba(var(--rgb-finance), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-finance), var(--card-border-alpha)); }
+  .theme-steve      { background: rgba(var(--rgb-steve), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-steve), var(--card-border-alpha)); }
+  .theme-harvey     { background: rgba(var(--rgb-harvey), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-harvey), var(--card-border-alpha)); }
+  .theme-leonardo   { background: rgba(var(--rgb-leonardo), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-leonardo), var(--card-border-alpha)); }
+  .theme-hr         { background: rgba(var(--rgb-hr), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-hr), var(--card-border-alpha)); }
+
   .staff-card-name { font-weight: 700; font-size: 13px; margin-bottom: 1px; }
   .staff-card-role {
     font-family: 'Geist Mono', monospace; font-size: 9px;
     text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--text-muted); margin-bottom: 8px;
+    color: var(--text-muted); margin-bottom: 2px;
   }
-  .staff-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+  .staff-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; margin: 0; }
 
   /* ── Flow steps ── */
   .flow { display: flex; flex-direction: column; gap: 0; margin: 20px 0; }
@@ -276,7 +304,6 @@
     font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600;
     color: var(--text-muted); width: 28px; flex-shrink: 0; padding-top: 1px;
   }
-  .step-body {}
   .step-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
   .step-desc  { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
 
@@ -361,7 +388,6 @@
 </head>
 <body>
 
-<!-- ── Header ── -->
 <header>
   <div class="header-inner">
     <a href="https://startup-staff.com" class="logo-wrap">
@@ -383,7 +409,6 @@
 
 <div class="page-body">
 
-<!-- ── Sidebar ── -->
 <nav id="sidebar">
   <div class="nav-section">About</div>
   <a class="nav-item active" href="#what-is">What is Startup Staff?</a>
@@ -410,10 +435,8 @@
   <a class="nav-item" href="#known-limitations">Known Limitations</a>
 </nav>
 
-<!-- ── Main ── -->
 <main id="main">
 
-  <!-- ─── ABOUT ──────────────────────────────────────────────────────────── -->
   <section id="what-is">
     <span class="section-tag">About</span>
     <h2>What is Startup Staff?</h2>
@@ -435,54 +458,95 @@
 
   <hr class="divider">
 
-  <!-- ─── THE TEAM ───────────────────────────────────────────────────────── -->
   <section id="the-team">
     <span class="section-tag">About</span>
     <h2>The Core Team</h2>
     <p>Your boardroom has seven members. Each has a distinct domain, personality, and assigned AI model. You can rename, re-photo, and rewrite the persona of any member from the <strong>Settings → Team Configuration</strong> panel.</p>
 
     <div class="staff-grid">
-      <div class="staff-card" style="border-left-color: var(--color-cos);">
-        <div class="staff-card-name" style="color: var(--color-cos);">Chief of Staff</div>
-        <div class="staff-card-role">Orchestrator · cos</div>
+      
+      <div class="staff-card theme-cos">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/cos.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-cos);" alt="Chief of Staff" onerror="this.style.display='none'">
+          <div>
+            <div class="staff-card-name" style="color: var(--color-cos);">Chief of Staff</div>
+            <div class="staff-card-role">Orchestrator · cos</div>
+          </div>
+        </div>
         <div class="staff-card-desc">Routes every query, decides which specialists to consult, and synthesises the final recommendation. Makes two API calls per query — Phase 1 (routing) and Phase 3 (synthesis).</div>
       </div>
-      <div class="staff-card" style="border-left-color: var(--color-engineering);">
-        <div class="staff-card-name" style="color: var(--color-engineering);">Engineering Lead</div>
-        <div class="staff-card-role">Engineering · tony</div>
+
+      <div class="staff-card theme-engineering">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/engineering.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-engineering);" alt="Engineering Lead" onerror="this.style.display='none'">
+          <div>
+            <div class="staff-card-name" style="color: var(--color-engineering);">Engineering Lead</div>
+            <div class="staff-card-role">Engineering · tony</div>
+          </div>
+        </div>
         <div class="staff-card-desc">First-principles thinker. Technical feasibility, deployment strategy, build vs. buy decisions. Works hand-in-hand with the Architecture Lead.</div>
       </div>
-      <div class="staff-card" style="border-left-color: var(--color-finance);">
-        <div class="staff-card-name" style="color: var(--color-finance);">Finance & Accounting Lead</div>
-        <div class="staff-card-role">Finance · mike</div>
+
+      <div class="staff-card theme-finance">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/finance-accounting.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-finance);" alt="Finance & Accounting Lead" onerror="this.style.display='none'">
+          <div>
+            <div class="staff-card-name" style="color: var(--color-finance);">Finance & Accounting Lead</div>
+            <div class="staff-card-role">Finance · mike</div>
+          </div>
+        </div>
         <div class="staff-card-desc">Burn-rate focused. Financial modelling, ROI analysis, unit economics, fundraising strategy.</div>
       </div>
-      <div class="staff-card" style="border-left-color: var(--color-steve);">
-        <div class="staff-card-name" style="color: var(--color-steve);">Marketing Lead</div>
-        <div class="staff-card-role">Marketing · steve</div>
+
+      <div class="staff-card theme-steve">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/marketing.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-steve);" alt="Marketing Lead" onerror="this.style.display='none'">
+          <div>
+            <div class="staff-card-name" style="color: var(--color-steve);">Marketing Lead</div>
+            <div class="staff-card-role">Marketing · steve</div>
+          </div>
+        </div>
         <div class="staff-card-desc">Narrative and growth. GTM strategy, brand positioning, customer acquisition, channel strategy.</div>
       </div>
-      <div class="staff-card" style="border-left-color: var(--color-harvey);">
-        <div class="staff-card-name" style="color: var(--color-harvey);">Legal Lead</div>
-        <div class="staff-card-role">Legal · harvey</div>
+
+      <div class="staff-card theme-harvey">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/legal.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-harvey);" alt="Legal Lead" onerror="this.style.display='none'">
+          <div>
+            <div class="staff-card-name" style="color: var(--color-harvey);">Legal Lead</div>
+            <div class="staff-card-role">Legal · harvey</div>
+          </div>
+        </div>
         <div class="staff-card-desc">Precise, risk-averse. Contracts, IP, regulatory compliance. Defaults to your HQ jurisdiction. Knows when to escalate to a real lawyer.</div>
       </div>
-      <div class="staff-card" style="border-left-color: var(--color-leonardo);">
-        <div class="staff-card-name" style="color: var(--color-leonardo);">Architecture Lead</div>
-        <div class="staff-card-role">Architecture · leonardo</div>
+
+      <div class="staff-card theme-leonardo">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/architecture.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-leonardo);" alt="Architecture Lead" onerror="this.style.display='none'">
+          <div>
+            <div class="staff-card-name" style="color: var(--color-leonardo);">Architecture Lead</div>
+            <div class="staff-card-role">Architecture · leonardo</div>
+          </div>
+        </div>
         <div class="staff-card-desc">Systems design, infrastructure planning, long-term platform thinking. Pairs tightly with the Engineering Lead.</div>
       </div>
-      <div class="staff-card" style="border-left-color: var(--color-hr);">
-        <div class="staff-card-name" style="color: var(--color-hr);">Human Resource Lead</div>
-        <div class="staff-card-role">HR · sigmund</div>
+
+      <div class="staff-card theme-hr">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/hr.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-hr);" alt="Human Resource Lead" onerror="this.style.display='none'">
+          <div>
+            <div class="staff-card-name" style="color: var(--color-hr);">Human Resource Lead</div>
+            <div class="staff-card-role">HR · sigmund</div>
+          </div>
+        </div>
         <div class="staff-card-desc">Empathetic, culture-driven. Hiring strategy, team structure, compensation, people operations, culture building.</div>
       </div>
+
     </div>
   </section>
 
   <hr class="divider">
 
-  <!-- ─── HOW IT WORKS ──────────────────────────────────────────────────── -->
   <section id="how-it-works">
     <span class="section-tag">About</span>
     <h2>How It Works</h2>
@@ -520,7 +584,6 @@
 
   <hr class="divider">
 
-  <!-- ─── QUICK START ────────────────────────────────────────────────────── -->
   <section id="quickstart">
     <span class="section-tag">Getting Started</span>
     <h2>Quick Start</h2>
@@ -567,7 +630,6 @@
 
   <hr class="divider">
 
-  <!-- ─── AI PROVIDERS ──────────────────────────────────────────────────── -->
   <section id="providers">
     <span class="section-tag">Getting Started</span>
     <h2>AI Providers</h2>
@@ -648,7 +710,6 @@
 
   <hr class="divider">
 
-  <!-- ─── SETTINGS ──────────────────────────────────────────────────────── -->
   <section id="settings">
     <span class="section-tag">Getting Started</span>
     <h2>Settings & Configuration</h2>
@@ -680,7 +741,6 @@
 
   <hr class="divider">
 
-  <!-- ─── ASKING QUESTIONS ──────────────────────────────────────────────── -->
   <section id="asking-questions">
     <span class="section-tag">Using the App</span>
     <h2>Asking Questions</h2>
@@ -720,7 +780,6 @@
 
   <hr class="divider">
 
-  <!-- ─── MEMORY ─────────────────────────────────────────────────────────── -->
   <section id="memory">
     <span class="section-tag">Using the App</span>
     <h2>Memory System</h2>
@@ -752,7 +811,6 @@
 
   <hr class="divider">
 
-  <!-- ─── KNOWLEDGE BASE ─────────────────────────────────────────────────── -->
   <section id="knowledge-base">
     <span class="section-tag">Using the App</span>
     <h2>Knowledge Base</h2>
@@ -772,7 +830,6 @@
 
   <hr class="divider">
 
-  <!-- ─── DOCUMENT EXPORTS ───────────────────────────────────────────────── -->
   <section id="exports">
     <span class="section-tag">Using the App</span>
     <h2>Document Exports</h2>
@@ -806,7 +863,6 @@
 
   <hr class="divider">
 
-  <!-- ─── ARCHITECTURE ──────────────────────────────────────────────────── -->
   <section id="architecture">
     <span class="section-tag">Reference</span>
     <h2>Architecture</h2>
@@ -845,7 +901,6 @@
 
   <hr class="divider">
 
-  <!-- ─── DATA & STORAGE ────────────────────────────────────────────────── -->
   <section id="data-storage">
     <span class="section-tag">Reference</span>
     <h2>Data & Storage</h2>
@@ -875,7 +930,6 @@
 
   <hr class="divider">
 
-  <!-- ─── ROADMAP ────────────────────────────────────────────────────────── -->
   <section id="improvements">
     <span class="section-tag">Roadmap</span>
     <h2>Future Improvements</h2>
@@ -964,7 +1018,6 @@
 
   <hr class="divider">
 
-  <!-- ─── KNOWN LIMITATIONS ─────────────────────────────────────────────── -->
   <section id="known-limitations">
     <span class="section-tag">Roadmap</span>
     <h2>Known Limitations</h2>
@@ -996,9 +1049,7 @@
   </section>
 
 </main>
-</div><!-- /page-body -->
-
-<footer>
+</div><footer>
   <div class="footer-inner">
     <p>© 2026 Modular Technology Solutions Pte Ltd · Singapore</p>
     <p><a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="/docs.html">Docs</a> &nbsp;·&nbsp; <a href="https://startup-staff.com">App</a></p>
