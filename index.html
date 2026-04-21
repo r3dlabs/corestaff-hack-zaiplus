@@ -1652,6 +1652,23 @@ function parseRequestIntent(text) {
         result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.html';
     }
 
+    // ── Detect explicit subject / body hints ───────────────────────────────
+    // "subject <text>" or "subject: <text>"
+    const subjectMatch = text.match(/\bsubject[:\s]+([^\n.]+)/i);
+    if (subjectMatch) result.subject = subjectMatch[1].trim();
+
+    // "body <text>", "body: <text>", or "message: <text>"
+    const bodyMatch = text.match(/\b(?:body|message)[:\s]+([^\n]+)/i);
+    if (bodyMatch) result.body = bodyMatch[1].trim();
+
+    // ── Detect plain email send (no doc) ────────────────────────────────────
+    // Triggered when we have a recipient + (subject or body or "send an email")
+    if (result.email && !result.type) {
+        if (result.subject || result.body || /\bsend\s+an?\s+email\b/i.test(text) || /\bemail\s+to\b/i.test(text)) {
+            result.sendEmail = true;
+        }
+    }
+
     return result;
 }
 
@@ -4489,6 +4506,35 @@ ${docHint}`
              if (docNodeEl) docNodeEl.classList.remove('active');
          }
          return;
+    }
+
+
+    // ── FAST PATH: plain email send — no discussion, just send ──────────────
+    if (docReq.sendEmail && docReq.email) {
+        btnSend.textContent = 'Sending…';
+        const cosName = window.staffCustom?.cos?.name || 'Helen';
+        try {
+            if (!window.toolConfigs?.resend?.apiKey) {
+                appendStaffBubble(cosName, 'Email not configured. Add your Resend API key in Settings → Tools.', false, null, null);
+            } else {
+                const subject = docReq.subject || '(no subject)';
+                const body    = docReq.body    || userText;
+                await window.sendEmail({
+                    to: docReq.email,
+                    subject,
+                    html: `<p>${body.replace(/\n/g, '<br>')}</p>`
+                });
+                appendStaffBubble(cosName, `Done — email sent to ${docReq.email}.`, false, null, null);
+                logTrace(`Email sent to ${docReq.email}`, true);
+            }
+        } catch(e) {
+            logTrace('Email send failed: ' + e.message, false);
+            appendStaffBubble(cosName, `Couldn't send the email: ${e.message}`, false, null, null);
+        } finally {
+            btnSend.disabled = false;
+            btnSend.textContent = 'Execute';
+        }
+        return;
     }
 
     btnSend.textContent = 'Routing…';
