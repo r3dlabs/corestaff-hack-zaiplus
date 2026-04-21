@@ -4282,12 +4282,34 @@ async function runDiag() {
             log(sec + ' overflow',     pc.overflowY, true);
             log(sec + ' flex',         pc.flex + ' / shrink:' + pc.flexShrink, true);
             log(sec + ' scrollH vs H', `${pane.scrollHeight} vs ${Math.round(pr.height)}`, pane.scrollHeight > pr.height);
+        });
 
-            // First few direct children
-            Array.from(pane.children).slice(0,3).forEach((ch, i) => {
+        // Provider grid details
+        const grid = document.getElementById('provider-cards-grid');
+        if (grid) {
+            const gr = grid.getBoundingClientRect();
+            const gc = getComputedStyle(grid);
+            log('provider grid size',    `${Math.round(gr.width)}×${Math.round(gr.height)}px`, gr.width > 100);
+            log('provider grid display', gc.display, gc.display === 'grid');
+            log('provider grid columns', gc.gridTemplateColumns, true);
+            log('provider grid gap',     gc.gap || gc.columnGap + ' / ' + gc.rowGap, true);
+            log('provider grid children', grid.children.length + ' cards', grid.children.length > 0);
+            Array.from(grid.children).slice(0,2).forEach((card, i) => {
+                const cr = card.getBoundingClientRect();
+                log(`  card[${i}] size`, `${Math.round(cr.width)}×${Math.round(cr.height)}px top:${Math.round(cr.top)}`, cr.width > 100);
+            });
+        } else {
+            log('provider-cards-grid', 'NOT FOUND', false);
+        }
+
+        // First few direct children of active pane
+        ['providers','startup','team'].forEach(sec => {
+            const pane2 = document.getElementById('spane-' + sec);
+            if (!pane2 || pane2.style.display === 'none') return;
+            Array.from(pane2.children).slice(0,3).forEach((ch, i) => {
                 const cr = ch.getBoundingClientRect();
                 const tag = ch.id ? '#'+ch.id : (ch.className||'div');
-                log(`  child[${i}] ${tag.slice(0,30)}`, `${Math.round(cr.width)}×${Math.round(cr.height)}px top:${Math.round(cr.top)}`, cr.height > 0);
+                log(`  ${sec} child[${i}] ${tag.slice(0,25)}`, `${Math.round(cr.width)}×${Math.round(cr.height)}px top:${Math.round(cr.top)}`, cr.height > 0);
             });
         });
 
