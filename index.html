@@ -499,7 +499,7 @@
                 <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:clamp(20px,4vw,32px);">
                     <span class="rocket-wrap" style="font-size:clamp(28px,6vw,40px);"><div class="flame-glow"></div><span class="rocket-emoji">🚀</span></span>
                     <div>
-                        <div style="font-size:clamp(18px,4vw,26px);font-weight:800;letter-spacing:-0.02em;line-height:1.1;">
+                        <div style="font-size:clamp(18px,4vw,26px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;">
                             <span style="color:var(--text-primary);">Startup</span><span style="color:var(--text-muted);margin-left:5px;">Staff</span>
                         </div>
                         <div style="font-size:clamp(10px,2vw,12px);color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:2px;">Founder Edition</div>
@@ -1324,7 +1324,10 @@
     <div id="app-header" style="background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:none;flex-direction:row;align-items:center;justify-content:flex-start;width:100%;box-sizing:border-box;flex-shrink:0;z-index:20;">
         <div style="display:flex;flex-direction:row;align-items:center;gap:8px;flex-shrink:0;">
             <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" style="width:26px;height:26px;border-radius:6px;object-fit:cover;display:none;" onerror="this.style.display='none'"><span class="rocket-wrap" style="font-size:20px;"><div class="flame-glow"></div><span class="rocket-emoji">🚀</span></span>
-            <span style="font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;"><span style="color:var(--text-primary);">STARTUP</span><span style="color:var(--text-muted);margin-left:4px;">STAFF</span></span>
+            <div style="display:flex;flex-direction:column;justify-content:center;line-height:1.1;">
+                <div style="font-size:15px;font-weight:700;letter-spacing:-0.02em;"><span style="color:var(--text-primary);">Startup</span><span style="color:var(--text-muted);margin-left:4px;">Staff</span></div>
+                <div style="font-size:9px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:1px;">Founder Edition</div>
+            </div>
         </div>
         <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">
             <button id="btn-edit-startup" title="Business Profile" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></button>
