@@ -714,6 +714,7 @@
                 <button id="stab-providers" onclick="switchSettingsTab('providers')" style="padding:12px 18px;border:none;border-bottom:2px solid var(--text-primary);background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">AI Providers <span id="stab-badge-providers" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
                 <button id="stab-startup" onclick="switchSettingsTab('startup')" style="padding:12px 18px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">Business Information <span id="stab-badge-startup" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
                 <button id="stab-team" onclick="switchSettingsTab('team')" style="padding:12px 18px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">Team Configuration <span id="stab-badge-team" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
+                <button id="stab-tools" onclick="switchSettingsTab('tools')" style="padding:12px 18px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">Tools <span id="stab-badge-tools" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
             </div>
 
             <!-- Tab panes container -->
@@ -925,6 +926,72 @@
                         </button>
                     </div>
                     <div id="customize-cards-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;"></div>
+                </div>
+
+
+                <!-- PANE: TOOLS -->
+                <div id="spane-tools" style="height:100%;overflow-y:auto;padding:20px;box-sizing:border-box;display:none;">
+
+                    <p style="font-size:11px;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:16px;line-height:1.6;">Configure external tools and integrations. Credentials are stored securely and used by your staff when performing actions.</p>
+
+                    <!-- Resend (Email) -->
+                    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-elevated);">
+                            <div style="width:28px;height:28px;border-radius:6px;background:#000;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);">Resend</div>
+                                <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;">Email delivery</div>
+                            </div>
+                            <div id="tool-status-resend" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);flex-shrink:0;" title="Not configured"></div>
+                            <div id="tool-badge-resend" style="font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                        </div>
+                        <div style="padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
+                            <div>
+                                <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">API Key</div>
+                                <input id="tool-apikey-resend" type="password" placeholder="re_..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">From Address</div>
+                                <input id="tool-from-resend" type="text" placeholder="team@yourdomain.com" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;box-sizing:border-box;">
+                            </div>
+                            <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;line-height:1.5;">Get your API key at <a href="https://resend.com" target="_blank" style="color:var(--text-secondary);">resend.com</a> · Free tier: 3,000 emails/month</div>
+                        </div>
+                    </div>
+
+                    <!-- Telegram -->
+                    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;">
+                        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-elevated);">
+                            <div style="width:28px;height:28px;border-radius:6px;background:#229ED9;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8c-.12.57-.46.71-.93.44l-2.58-1.9-1.24 1.19c-.14.14-.25.25-.51.25l.18-2.6 4.72-4.26c.2-.18-.04-.28-.32-.1L7.32 13.5l-2.54-.8c-.55-.17-.56-.55.12-.82l9.93-3.83c.46-.17.86.11.81.75z"/></svg>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);">Telegram</div>
+                                <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;">Bot messaging · coming soon</div>
+                            </div>
+                            <div style="font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">soon</div>
+                        </div>
+                    </div>
+
+                    <!-- Twilio SMS -->
+                    <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;">
+                        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg-elevated);">
+                            <div style="width:28px;height:28px;border-radius:6px;background:#F22F46;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                            </div>
+                            <div style="flex:1;">
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);">Twilio</div>
+                                <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;">SMS · coming soon</div>
+                            </div>
+                            <div style="font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">soon</div>
+                        </div>
+                    </div>
+
+                    <!-- Save button -->
+                    <button onclick="saveToolConfigs()" class="btn-primary" style="width:100%;">Save Tool Settings</button>
+                    <div id="tools-status-msg" style="margin-top:8px;font-size:11px;font-family:'Geist Mono',monospace;color:var(--text-muted);text-align:center;min-height:16px;"></div>
+
                 </div>
 
             </div><!-- /tab panes -->
@@ -1415,6 +1482,7 @@ sbClient?.auth.onAuthStateChange(async (event, session) => {
             loadStaffAssignments();
             loadStaffKb();
             loadDefaultMemory();
+            loadToolConfigs();
             if (!_statusInterval) _statusInterval = setInterval(checkAllConnections, 5 * 60 * 1000);
             if (!document.getElementById('chat-window').children.length) {
                 initializeBoardroom();
@@ -4601,7 +4669,7 @@ window.buildStaffSystemPrompt = function(staffKey) {
 // ─── SETTINGS MODAL WIRING ───────────────────────────────────────────────────
 
 function switchSettingsTab(tab) {
-    ['providers','startup','team'].forEach(t => {
+    ['providers','startup','team','tools'].forEach(t => {
         const pane = document.getElementById('spane-' + t);
         const btn  = document.getElementById('stab-' + t);
         if (!pane || !btn) return;
@@ -4629,6 +4697,89 @@ function openSettingsModal() {
 function closeSettingsModal() {
     document.getElementById('settings-modal').style.display = 'none';
 }
+
+// ─── TOOL CONFIGS ────────────────────────────────────────────────────────────
+window.toolConfigs = {};
+
+async function saveToolConfigs() {
+    if (!sbClient) return;
+    const { data: { user } } = await sbClient.auth.getUser();
+    if (!user) return;
+
+    const resendKey  = document.getElementById('tool-apikey-resend')?.value.trim();
+    const resendFrom = document.getElementById('tool-from-resend')?.value.trim();
+
+    const upserts = [];
+    if (resendKey || resendFrom) {
+        upserts.push({ user_id: user.id, tool: 'resend', config: JSON.stringify({ apiKey: resendKey, from: resendFrom }) });
+        window.toolConfigs.resend = { apiKey: resendKey, from: resendFrom };
+    }
+
+    if (upserts.length > 0) {
+        const { error } = await sbClient.from('tool_configs').upsert(upserts, { onConflict: 'user_id,tool' });
+        const msg = document.getElementById('tools-status-msg');
+        if (error) {
+            if (msg) { msg.textContent = 'Error: ' + error.message; msg.style.color = '#ef4444'; }
+        } else {
+            updateResendStatus();
+            if (msg) { msg.textContent = 'Saved.'; msg.style.color = '#22c55e'; setTimeout(() => msg.textContent = '', 2000); }
+        }
+    } else {
+        const msg = document.getElementById('tools-status-msg');
+        if (msg) { msg.textContent = 'Nothing to save — enter at least an API key.'; msg.style.color = 'var(--text-muted)'; setTimeout(() => msg.textContent = '', 2500); }
+    }
+}
+
+async function loadToolConfigs() {
+    if (!sbClient) return;
+    try {
+        const { data: { user } } = await sbClient.auth.getUser();
+        if (!user) return;
+        const { data, error } = await sbClient.from('tool_configs').select('*').eq('user_id', user.id);
+        if (error || !data) return;
+        data.forEach(row => {
+            try {
+                const cfg = JSON.parse(row.config);
+                window.toolConfigs[row.tool] = cfg;
+                if (row.tool === 'resend') {
+                    const keyEl  = document.getElementById('tool-apikey-resend');
+                    const fromEl = document.getElementById('tool-from-resend');
+                    if (keyEl  && cfg.apiKey) keyEl.value  = cfg.apiKey;
+                    if (fromEl && cfg.from)   fromEl.value = cfg.from;
+                    updateResendStatus();
+                }
+            } catch(e) {}
+        });
+    } catch(e) { console.warn('Failed to load tool configs:', e); }
+}
+
+function updateResendStatus() {
+    const cfg = window.toolConfigs?.resend;
+    const dot   = document.getElementById('tool-status-resend');
+    const badge = document.getElementById('tool-badge-resend');
+    const ok = cfg?.apiKey && cfg.apiKey.startsWith('re_') && cfg.apiKey.length > 10;
+    if (dot)   { dot.style.background = ok ? '#22c55e' : 'var(--text-muted)'; dot.title = ok ? 'Configured' : 'Not configured'; }
+    if (badge) { badge.textContent = ok ? 'configured' : 'not configured'; badge.style.color = ok ? '#22c55e' : 'var(--text-muted)'; }
+}
+
+// Expose Resend send function for staff use
+window.sendEmail = async function({ to, subject, html, text }) {
+    const cfg = window.toolConfigs?.resend;
+    if (!cfg?.apiKey) throw new Error('Resend not configured. Add your API key in Settings → Tools.');
+    const from = cfg.from || 'Startup Staff <onboarding@resend.dev>';
+    const resp = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.apiKey },
+        body: JSON.stringify({ from, to, subject, html: html || `<p>${text}</p>` })
+    });
+    if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || 'Failed to send email');
+    }
+    return await resp.json();
+};
+
+
 
 function updateSettingsSummaries() {
     // Providers tab badge
