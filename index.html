@@ -71,8 +71,8 @@
             to { stroke-dashoffset: -24; }
         }
         @keyframes nodeGlow {
-            0%,100% { filter: drop-shadow(0 0 0px rgba(245,245,245,0)); }
-            50%      { filter: drop-shadow(0 0 14px rgba(245,245,245,0.5)); }
+            0%,100% { filter: drop-shadow(0 0 2px var(--glow-color, rgba(6,182,212,0.3))); transform: scale(1.08); }
+            50%      { filter: drop-shadow(0 0 22px var(--glow-color, rgba(6,182,212,0.9))) drop-shadow(0 0 40px var(--glow-color, rgba(6,182,212,0.4))); transform: scale(1.18); }
         }
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(8px); }
@@ -113,17 +113,34 @@
         .connector-line {
             stroke-dasharray: 6 4;
             stroke-linecap: round;
-            opacity: 0.3;
-            transition: opacity 0.3s, stroke 0.3s;
+            opacity: 0.25;
+            transition: opacity 0.4s, stroke 0.4s, stroke-width 0.4s;
         }
-        .connector-line.active {
-            animation: dash 0.6s linear infinite;
-            stroke: var(--text-primary) !important;
-            opacity: 0.7;
+        .connector-line.active-consult {
+            animation: dash 0.5s linear infinite;
+            stroke: #06b6d4 !important;
+            opacity: 0.9;
             stroke-width: 2.5;
+            filter: drop-shadow(0 0 4px rgba(6,182,212,0.6));
         }
+        .connector-line.active-response {
+            animation: dash 0.4s linear infinite;
+            opacity: 1;
+            stroke-width: 3;
+        }
+        /* Per-staff response line colors */
+        .connector-line.active-response.staff-engineering { stroke: #ef4444 !important; filter: drop-shadow(0 0 5px rgba(239,68,68,0.7)); }
+        .connector-line.active-response.staff-finance     { stroke: #22c55e !important; filter: drop-shadow(0 0 5px rgba(34,197,94,0.7)); }
+        .connector-line.active-response.staff-marketing   { stroke: #3b82f6 !important; filter: drop-shadow(0 0 5px rgba(59,130,246,0.7)); }
+        .connector-line.active-response.staff-legal       { stroke: #eab308 !important; filter: drop-shadow(0 0 5px rgba(234,179,8,0.7)); }
+        .connector-line.active-response.staff-architecture{ stroke: #a855f7 !important; filter: drop-shadow(0 0 5px rgba(168,85,247,0.7)); }
+        .connector-line.active-response.staff-hr          { stroke: #ec4899 !important; filter: drop-shadow(0 0 5px rgba(236,72,153,0.7)); }
+        /* Dark mode: boost opacity slightly for visibility */
+        [data-theme="dark"] .connector-line.active-consult  { opacity: 1; filter: drop-shadow(0 0 6px rgba(6,182,212,0.8)); }
+        [data-theme="dark"] .connector-line.active-response { opacity: 1; }
+
         .node-circle { transition: all 0.3s ease; transform-origin: center; transform-box: fill-box; cursor: pointer; }
-        .node-circle.active { animation: nodeGlow 1.5s ease-in-out infinite; transform: scale(1.12); }
+        .node-circle.active { animation: nodeGlow 2.2s ease-in-out infinite; }
 
         /* ── Modal overlay ── */
         .modal-overlay {
@@ -992,7 +1009,7 @@
 
                     <!-- Descartes — Engineering -->
                     <g id="node-elon">
-                        <g id="visual-elon" class="node-circle">
+                        <g id="visual-elon" class="node-circle" style="--glow-color:rgba(239,68,68,0.85);">
                             <circle cx="400" cy="150" r="40" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="2"/>
                             <image id="pat-elon" href="" x="360" y="110" width="80" height="80" clip-path="url(#clip-elon)" style="display:none;"/>
                             <text id="svg-init-elon" x="400" y="157" text-anchor="middle" dominant-baseline="middle" fill="#ef4444" font-size="16" font-weight="700" font-family="Geist, sans-serif">DE</text>
@@ -1002,7 +1019,7 @@
                     </g>
                     <!-- Thales — Finance -->
                     <g id="node-isaac">
-                        <g id="visual-isaac" class="node-circle">
+                        <g id="visual-isaac" class="node-circle" style="--glow-color:rgba(34,197,94,0.85);">
                             <circle cx="616" cy="275" r="40" fill="rgba(34,197,94,0.12)" stroke="#22c55e" stroke-width="2"/>
                             <image id="pat-isaac" href="" x="576" y="235" width="80" height="80" clip-path="url(#clip-isaac)" style="display:none;"/>
                             <text id="svg-init-isaac" x="616" y="282" text-anchor="middle" dominant-baseline="middle" fill="#22c55e" font-size="16" font-weight="700" font-family="Geist, sans-serif">TH</text>
@@ -1012,7 +1029,7 @@
                     </g>
                     <!-- Aristotle — Marketing -->
                     <g id="node-marketing">
-                        <g id="visual-marketing" class="node-circle">
+                        <g id="visual-marketing" class="node-circle" style="--glow-color:rgba(59,130,246,0.85);">
                             <circle cx="616" cy="525" r="40" fill="rgba(59,130,246,0.12)" stroke="#3b82f6" stroke-width="2"/>
                             <image id="pat-marketing" href="" x="576" y="485" width="80" height="80" clip-path="url(#clip-marketing)" style="display:none;"/>
                             <text id="svg-init-marketing" x="616" y="532" text-anchor="middle" dominant-baseline="middle" fill="#3b82f6" font-size="16" font-weight="700" font-family="Geist, sans-serif">AR</text>
@@ -1022,7 +1039,7 @@
                     </g>
                     <!-- Marcus — HR -->
                     <g id="node-donna">
-                        <g id="visual-donna" class="node-circle">
+                        <g id="visual-donna" class="node-circle" style="--glow-color:rgba(236,72,153,0.85);">
                             <circle cx="400" cy="650" r="40" fill="rgba(236,72,153,0.12)" stroke="#ec4899" stroke-width="2"/>
                             <image id="pat-donna" href="" x="360" y="610" width="80" height="80" clip-path="url(#clip-donna)" style="display:none;"/>
                             <text id="svg-init-donna" x="400" y="657" text-anchor="middle" dominant-baseline="middle" fill="#ec4899" font-size="16" font-weight="700" font-family="Geist, sans-serif">MA</text>
@@ -1032,7 +1049,7 @@
                     </g>
                     <!-- Cicero — Legal -->
                     <g id="node-legal">
-                        <g id="visual-legal" class="node-circle">
+                        <g id="visual-legal" class="node-circle" style="--glow-color:rgba(234,179,8,0.85);">
                             <circle cx="184" cy="525" r="40" fill="rgba(234,179,8,0.12)" stroke="#eab308" stroke-width="2"/>
                             <image id="pat-legal" href="" x="144" y="485" width="80" height="80" clip-path="url(#clip-legal)" style="display:none;"/>
                             <text id="svg-init-legal" x="184" y="532" text-anchor="middle" dominant-baseline="middle" fill="#eab308" font-size="16" font-weight="700" font-family="Geist, sans-serif">CI</text>
@@ -1042,7 +1059,7 @@
                     </g>
                     <!-- Plato — Architecture -->
                     <g id="node-architecture">
-                        <g id="visual-architecture" class="node-circle">
+                        <g id="visual-architecture" class="node-circle" style="--glow-color:rgba(168,85,247,0.85);">
                             <circle cx="184" cy="275" r="40" fill="rgba(168,85,247,0.12)" stroke="#a855f7" stroke-width="2"/>
                             <image id="pat-architecture" href="" x="144" y="235" width="80" height="80" clip-path="url(#clip-architecture)" style="display:none;"/>
                             <text id="svg-init-architecture" x="184" y="282" text-anchor="middle" dominant-baseline="middle" fill="#a855f7" font-size="16" font-weight="700" font-family="Geist, sans-serif">PL</text>
@@ -1052,7 +1069,7 @@
                     </g>
                     <!-- Helen — Chief of Staff (center) -->
                     <g id="node-soleil">
-                        <g id="visual-soleil" class="node-circle">
+                        <g id="visual-soleil" class="node-circle" style="--glow-color:rgba(6,182,212,0.85);">
                             <circle cx="400" cy="400" r="70" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="2"/>
                             <image id="pat-soleil" href="" x="330" y="330" width="140" height="140" clip-path="url(#clip-soleil)" style="display:none;"/>
                             <text id="svg-init-soleil" x="400" y="407" text-anchor="middle" dominant-baseline="middle" fill="#06b6d4" font-size="22" font-weight="700" font-family="Geist, sans-serif">HE</text>
@@ -2030,16 +2047,44 @@ function animateConnection(personaName, delayMs = 0) {
         const key = nameToKey[personaName.toLowerCase()] || personaName.toLowerCase();
         if (line && node) {
             logTrace(`Consulting ${personaName}…`);
-            line.classList.add('active');
+            // Phase 1: COS reaching OUT — cyan consult color
+            line.classList.remove('active-response', 'active-consult', ...Array.from(line.classList).filter(c => c.startsWith('staff-')));
+            line.classList.add('active-consult');
             node.classList.add('active');
             setDotActive(key);
-            setTimeout(() => {
-                line.classList.remove('active');
-                node.classList.remove('active');
-                const hasCfg = window.staffAssignments?.[key]?.provider && window.staffAssignments?.[key]?.model;
-                hasCfg ? setDotReady(key) : setDotGray(key);
-            }, 5000);
         }
+    }, delayMs);
+}
+
+// Called after a staff member responds — switches line to staff color
+function animateConnectionResponse(key) {
+    // Map key to SVG line node name
+    const keyToNode = {
+        engineering: 'elon', finance: 'isaac', marketing: 'marketing',
+        legal: 'legal', architecture: 'architecture', hr: 'donna', cos: 'soleil'
+    };
+    const nodeName = keyToNode[key] || key;
+    const line = document.getElementById(`line-${nodeName}`);
+    if (line) {
+        line.classList.remove('active-consult');
+        line.classList.add('active-response', `staff-${key}`);
+    }
+}
+
+// Clears a specific staff node's animation after response is rendered
+function clearConnectionAnimation(key, delayMs = 3500) {
+    setTimeout(() => {
+        const keyToNode = {
+            engineering: 'elon', finance: 'isaac', marketing: 'marketing',
+            legal: 'legal', architecture: 'architecture', hr: 'donna', cos: 'soleil'
+        };
+        const nodeName = keyToNode[key] || key;
+        const line = document.getElementById(`line-${nodeName}`);
+        const node = document.getElementById(`visual-${nodeName}`);
+        if (line) line.classList.remove('active-consult', 'active-response', `staff-${key}`);
+        if (node) node.classList.remove('active');
+        const hasCfg = window.staffAssignments?.[key]?.provider && window.staffAssignments?.[key]?.model;
+        hasCfg ? setDotReady(key) : setDotGray(key);
     }, delayMs);
 }
 
@@ -2318,7 +2363,10 @@ function confirmClearConversations() {
     traceWindow.innerHTML = '';
     window._apiErrors = {};
     logTrace('Boardroom cleared.');
-    document.querySelectorAll('.connector-line').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.connector-line').forEach(el => {
+        el.classList.remove('active', 'active-consult', 'active-response');
+        Array.from(el.classList).filter(c => c.startsWith('staff-')).forEach(c => el.classList.remove(c));
+    });
     document.querySelectorAll('.node-circle').forEach(el => el.classList.remove('active'));
 }
 
@@ -2905,7 +2953,7 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 
     // ── xAI Grok — hardcoded known models (CORS blocks /models from browser) ──
     if (key === 'xai') {
-        const valid = apiKey.length > 20;
+        const valid = apiKey.startsWith('xai-') && apiKey.length > 20;
         const grokModels = [
             'grok-3',
             'grok-3-fast',
@@ -2917,7 +2965,7 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
         modelSelect.innerHTML = grokModels.map(m =>
             `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
         ).join('');
-        setProviderStatus(key, valid ? 'Key format valid. Select a model.' : 'API key too short — check your xAI key.', valid);
+        setProviderStatus(key, valid ? 'Key format valid. Select a model.' : 'Key should start with xai-', valid);
         return;
     }
 
@@ -3902,11 +3950,14 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
                 setDotActive(key);
                 const { text: response, usage: specUsage } = await callStaffModel(key, staffMessages, staffSystem, 1024);
                 specialistResponses[name] = { text: response, usage: specUsage };
+                animateConnectionResponse(key);   // switch line to staff color on response
                 setDotReady(key);
                 logTrace(`✓ ${name} responded. Tokens: ${specUsage?.total || '?'}`, false);
+                clearConnectionAnimation(key, 3500); // hold staff color 3.5s then fade
             } catch(e) {
                 setDotGray(key);
                 specialistResponses[name] = { text: `[${name} unavailable: ${e.message}]`, usage: null };
+                clearConnectionAnimation(key, 0);
                 logTrace(`✗ ${name} error: ${e.message}`, false);
             }
         }
@@ -3928,8 +3979,11 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
 
         const phase3System = buildStaffSystemPrompt('cos');
         setDotActive('cos');
+        const cosNode = document.getElementById('visual-soleil');
+        if (cosNode) cosNode.classList.add('active'); // keep COS glowing through full synthesis
         const { text: synthesis, usage: phase3Usage } = await callStaffModel('cos', phase3Messages, phase3System, 2048);
         setDotReady('cos');
+        if (cosNode) cosNode.classList.remove('active');
         logTrace(`Phase 3 tokens: ${phase3Usage?.total || '?'}`, false);
 
         // ── Render each specialist as their own bubble ───────────────────────
@@ -4806,15 +4860,14 @@ async function probeStaffConnection(key) {
 
     // Providers with CORS restrictions — can't probe from browser
     // Treat as connected if key is present and looks valid
-    const corsRestricted = ['anthropic', 'google', 'openai', 'mistral', 'xai'];
+    const corsRestricted = ['anthropic', 'google', 'openai', 'mistral'];
     if (corsRestricted.includes(assignment.provider)) {
         const key_ = provCfg.apiKey;
         const validFormat =
             (assignment.provider === 'anthropic' && key_.startsWith('sk-ant-')) ||
             (assignment.provider === 'openai'    && key_.startsWith('sk-')) ||
             (assignment.provider === 'google'    && key_.startsWith('AIza')) ||
-            (assignment.provider === 'mistral'   && key_.length > 10) ||
-            (assignment.provider === 'xai'       && key_.length > 20);
+            (assignment.provider === 'mistral'   && key_.length > 10);
         validFormat ? setDotReady(key) : setDotGray(key);
         return validFormat;
     }
