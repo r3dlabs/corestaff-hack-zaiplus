@@ -472,13 +472,11 @@
             #customize-cards-grid { grid-template-columns: 1fr !important; padding: 12px !important; }
         }
         .staff-hero-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
             transition: border-color 0.15s;
         }
-        .staff-hero-card:hover { border-color: var(--border-strong); }
+        .staff-hero-card:hover { filter: brightness(1.03); }
         .staff-hero-header {
             display: flex; align-items: center; gap: 12px;
             padding: 12px 14px; cursor: pointer; user-select: none;
@@ -3065,10 +3063,19 @@ function renderCustomizeCards() {
         const rolesVal = (window.staffRoles?.[key] || '').replace(/"/g, '&quot;');
         const nameVal  = (custom.name || def.name).replace(/"/g, '&quot;');
 
+
+        // Tinted card background — same treatment as chat bubbles
+        const isDark_c    = document.documentElement.getAttribute('data-theme') === 'dark';
+        const _htr        = c => { const h=c.replace('#',''); return h.length===6?[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]:null; };
+        const rgb_c       = _htr(color);
+        const cardBg      = rgb_c ? `rgba(${rgb_c[0]},${rgb_c[1]},${rgb_c[2]},${isDark_c?0.06:0.09})`     : 'var(--bg-surface)';
+        const cardBorder  = rgb_c ? `rgba(${rgb_c[0]},${rgb_c[1]},${rgb_c[2]},${isDark_c?0.25:0.32})` : 'var(--border)';
+        const hoverBg_c   = rgb_c ? `rgba(${rgb_c[0]},${rgb_c[1]},${rgb_c[2]},0.06)` : 'var(--bg-hover)';
+
         return `
-        <div class="staff-hero-card" id="hero-card-${key}" style="border-top:3px solid ${color};">
+        <div class="staff-hero-card" id="hero-card-${key}" style="background:${cardBg};border:1px solid ${cardBorder};border-radius:12px;overflow:hidden;">
             <!-- Hero header (click to toggle) -->
-            <div class="staff-hero-header" onclick="toggleHeroCard('${key}')">
+            <div class="staff-hero-header" onclick="toggleHeroCard('${key}')" onmouseover="this.style.background='${hoverBg_c}'" onmouseout="this.style.background='transparent'">
                 <div style="position:relative;flex-shrink:0;">
                     <img id="custom-img-${key}" src="${custom.img || def.img}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid ${color};" onerror="this.src=''">
                     <label for="custom-upload-${key}" onclick="event.stopPropagation()" style="position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:9px;" title="Upload photo">+</label>
