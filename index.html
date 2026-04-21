@@ -2328,6 +2328,18 @@ function typewriterBubble(name, text, isSynthesis = false, onDone = null) {
     chatWindow.appendChild(wrapper);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
+    // Sync SVG glow + line to typewriter
+    const _twKeyToNode = { engineering:'elon', finance:'isaac', marketing:'marketing',
+        legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' };
+    const _twNodeName = _twKeyToNode[key] || key;
+    const _twSvgNode = document.getElementById('visual-' + _twNodeName);
+    const _twSvgLine = document.getElementById('line-' + _twNodeName);
+    if (_twSvgNode) _twSvgNode.classList.add('active');
+    if (_twSvgLine && key !== 'cos') {
+        _twSvgLine.classList.remove('active-consult');
+        _twSvgLine.classList.add('active-response', 'staff-' + key);
+    }
+
     // Stream words with a small delay between each
     const words = text.split(' ');
     let i = 0;
@@ -2335,6 +2347,11 @@ function typewriterBubble(name, text, isSynthesis = false, onDone = null) {
     function typeNext() {
         if (i >= words.length) {
             cursor.remove();
+            // Stop SVG animations when typing finishes
+            if (_twSvgNode) _twSvgNode.classList.remove('active');
+            if (_twSvgLine && key !== 'cos') {
+                _twSvgLine.classList.remove('active-response', 'staff-' + key);
+            }
             // Replace raw text with formatted HTML
             const contentEl = document.createElement('div');
             contentEl.innerHTML = formatTextToHtml(text);
