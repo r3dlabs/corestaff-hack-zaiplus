@@ -483,6 +483,10 @@
         }
         .staff-hero-header:hover { background: rgba(255,255,255,0.02); }
         .staff-hero-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+        /* Provider logo SVG icons — invert in dark mode */
+        .prov-svg-icon { display:block; }
+        [data-theme="dark"] .prov-svg-icon { filter: invert(1) brightness(1.8); }
+
         .staff-section-label {
             font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
             color: var(--text-muted); font-family: 'Geist Mono', monospace; margin-bottom: 5px;
@@ -701,7 +705,7 @@
                         <!-- openai -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/openai.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/openai.png" width="18" height="18" style="object-fit:contain;" alt="OpenAI" onerror="this.style.display='none'"></picture>
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="openai" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">OpenAI</span>
                                 <div id="pstatus-openai" style="width:8px;height:8px;border-radius:50%;background:#10a37f;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-openai" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
@@ -715,7 +719,7 @@
                         <!-- anthropic -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/anthropic.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/anthropic.png" width="18" height="18" style="object-fit:contain;" alt="Anthropic" onerror="this.style.display='none'"></picture>
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/anthropic.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="anthropic" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Anthropic</span>
                                 <div id="pstatus-anthropic" style="width:8px;height:8px;border-radius:50%;background:#d4763b;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-anthropic" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
@@ -729,7 +733,7 @@
                         <!-- google -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/google.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/google.png" width="18" height="18" style="object-fit:contain;" alt="Google" onerror="this.style.display='none'"></picture>
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/google.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="google" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Google</span>
                                 <div id="pstatus-google" style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-google" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
@@ -743,7 +747,7 @@
                         <!-- deepseek -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/deepseek.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/deepseek.png" width="18" height="18" style="object-fit:contain;" alt="DeepSeek" onerror="this.style.display='none'"></picture>
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/deepseek.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="deepseek" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">DeepSeek</span>
                                 <div id="pstatus-deepseek" style="width:8px;height:8px;border-radius:50%;background:#5b6ef5;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-deepseek" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
@@ -757,7 +761,7 @@
                         <!-- groq -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/groq.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/groq.png" width="18" height="18" style="object-fit:contain;" alt="Groq" onerror="this.style.display='none'"></picture>
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/groq.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="groq" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Groq</span>
                                 <div id="pstatus-groq" style="width:8px;height:8px;border-radius:50%;background:#f55036;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-groq" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
@@ -771,7 +775,7 @@
                         <!-- mistral -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/mistral.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/mistral.png" width="18" height="18" style="object-fit:contain;" alt="Mistral" onerror="this.style.display='none'"></picture>
+                                <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/mistral.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="mistral" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Mistral</span>
                                 <div id="pstatus-mistral" style="width:8px;height:8px;border-radius:50%;background:#ff7000;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-mistral" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
@@ -785,7 +789,7 @@
                         <!-- gmi -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:18px;height:18px;border-radius:5px;background:rgba(124,58,237,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">GMI Cloud</span>
                                 <div id="pstatus-gmi" style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-gmi" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
