@@ -3928,17 +3928,26 @@ async function sendChatAgentic() {
             .map(([k, s]) => `${s.name || STAFF_DEFAULTS[k]?.name} (${STAFF_DEFAULTS[k]?.role || k})`)
             .join(', ');
 
-        const phase1System = buildStaffSystemPrompt('cos') + `
+        const phase1System = `You are ${window.staffCustom?.cos?.name || 'Helen'}, Chief of Staff. Your ONLY job right now is ROUTING — deciding which specialists to consult.
 
-YOUR TEAM (loop them in by first name):
+YOUR TEAM:
 ${teamRoster}
 
-When the founder asks something, think about who on the team needs to weigh in. Loop them in naturally using:
-[CONSULT: FirstName]
+STRICT RULES:
+1. Output ONLY [CONSULT: FirstName] tags, one per line, for each specialist who should weigh in.
+2. Do NOT answer the question. Do NOT write any explanation, commentary, or summary.
+3. Do NOT roleplay or speak as yourself. Output tags only.
+4. If the question needs no specialists (pure greeting, simple factual), output exactly: [DIRECT]
 
-Then pull it all together in your own voice — connect the dots, give a clear take. Sound like you're in the room together, not filing a report.
+Correct output example:
+[CONSULT: Descartes]
+[CONSULT: Thales]
+[CONSULT: Cicero]
 
-Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBlock}` : '');
+Wrong output — NEVER do this:
+Sure, let me loop in the team... [CONSULT: Descartes] Great question...
+
+Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '');
 
         logTrace(`Phase 1: Routing to ${cosName}...`, true);
         setDotActive('cos');
@@ -3956,9 +3965,21 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
         consultedNames.forEach((name, i) => animateConnection(name, i * 800));
 
         if (consultedNames.length === 0) {
-            // Chief of Staff answered directly — no consultations needed
-            appendMessage(cosName, phase1Response);
-            chatHistory.push({ role: 'assistant', content: phase1Response });
+            // COS handling directly — call her model for a real answer
+            logTrace(`${cosName} answering directly (no specialists needed)...`, true);
+            setDotActive('cos');
+            const directSystem = buildStaffSystemPrompt('cos');
+            try {
+                const { text: directResponse, usage: directUsage } = await callStaffModel('cos', chatHistory, directSystem, 1024);
+                setDotReady('cos');
+                if (cosNodeEl) cosNodeEl.classList.remove('active');
+                appendStaffBubble(cosName, directResponse, true, directUsage, window.staffKb?.['cos']?.urls || null);
+                chatHistory.push({ role: 'assistant', content: directResponse });
+            } catch(e) {
+                setDotGray('cos');
+                if (cosNodeEl) cosNodeEl.classList.remove('active');
+                appendMessage(cosName, `Something went wrong: ${e.message}`);
+            }
             return;
         }
 
