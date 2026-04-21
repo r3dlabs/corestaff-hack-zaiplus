@@ -4180,6 +4180,9 @@ async function verifyProviderConnection(key) {
             // Bedrock requires AWS SigV4 signing — a plain Bearer fetch will always 403.
             // Treat any non-empty key as accepted; real validation happens at call time.
             ok = apiKey.length > 20;
+        } else if (key === 'perplexity') {
+            // Perplexity CORS blocks /models — validate key format instead.
+            ok = apiKey.startsWith('pplx-') && apiKey.length > 20;
         } else {
             const res = await fetch(endpoint + def.modelsPath, {
                 headers: { 'Authorization': 'Bearer ' + apiKey }
