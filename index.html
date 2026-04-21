@@ -2275,6 +2275,74 @@ document.addEventListener('click', (e) => {
 // ─── SEND ────────────────────────────────────────────────────────────────────
 
 // ─── BOARDROOM INIT ───────────────────────────────────────────────────────────
+// ── Typewriter effect for hardcoded bubbles ──────────────────────────────────
+function typewriterBubble(name, text, isSynthesis = false, onDone = null) {
+    const chatWindow = document.getElementById('chat-window');
+    const key = getStaffKeyByName(name);
+    const staffData = window.staffCustom?.[key] || STAFF_DEFAULTS[key] || {};
+    const color = staffData.color || 'var(--text-secondary)';
+    const hexToRgb = hex => {
+        const h = hex.replace('#','');
+        if (h.length !== 6) return null;
+        return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+    };
+    const rgb = hexToRgb(color);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const bubbleBg     = rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${isDark?0.07:0.11})` : 'var(--bg-elevated)';
+    const bubbleBorder = rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${isDark?0.22:0.28})` : 'var(--border)';
+
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;justify-content:flex-start;margin-bottom:4px;';
+    const avatar = document.createElement('div');
+    avatar.style.cssText = `width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:2px solid ${color};overflow:hidden;`;
+    const imgSrc = staffData.img || '';
+    if (imgSrc) {
+        const img = document.createElement('img');
+        img.src = imgSrc; img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+        img.onerror = () => { if (avatar.contains(img)) avatar.removeChild(img); avatar.textContent = name.slice(0,2).toUpperCase(); };
+        avatar.appendChild(img);
+    } else { avatar.textContent = name.slice(0,2).toUpperCase(); }
+
+    const bubble = document.createElement('div');
+    bubble.style.cssText = `background:${bubbleBg};border:1px solid ${bubbleBorder};border-radius:12px;padding:12px 14px;max-width:560px;animation:fadeIn 0.2s ease;font-size:13.5px;line-height:1.6;`;
+    const nameLabel = document.createElement('div');
+    nameLabel.style.cssText = `font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${color};margin-bottom:6px;font-family:'Geist Mono',monospace;`;
+    nameLabel.textContent = name;
+    const rawEl = document.createElement('div');
+    rawEl.style.cssText = 'white-space:pre-wrap;color:var(--text-primary);word-break:break-word;';
+    const cursor = document.createElement('span');
+    cursor.style.cssText = `display:inline-block;width:2px;height:1.1em;background:${color};margin-left:1px;vertical-align:text-bottom;animation:streamBlink 0.8s step-end infinite;`;
+    rawEl.appendChild(cursor);
+    bubble.appendChild(nameLabel);
+    bubble.appendChild(rawEl);
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(bubble);
+    chatWindow.appendChild(wrapper);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // Stream words with a small delay between each
+    const words = text.split(' ');
+    let i = 0;
+    // Vary speed slightly for natural feel: 18-32ms per word
+    function typeNext() {
+        if (i >= words.length) {
+            cursor.remove();
+            // Replace raw text with formatted HTML
+            const contentEl = document.createElement('div');
+            contentEl.innerHTML = formatTextToHtml(text);
+            rawEl.replaceWith(contentEl);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            if (onDone) onDone();
+            return;
+        }
+        cursor.insertAdjacentText('beforebegin', (i === 0 ? '' : ' ') + words[i]);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        i++;
+        setTimeout(typeNext, 18 + Math.random() * 16);
+    }
+    typeNext();
+}
+
 function initializeBoardroom() {
     const chatWindow = document.getElementById('chat-window');
     chatWindow.innerHTML = '';
@@ -2307,7 +2375,7 @@ function showBoardroomStateA() {
 
     const text = `Good ${tod}, ${name}. I'm ${cosName}, your Chief of Staff.\n\nBefore the team can get to work, we need to set up ${what.join(' and ')}.\n\n<a href="javascript:void(0)" onclick="openSettingsModal()" style="color:var(--text-primary);font-weight:600;text-decoration:underline;text-underline-offset:3px;">→ Open Settings to get started</a>`;
 
-    appendStaffBubble(cosName, text);
+    typewriterBubble(cosName, text);
 }
 
 // ── State B: fully initialised — staggered team intro ────────────────────────
@@ -2373,7 +2441,7 @@ function showBoardroomStateB() {
 
     intros.forEach(({ delay, name: n, msg }) => {
         setTimeout(() => {
-            appendStaffBubble(n, msg);
+            typewriterBubble(n, msg);
         }, delay);
     });
 }
