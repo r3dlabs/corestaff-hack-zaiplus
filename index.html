@@ -4149,45 +4149,63 @@ async function runDiag() {
     // ── SETTINGS MODAL LAYOUT ──
     head('SETTINGS MODAL LAYOUT');
     const sm = document.getElementById('settings-modal');
-    const smInner = sm?.querySelector('div');
-    const smBody  = sm?.querySelector('[style*="overflow-y:auto"]') || sm?.querySelector('[style*="overflow-y: auto"]');
-    const smHdr   = sm?.querySelector('[id="btn-close-settings"]')?.closest('div[style*="border-bottom"]');
-
     if (!sm) { log('settings-modal', 'NOT FOUND', false); }
     else {
+        const smInner = sm.querySelector('div');
         const smR = sm.getBoundingClientRect();
-        log('modal display',      sm.style.display, sm.style.display !== 'none');
-        log('modal size',         `${Math.round(smR.width)}×${Math.round(smR.height)}px`, smR.height > 100);
+        log('modal display',   sm.style.display, sm.style.display !== 'none');
+        log('modal size',      `${Math.round(smR.width)}×${Math.round(smR.height)}px`, smR.height > 100);
+
         if (smInner) {
             const ir = smInner.getBoundingClientRect();
             const cs = getComputedStyle(smInner);
-            log('inner box size',   `${Math.round(ir.width)}×${Math.round(ir.height)}px`, ir.height > 100);
-            log('inner max-height', cs.maxHeight, true);
-            log('inner overflow',   cs.overflow + ' / ' + cs.overflowY, true);
-            log('inner display',    cs.display + ' / ' + cs.flexDirection, true);
-        }
-        if (smBody) {
-            const br = smBody.getBoundingClientRect();
-            const bc = getComputedStyle(smBody);
-            log('scroll body size',     `${Math.round(br.width)}×${Math.round(br.height)}px`, br.height > 50);
-            log('scroll body overflow', bc.overflowY, bc.overflowY === 'auto' || bc.overflowY === 'scroll');
-            log('scroll body flex',     bc.flex || bc.flexGrow, true);
-            log('scrollHeight vs h',    `${smBody.scrollHeight} vs ${Math.round(br.height)}`, smBody.scrollHeight > br.height);
-        } else {
-            log('scroll body', 'NOT FOUND — no overflow-y:auto element inside modal', false);
+            log('card size',       `${Math.round(ir.width)}×${Math.round(ir.height)}px`, ir.height > 100);
+            log('card height css', cs.height + ' / max:' + cs.maxHeight, true);
+            log('card overflow',   cs.overflow + ' / ' + cs.overflowY, true);
+            log('card flex',       cs.display + ' ' + cs.flexDirection, true);
         }
 
+        // Tab bar
+        const tabBar = document.querySelector('[id^="stab-providers"]')?.parentElement;
+        if (tabBar) {
+            const tr = tabBar.getBoundingClientRect();
+            log('tab bar size',    `${Math.round(tr.width)}×${Math.round(tr.height)}px`, true);
+            log('tab bar bottom',  `${Math.round(tr.bottom)}px from top`, true);
+        }
+
+        // Each pane
         ['providers','startup','team'].forEach(sec => {
-            const secEl   = document.getElementById('spane-' + sec);
-            const tabBtn  = document.getElementById('stab-' + sec);
-            if (!secEl) { log(sec + ' pane', 'NOT FOUND', false); return; }
-            const sr = secEl.getBoundingClientRect();
-            const sc = getComputedStyle(secEl);
-            log(sec + ' pane size',     `${Math.round(sr.width)}×${Math.round(sr.height)}px`, sr.height > 0);
-            log(sec + ' pane display',  sc.display, secEl.style.display !== 'none');
-            log(sec + ' pane overflow', sc.overflowY, true);
-            log(sec + ' scrollHeight vs h', `${secEl.scrollHeight} vs ${Math.round(sr.height)}`, secEl.scrollHeight > sr.height);
+            const pane = document.getElementById('spane-' + sec);
+            if (!pane) { log(sec + ' pane', 'NOT FOUND', false); return; }
+            const pr = pane.getBoundingClientRect();
+            const pc = getComputedStyle(pane);
+            log(sec + ' display',      pane.style.display || pc.display, pane.style.display !== 'none');
+            log(sec + ' size',         `${Math.round(pr.width)}×${Math.round(pr.height)}px`, pr.height > 0);
+            log(sec + ' position',     `top:${Math.round(pr.top)} left:${Math.round(pr.left)} bottom:${Math.round(pr.bottom)}`, true);
+            log(sec + ' overflow',     pc.overflowY, true);
+            log(sec + ' flex',         pc.flex + ' / shrink:' + pc.flexShrink, true);
+            log(sec + ' scrollH vs H', `${pane.scrollHeight} vs ${Math.round(pr.height)}`, pane.scrollHeight > pr.height);
+
+            // First few direct children
+            Array.from(pane.children).slice(0,3).forEach((ch, i) => {
+                const cr = ch.getBoundingClientRect();
+                const tag = ch.id ? '#'+ch.id : (ch.className||'div');
+                log(`  child[${i}] ${tag.slice(0,30)}`, `${Math.round(cr.width)}×${Math.round(cr.height)}px top:${Math.round(cr.top)}`, cr.height > 0);
+            });
         });
+
+        // Footer / header buttons
+        const saveBtn = document.getElementById('btn-save-settings');
+        const cancelBtn = document.getElementById('btn-cancel-settings');
+        if (saveBtn) {
+            const sr2 = saveBtn.getBoundingClientRect();
+            log('Save All btn pos',  `top:${Math.round(sr2.top)} bottom:${Math.round(sr2.bottom)} right:${Math.round(sr2.right)}`, sr2.top > 0 && sr2.bottom < window.innerHeight);
+            log('Save All visible',  sr2.top >= 0 && sr2.bottom <= window.innerHeight ? 'YES' : 'CLIPPED/OFFSCREEN', sr2.top >= 0 && sr2.bottom <= window.innerHeight);
+        }
+        if (cancelBtn) {
+            const cr2 = cancelBtn.getBoundingClientRect();
+            log('Cancel btn pos',    `top:${Math.round(cr2.top)} bottom:${Math.round(cr2.bottom)}`, cr2.top > 0 && cr2.bottom < window.innerHeight);
+        }
     }
 
     // ── AUTH ──
