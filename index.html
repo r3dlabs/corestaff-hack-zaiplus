@@ -3943,7 +3943,26 @@ async function streamStaffModel(staffKey, messages, systemPrompt, maxTokens, nam
 
 
 // Build per-staff system prompt
-function buildStaffSystemPrompt(staffKey) {
+// ── Opener library — picked once per round, no duplicates across staff ──────────
+const STAFF_OPENERS = [
+    "Here's my honest take —",
+    "Okay, thinking through this —",
+    "A few things jump out at me straightaway.",
+    "Alright, here's where my head goes on this.",
+    "This is interesting. Let me think out loud for a second.",
+    "My instinct here is —",
+    "I've been thinking about this and —",
+    "Cutting straight to it —",
+    "Worth flagging a few things from my angle.",
+    "Based on what I've seen, here's where I land.",
+    "I'll give you the unfiltered version.",
+    "A couple of things stand out to me on this.",
+    "Right, so —",
+    "This touches my world in a few ways.",
+    "Let me be straight with you on this.",
+];
+
+function buildStaffSystemPrompt(staffKey, assignedOpener) {
     const def = STAFF_DEFAULTS[staffKey];
     const custom = window.staffCustom?.[staffKey] || def;
     const name = custom.name || def.name;
@@ -4045,25 +4064,8 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
         ? `\n\n[FOCUS AREAS — defined by the founder]\n${window.staffRoles[staffKey]}\n[END FOCUS AREAS]`
         : '';
 
-    // Random warm opener — cycles through a library so staff don't all sound the same
-    const OPENERS = [
-        "Here's my honest take —",
-        "Okay, thinking through this —",
-        "A few things jump out at me straightaway.",
-        "Alright, here's where my head goes on this.",
-        "This is interesting. Let me think out loud for a second.",
-        "My instinct here is —",
-        "I've been thinking about this and —",
-        "Cutting straight to it —",
-        "Worth flagging a few things from my angle.",
-        "Based on what I've seen, here's where I land.",
-        "I'll give you the unfiltered version.",
-        "A couple of things stand out to me on this.",
-        "Right, so —",
-        "This touches my world in a few ways.",
-        "Let me be straight with you on this.",
-    ];
-    const opener = OPENERS[Math.floor(Math.random() * OPENERS.length)];
+    // opener is passed in from the call site to ensure no two staff use the same one per round
+    const opener = assignedOpener || STAFF_OPENERS[Math.floor(Math.random() * STAFF_OPENERS.length)];
 
     return `${rd.system}
 
@@ -4318,20 +4320,30 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
          const specialistResponses = {};
          const consultedKeys = []; // track for cleanup after synthesis
 
+         // Shuffle openers once — assign one per staff, no duplicates this round
+         const _shuffledOpeners = [...STAFF_OPENERS].sort(() => Math.random() - 0.5);
+         let _openerIdx = 0;
+
          for (const name of consultedNames) {
              const key = getStaffKeyByName(name);
              if (!key || key === 'cos') continue;
              consultedKeys.push(key);
 
-             const staffSystem = buildStaffSystemPrompt(key);
+             const staffSystem = buildStaffSystemPrompt(key, _shuffledOpeners[_openerIdx++ % _shuffledOpeners.length]);
              // Frame the question so the model responds only as this specific staff member
-             const staffMessages = [{ role: 'user', content: `The founder has asked: "${userText}"\n\nRespond ONLY as ${name}. Give your honest take from your specific domain. Do NOT speak for other team members, do NOT address them directly, and do NOT try to cover angles outside your mandate. Speak in first person as yourself.` }];
+             const _docHint = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic) : '';
+             const staffMessages = [{ role: 'user', content: `The founder has asked: "${userText}"\n\nRespond ONLY as ${name}. Give your honest take from your specific domain. Do NOT speak for other team members, do NOT address them directly, and do NOT try to cover angles outside your mandate. Speak in first person as yourself.${_docHint}` }];
 
              try {
                  // animation handled by createStreamingBubble
                  const { text: response, usage: specUsage } = await streamStaffModel(key, staffMessages, staffSystem, 1024, name, false);
                  specialistResponses[name] = { text: response, usage: specUsage };
                  logTrace(`✓ ${name} responded. Tokens: ${specUsage?.total || '?'}`, false);
+                 // If staff member produced a document, inject download card immediately
+                 if (docReq.type) {
+                     const staffDoc = extractDocBlock(response);
+                     if (staffDoc) injectDownloadCard(staffDoc.docType || docReq.type, `${name.toLowerCase()}-${docReq.filename}`, staffDoc.rawBlock);
+                 }
              } catch(e) {
                  setDotGray(key);
                  specialistResponses[name] = { text: `[${name} unavailable: ${e.message}]`, usage: null };
