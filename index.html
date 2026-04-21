@@ -82,14 +82,6 @@
             from { opacity: 0; }
             to   { opacity: 1; }
         }
-        @keyframes rocketGlow {
-            0%,100% { filter: drop-shadow(0 0 0px rgba(255,180,60,0)); }
-            50%      { filter: drop-shadow(0 0 10px rgba(255,180,60,0.55)) drop-shadow(0 0 20px rgba(255,100,20,0.25)); }
-        }
-        .rocket-glow {
-            display: inline-block;
-            animation: rocketGlow 2.8s ease-in-out infinite;
-        }
 
         .connector-line {
             stroke-dasharray: 6 4;
@@ -256,12 +248,12 @@
 
         /* ── Agent colors ── */
         :root {
-            --color-elon:     #ef4444;
-            --color-isaac:    #22c55e;
-            --color-steve:    #3b82f6;
-            --color-harvey:   #eab308;
-            --color-leonardo: #a855f7;
-            --color-donna:    #ec4899;
+            --color-engineering:  #ef4444;
+            --color-finance:      #22c55e;
+            --color-steve:        #3b82f6;
+            --color-harvey:       #eab308;
+            --color-leonardo:     #a855f7;
+            --color-hr:           #ec4899;
         }
 
         /* ── Consult block ── */
@@ -272,12 +264,12 @@
             border-radius: 0 8px 8px 0;
             margin-bottom: 8px;
         }
-        .consult-block.agent-elon     { border-left-color: var(--color-elon);     }
-        .consult-block.agent-isaac    { border-left-color: var(--color-isaac);    }
-        .consult-block.agent-steve    { border-left-color: var(--color-steve);    }
-        .consult-block.agent-harvey   { border-left-color: var(--color-harvey);   }
-        .consult-block.agent-leonardo { border-left-color: var(--color-leonardo); }
-        .consult-block.agent-donna    { border-left-color: var(--color-donna);    }
+        .consult-block.agent-engineering { border-left-color: var(--color-engineering); }
+        .consult-block.agent-finance     { border-left-color: var(--color-finance);     }
+        .consult-block.agent-steve       { border-left-color: var(--color-steve);       }
+        .consult-block.agent-harvey      { border-left-color: var(--color-harvey);      }
+        .consult-block.agent-leonardo    { border-left-color: var(--color-leonardo);    }
+        .consult-block.agent-hr          { border-left-color: var(--color-hr);          }
 
         /* ── COS synthesis block ── */
         .synthesis-block {
@@ -478,7 +470,7 @@
 
                 <!-- Logo + wordmark -->
                 <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:clamp(20px,4vw,32px);">
-                    <span class="rocket-glow" style="font-size:clamp(28px,6vw,40px);line-height:1;">🚀</span>
+                    <span style="font-size:clamp(28px,6vw,40px);line-height:1;">🚀</span>
                     <div>
                         <div style="font-size:clamp(18px,4vw,26px);font-weight:800;letter-spacing:-0.02em;line-height:1.1;">
                             <span style="color:var(--text-primary);">Startup</span><span style="color:var(--text-muted);margin-left:5px;">Staff</span>
@@ -540,7 +532,7 @@
                 <!-- Step 1: Greeting + name -->
                 <div id="ob-step-1">
                     <p id="ob-greeting" style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;line-height:1.4;"></p>
-                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">I'm <strong>Donna</strong>, your Chief of Staff. I'll be coordinating the team on your behalf. Before we get started — what would you like me to call you?</p>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">I'm your <strong>Chief of Staff</strong>. I'll be coordinating the team on your behalf. Before we get started — what would you like me to call you?</p>
                     <div style="margin-bottom:8px;">
                         <label class="field-label">Your preferred name</label>
                         <input type="text" id="input-founder-name" class="input-field" placeholder="e.g. Alex" autocomplete="given-name" style="font-size:15px;">
@@ -586,7 +578,7 @@
                             <span style="font-size:18px;">👥</span>
                             <div>
                                 <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Assign Models</div>
-                                <div style="font-size:12px;color:var(--text-secondary);">Use Customize Team to assign specific models to Tony, Mike, Harvey and the rest of the team.</div>
+                                <div style="font-size:12px;color:var(--text-secondary);">Use Customize Team to assign specific models to Engineering, Finance, Legal and the rest of the team.</div>
                             </div>
                         </div>
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
@@ -646,7 +638,7 @@
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <img id="about-img-cos" src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:var(--text-primary);display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--bg-base);flex-shrink:0;">S</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;" id="about-name-cos" id="about-name-sigmund">Rachel <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Chief of Staff</span></div>
+                                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;" id="about-name-cos">Chief of Staff <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Chief of Staff</span></div>
                                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Orchestrates the boardroom. Routes queries, synthesises insights, and delivers unified strategic recommendations.</div>
                             </div>
                         </div>
@@ -654,15 +646,15 @@
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <img id="about-img-tony" src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/tony.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ef4444;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;" id="about-fallback-tony">T</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:2px;" id="about-name-tony">Tony <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Engineering</span></div>
-                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">First-principles thinker. Technical engineering, product feasibility, deployment strategy, and build vs. buy decisions. Works closely with Leonardo to ensure design and build are harmonious.</div>
+                                <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:2px;" id="about-name-tony">Engineering <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Engineering</span></div>
+                                <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">First-principles thinker. Technical engineering, product feasibility, deployment strategy, and build vs. buy decisions. Works closely with Architecture to ensure design and build are harmonious.</div>
                             </div>
                         </div>
 
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <img id="about-img-mike" src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/mike.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#22c55e;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;" id="about-fallback-mike">M</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:#22c55e;margin-bottom:2px;" id="about-name-mike">Mike <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Finance</span></div>
+                                <div style="font-size:12px;font-weight:600;color:#22c55e;margin-bottom:2px;" id="about-name-mike">Finance & Accounting <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Finance</span></div>
                                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Burn-rate focused. Financial modelling, ROI analysis, fundraising strategy, and unit economics.</div>
                             </div>
                         </div>
@@ -670,7 +662,7 @@
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <img id="about-img-steve" src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/steve.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#3b82f6;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">S</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:#3b82f6;margin-bottom:2px;" id="about-name-steve">Steve <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Marketing</span></div>
+                                <div style="font-size:12px;font-weight:600;color:#3b82f6;margin-bottom:2px;" id="about-name-steve">Marketing <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Marketing</span></div>
                                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Narrative and growth. Go-to-market strategy, brand positioning, and customer acquisition.</div>
                             </div>
                         </div>
@@ -678,7 +670,7 @@
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <img id="about-img-harvey" src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/harvey.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#eab308;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">H</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:#eab308;margin-bottom:2px;" id="about-name-harvey">Harvey <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Legal</span></div>
+                                <div style="font-size:12px;font-weight:600;color:#eab308;margin-bottom:2px;" id="about-name-harvey">Legal <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Legal</span></div>
                                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Risk and compliance. Contracts, equity structure, IP protection, and regulatory considerations.</div>
                             </div>
                         </div>
@@ -686,7 +678,7 @@
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <img id="about-img-leonardo" src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/leonardo.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#a855f7;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">L</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:#a855f7;margin-bottom:2px;" id="about-name-leonardo">Leonardo <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Architecture</span></div>
+                                <div style="font-size:12px;font-weight:600;color:#a855f7;margin-bottom:2px;" id="about-name-leonardo">Architecture <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Architecture</span></div>
                                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">Systems design and architecture. Technical architecture, infrastructure planning, technical debt, and long-term platform thinking. Works closely with Elon to ensure design and build are harmonious.</div>
                             </div>
                         </div>
@@ -694,7 +686,7 @@
                         <div style="display:flex;gap:12px;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <img id="about-img-sigmund" src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/sigmund.png" style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none';this.nextSibling.style.display='flex';" /><div style="width:32px;height:32px;border-radius:50%;background:#ec4899;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;" id="about-fallback-sigmund">R</div>
                             <div>
-                                <div style="font-size:12px;font-weight:600;color:#ec4899;margin-bottom:2px;" id="about-name-sigmund">Rachel <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Human Resources</span></div>
+                                <div style="font-size:12px;font-weight:600;color:#ec4899;margin-bottom:2px;" id="about-name-sigmund">Human Resources <span style="color:var(--text-muted);font-weight:400;font-family:'Geist Mono',monospace;font-size:10px;">Human Resources</span></div>
                                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">People and culture. Hiring strategy, team structure, compensation, and compliance.</div>
                             </div>
                         </div>
@@ -798,7 +790,7 @@
             <div style="min-height:220px;">
                 
                 <div id="skb-panel-cos" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Donna — Chief of Staff</p>
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Chief of Staff</p>
                     <div style="margin-bottom:12px;">
                         <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
                         <textarea id="skb-urls-cos" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
@@ -811,7 +803,7 @@
                     <div id="skb-status-cos" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                 </div>
                 <div id="skb-panel-tony" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Tony — Engineering</p>
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Engineering</p>
                     <div style="margin-bottom:12px;">
                         <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
                         <textarea id="skb-urls-tony" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
@@ -824,7 +816,7 @@
                     <div id="skb-status-tony" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                 </div>
                 <div id="skb-panel-mike" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Mike — Finance</p>
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Finance & Accounting</p>
                     <div style="margin-bottom:12px;">
                         <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
                         <textarea id="skb-urls-mike" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
@@ -837,7 +829,7 @@
                     <div id="skb-status-mike" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                 </div>
                 <div id="skb-panel-steve" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Steve — Marketing</p>
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Marketing</p>
                     <div style="margin-bottom:12px;">
                         <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
                         <textarea id="skb-urls-steve" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
@@ -850,7 +842,7 @@
                     <div id="skb-status-steve" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                 </div>
                 <div id="skb-panel-harvey" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Harvey — Legal</p>
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Legal</p>
                     <div style="margin-bottom:12px;">
                         <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
                         <textarea id="skb-urls-harvey" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
@@ -863,7 +855,7 @@
                     <div id="skb-status-harvey" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                 </div>
                 <div id="skb-panel-leonardo" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Leonardo — Architecture</p>
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Architecture</p>
                     <div style="margin-bottom:12px;">
                         <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
                         <textarea id="skb-urls-leonardo" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
@@ -876,7 +868,7 @@
                     <div id="skb-status-leonardo" style="font-size:11px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                 </div>
                 <div id="skb-panel-sigmund" style="display:none;">
-                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Sigmund — Human Resources</p>
+                    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Human Resources</p>
                     <div style="margin-bottom:12px;">
                         <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Reference URLs</div>
                         <textarea id="skb-urls-sigmund" rows="3" placeholder="One URL per line&#10;https://docs.example.com&#10;https://..." style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;resize:vertical;"></textarea>
@@ -1126,7 +1118,7 @@
                             </div>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Chief of Staff</div>
-                                <input id="custom-name-cos" type="text" value="Donna" placeholder="Donna" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <input id="custom-name-cos" type="text" value="Donna" placeholder="Chief of Staff" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                                 <div style="margin-top:6px;">
                                     <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
                                     <div style="display:flex;gap:4px;">
@@ -1148,7 +1140,7 @@
                             </div>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Engineering</div>
-                                <input id="custom-name-tony" type="text" value="Tony" placeholder="Tony" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <input id="custom-name-tony" type="text" value="Tony" placeholder="Engineering" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                                 <div style="margin-top:6px;">
                                     <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
                                     <div style="display:flex;gap:4px;">
@@ -1170,7 +1162,7 @@
                             </div>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Finance</div>
-                                <input id="custom-name-mike" type="text" value="Mike" placeholder="Mike" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <input id="custom-name-mike" type="text" value="Mike" placeholder="Finance &amp; Accounting" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                                 <div style="margin-top:6px;">
                                     <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
                                     <div style="display:flex;gap:4px;">
@@ -1192,7 +1184,7 @@
                             </div>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Marketing</div>
-                                <input id="custom-name-steve" type="text" value="Steve" placeholder="Steve" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <input id="custom-name-steve" type="text" value="Steve" placeholder="Marketing" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                                 <div style="margin-top:6px;">
                                     <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
                                     <div style="display:flex;gap:4px;">
@@ -1214,7 +1206,7 @@
                             </div>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Legal</div>
-                                <input id="custom-name-harvey" type="text" value="Harvey" placeholder="Harvey" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <input id="custom-name-harvey" type="text" value="Harvey" placeholder="Legal" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                                 <div style="margin-top:6px;">
                                     <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
                                     <div style="display:flex;gap:4px;">
@@ -1236,7 +1228,7 @@
                             </div>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Architecture</div>
-                                <input id="custom-name-leonardo" type="text" value="Leonardo" placeholder="Leonardo" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <input id="custom-name-leonardo" type="text" value="Leonardo" placeholder="Architecture" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                                 <div style="margin-top:6px;">
                                     <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
                                     <div style="display:flex;gap:4px;">
@@ -1258,7 +1250,7 @@
                             </div>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Human Resources</div>
-                                <input id="custom-name-sigmund" type="text" value="Rachel" placeholder="Rachel" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
+                                <input id="custom-name-sigmund" type="text" value="Rachel" placeholder="Human Resources" maxlength="20" style="width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;">
                                 <div style="margin-top:6px;">
                                     <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">AI Model</div>
                                     <div style="display:flex;gap:4px;">
@@ -1295,7 +1287,7 @@
 
     <div id="app-header" style="background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;width:100%;box-sizing:border-box;flex-shrink:0;z-index:20;">
         <div style="display:flex;flex-direction:row;align-items:center;gap:8px;flex-shrink:0;">
-            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" style="width:26px;height:26px;border-radius:6px;object-fit:cover;display:none;" onerror="this.style.display='none'"><span class="rocket-glow" style="font-size:20px;line-height:1;">🚀</span
+            <img src="https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/startup-staff.png" style="width:26px;height:26px;border-radius:6px;object-fit:cover;display:none;" onerror="this.style.display='none'"><span style="font-size:20px;line-height:1;">🚀</span
             <span style="font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;"><span style="color:var(--text-primary);">STARTUP</span><span style="color:var(--text-muted);margin-left:4px;">STAFF</span></span>
         </div>
         <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">
@@ -1359,7 +1351,7 @@
                         <g id="visual-elon" class="node-circle">
                             <circle cx="400" cy="150" r="40" fill="url(#pat-elon)" stroke="#ef4444" stroke-width="2"/>
                         </g>
-                        <text x="400" y="216" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-tony">TONY</text>
+                        <text x="400" y="216" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-tony">ENGINEERING</text>
                         <text x="400" y="229" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-tony">ENGINEERING</text>
                     </g>
                     <!-- Isaac -->
@@ -1367,7 +1359,7 @@
                         <g id="visual-isaac" class="node-circle">
                             <circle cx="616" cy="275" r="40" fill="url(#pat-isaac)" stroke="#22c55e" stroke-width="2"/>
                         </g>
-                        <text x="616" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-mike">MIKE</text>
+                        <text x="616" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-mike">FINANCE</text>
                         <text x="616" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-mike">FINANCE</text>
                     </g>
                     <!-- Steve -->
@@ -1375,7 +1367,7 @@
                         <g id="visual-steve" class="node-circle">
                             <circle cx="616" cy="525" r="40" fill="url(#pat-steve)" stroke="#3b82f6" stroke-width="2"/>
                         </g>
-                        <text x="616" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-steve">STEVE</text>
+                        <text x="616" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-steve">MARKETING</text>
                         <text x="616" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-steve">MARKETING</text>
                     </g>
                     <!-- Donna -->
@@ -1383,7 +1375,7 @@
                         <g id="visual-donna" class="node-circle">
                             <circle cx="400" cy="650" r="40" fill="url(#pat-donna)" stroke="#ec4899" stroke-width="2"/>
                         </g>
-                        <text x="400" y="716" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-sigmund">RACHEL</text>
+                        <text x="400" y="716" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-sigmund">HR</text>
                         <text x="400" y="729" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-sigmund">HUMAN RESOURCES</text>
                     </g>
                     <!-- Harvey -->
@@ -1391,7 +1383,7 @@
                         <g id="visual-harvey" class="node-circle">
                             <circle cx="184" cy="525" r="40" fill="url(#pat-harvey)" stroke="#eab308" stroke-width="2"/>
                         </g>
-                        <text x="184" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-harvey">HARVEY</text>
+                        <text x="184" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-harvey">LEGAL</text>
                         <text x="184" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-harvey">LEGAL</text>
                     </g>
                     <!-- Leonardo -->
@@ -1399,7 +1391,7 @@
                         <g id="visual-leonardo" class="node-circle">
                             <circle cx="184" cy="275" r="40" fill="url(#pat-leonardo)" stroke="#a855f7" stroke-width="2"/>
                         </g>
-                        <text x="184" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-leonardo">LEONARDO</text>
+                        <text x="184" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-leonardo">ARCHITECTURE</text>
                         <text x="184" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-leonardo">ARCHITECTURE</text>
                     </g>
                     <!-- Soleil (center) -->
@@ -1523,7 +1515,7 @@
 const STAFF_DEFAULTS = {
     cos:      { name: 'Donna',    role: 'Chief of Staff',  color: 'var(--text-primary)', img: 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png' },
     tony:     { name: 'Tony',     role: 'Engineering',     color: '#ef4444',             img: 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/tony.png' },
-    mike:     { name: 'Mike',     role: 'Finance',         color: '#22c55e',             img: 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/mike.png' },
+    mike:     { name: 'Mike',     role: 'Finance & Accounting', color: '#22c55e',             img: 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/mike.png' },
     steve:    { name: 'Steve',    role: 'Marketing',       color: '#3b82f6',             img: 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/steve.png' },
     harvey:   { name: 'Harvey',   role: 'Legal',           color: '#eab308',             img: 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/harvey.png' },
     leonardo: { name: 'Leonardo', role: 'Architecture',    color: '#a855f7',             img: 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/leonardo.png' },
@@ -1980,7 +1972,7 @@ Chief of Staff: Your synthesis. Short paragraphs, bullet action items. Direct.
 
 Specialists:
 - ${window.staffCustom.tony.name} (Engineering): First-principles, blunt, technical. Owns engineering execution, deployment, product feasibility, and build vs. buy decisions. Works hand-in-hand with ${window.staffCustom.leonardo.name}.
-- ${window.staffCustom.mike.name} (Finance/Accounting): Burn-rate obsessed, ROI-focused, conservative. Financial modelling, unit economics, fundraising strategy.
+- ${window.staffCustom.mike.name} (Finance & Accounting): Burn-rate obsessed, ROI-focused, conservative. Financial modelling, unit economics, fundraising strategy.
 - ${window.staffCustom.steve.name} (Marketing): Narrative-driven, growth-hacker. Go-to-market strategy, brand positioning, customer acquisition.
 - ${window.staffCustom.harvey.name} (Legal): Precise, risk-averse, equity-protective. Contracts, IP, regulatory compliance.
 - ${window.staffCustom.leonardo.name} (Architecture): Owns technical architecture, systems design, infrastructure planning, and long-term platform thinking. Works hand-in-hand with ${window.staffCustom.tony.name}.
@@ -2082,7 +2074,7 @@ function formatTextToHtml(text) {
 function getStaffImgForSender(sender) {
     // Returns { src, fallback } for a given sender name
     const CDN = 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/';
-    const cosName = window.staffCustom?.cos?.name || 'Donna';
+    const cosName = window.staffCustom?.cos?.name || 'Chief of Staff';
     // Check if sender matches any staff member
     for (const [key, def] of Object.entries(window.staffCustom || STAFF_DEFAULTS)) {
         if ((def.name || STAFF_DEFAULTS[key].name).toLowerCase() === sender.toLowerCase()) {
@@ -2219,7 +2211,7 @@ function appendMessage(sender, text) {
 
 function parseSoleilResponse(text) {
     let html = '';
-    const cosDisplayName = window.staffCustom?.cos?.name || 'Donna';
+    const cosDisplayName = window.staffCustom?.cos?.name || 'Chief of Staff';
     const allNames = Object.values(window.staffCustom).map(s=>s.name).filter(Boolean).join('|');
     const consultRegex = new RegExp('\\[CONSULT:\\s*(' + allNames + ')\\]', 'gi');
     const matches = [...text.matchAll(consultRegex)];
@@ -2235,7 +2227,13 @@ function parseSoleilResponse(text) {
         const name=match[1]; let content=match[2].trim(); let sources=[];
         let sm; while ((sm=sourceRegex.exec(content))!==null) sources.push(sm[1]);
         content=content.replace(sourceRegex,'').trim();
-        const agentColor = { Elon:'#ef4444', Isaac:'#22c55e', Steve:'#3b82f6', Harvey:'#eab308', Leonardo:'#a855f7', Donna:'#ec4899' }[name] || 'var(--text-muted)';
+        // Build color map from live staffCustom so renamed staff still get correct colors
+        const keyForName = {};
+        Object.entries(window.staffCustom || STAFF_DEFAULTS).forEach(([k, s]) => {
+            keyForName[(s.name || '').toLowerCase()] = k;
+        });
+        const roleColors = { cos:'#ec4899', tony:'#ef4444', mike:'#22c55e', steve:'#3b82f6', harvey:'#eab308', leonardo:'#a855f7', sigmund:'#ec4899' };
+        const agentColor = roleColors[keyForName[name.toLowerCase()]] || 'var(--text-muted)';
         html+=`<div class="consult-block agent-${name.toLowerCase()}">
             <div style="font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:${agentColor};font-family:'Geist Mono',monospace;margin-bottom:6px;">${name}</div>
             <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">${formatTextToHtml(content)}</div>
@@ -2262,7 +2260,13 @@ function animateConnection(personaName, delayMs = 0) {
         const n = personaName.toLowerCase();
         const line = document.getElementById(`line-${n}`);
         const node = document.getElementById(`visual-${n}`);
-        const nameToKey = { donna:'cos', tony:'tony', mike:'mike', steve:'steve', harvey:'harvey', leonardo:'leonardo', rachel:'sigmund', sigmund:'sigmund' };
+        // Build nameToKey from live staffCustom so renamed staff still animate correctly
+        const nameToKey = {};
+        Object.entries(window.staffCustom || STAFF_DEFAULTS).forEach(([k, s]) => {
+            nameToKey[(s.name || STAFF_DEFAULTS[k]?.name || '').toLowerCase()] = k;
+        });
+        // Always include the staff key itself as a fallback
+        Object.keys(STAFF_DEFAULTS).forEach(k => { nameToKey[k] = k; });
         const key = nameToKey[personaName.toLowerCase()] || personaName.toLowerCase();
         if (line && node) {
             logTrace(`Consulting ${personaName}…`);
@@ -2304,16 +2308,16 @@ function initializeBoardroom() {
     card.className = 'chat-bubble-ai';
     card.style.cssText = 'max-width:520px;';
 
-    const cosName = window.staffCustom?.cos?.name || 'Donna';
+    const cosName = window.staffCustom?.cos?.name || 'Chief of Staff';
 
     // Use custom staff names if available
     const specialists = [
-        { key:'tony',     name: (window.staffCustom&&window.staffCustom.tony&&window.staffCustom.tony.name)||'Tony',     role:'Engineering',    color:'#ef4444' },
-        { key:'mike',     name: (window.staffCustom&&window.staffCustom.mike&&window.staffCustom.mike.name)||'Mike',     role:'Finance',        color:'#22c55e' },
-        { key:'steve',    name: (window.staffCustom&&window.staffCustom.steve&&window.staffCustom.steve.name)||'Steve',   role:'Marketing',      color:'#3b82f6' },
-        { key:'harvey',   name: (window.staffCustom&&window.staffCustom.harvey&&window.staffCustom.harvey.name)||'Harvey', role:'Legal',          color:'#eab308' },
-        { key:'leonardo', name: (window.staffCustom&&window.staffCustom.leonardo&&window.staffCustom.leonardo.name)||'Leonardo', role:'Architecture', color:'#a855f7' },
-        { key:'sigmund',  name: (window.staffCustom&&window.staffCustom.sigmund&&window.staffCustom.sigmund.name)||'Rachel',  role:'HR',             color:'#ec4899' },
+        { key:'tony',     name: (window.staffCustom&&window.staffCustom.tony&&window.staffCustom.tony.name)||'Engineering',    role:'Engineering',    color:'#ef4444' },
+        { key:'mike',     name: (window.staffCustom&&window.staffCustom.mike&&window.staffCustom.mike.name)||'Finance & Accounting',     role:'Finance',        color:'#22c55e' },
+        { key:'steve',    name: (window.staffCustom&&window.staffCustom.steve&&window.staffCustom.steve.name)||'Marketing',   role:'Marketing',      color:'#3b82f6' },
+        { key:'harvey',   name: (window.staffCustom&&window.staffCustom.harvey&&window.staffCustom.harvey.name)||'Legal', role:'Legal',          color:'#eab308' },
+        { key:'leonardo', name: (window.staffCustom&&window.staffCustom.leonardo&&window.staffCustom.leonardo.name)||'Architecture', role:'Architecture', color:'#a855f7' },
+        { key:'sigmund',  name: (window.staffCustom&&window.staffCustom.sigmund&&window.staffCustom.sigmund.name)||'Human Resources',  role:'HR',             color:'#ec4899' },
     ];
 
     const rosterHTML = specialists.map(s => `
@@ -2352,7 +2356,7 @@ async function sendChat() {
     const cosAssignment = window.staffAssignments?.cos;
 
     if (!hasProvider || !cosAssignment?.provider || !cosAssignment?.model) {
-        appendMessage('Donna', 'Please configure at least one AI provider and assign a model to your Chief of Staff via the ⚙️ Providers button.');
+        appendMessage(window.staffCustom?.cos?.name || 'Chief of Staff', 'Please configure at least one AI provider and assign a model to your Chief of Staff via the ⚙️ Providers button.');
         return;
     }
 
@@ -2882,7 +2886,7 @@ document.getElementById('btn-save-providers').addEventListener('click', saveProv
 
 // ─── CHUNK 2: PER-STAFF MODEL ASSIGNMENT ────────────────────────────────────
 
-// staff_assignments in memory: { cos: { provider, model }, tony: { provider, model }, ... }
+// staff_assignments in memory: { cos: { provider, model_id }, tony: { provider, model_id }, ... }
 window.staffAssignments = {};
 
 function populateProviderDropdowns() {
@@ -3210,13 +3214,13 @@ function buildStaffSystemPrompt(staffKey) {
     // Get colleague first names for cross-referencing
     const c = window.staffCustom || STAFF_DEFAULTS;
     const colleagues = {
-        cos:      { tony: (c.tony?.name||'Tony'), mike: (c.mike?.name||'Mike'), steve: (c.steve?.name||'Steve'), harvey: (c.harvey?.name||'Harvey'), leo: (c.leonardo?.name||'Leonardo'), rachel: (c.sigmund?.name||'Rachel') },
-        tony:     { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike'), leo: (c.leonardo?.name||'Leonardo') },
-        mike:     { donna: (c.cos?.name||'Donna'), harvey: (c.harvey?.name||'Harvey'), tony: (c.tony?.name||'Tony') },
-        steve:    { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike'), tony: (c.tony?.name||'Tony') },
-        harvey:   { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike') },
-        leonardo: { tony: (c.tony?.name||'Tony'), donna: (c.cos?.name||'Donna') },
-        sigmund:  { donna: (c.cos?.name||'Donna'), mike: (c.mike?.name||'Mike') },
+        cos:      { tony: (c.tony?.name||'Engineering'), mike: (c.mike?.name||'Finance'), steve: (c.steve?.name||'Marketing'), harvey: (c.harvey?.name||'Legal'), leo: (c.leonardo?.name||'Architecture'), rachel: (c.sigmund?.name||'HR') },
+        tony:     { donna: (c.cos?.name||'Chief of Staff'), mike: (c.mike?.name||'Finance'), leo: (c.leonardo?.name||'Architecture') },
+        mike:     { donna: (c.cos?.name||'Chief of Staff'), harvey: (c.harvey?.name||'Legal'), tony: (c.tony?.name||'Engineering') },
+        steve:    { donna: (c.cos?.name||'Chief of Staff'), mike: (c.mike?.name||'Finance'), tony: (c.tony?.name||'Engineering') },
+        harvey:   { donna: (c.cos?.name||'Chief of Staff'), mike: (c.mike?.name||'Finance') },
+        leonardo: { tony: (c.tony?.name||'Engineering'), donna: (c.cos?.name||'Chief of Staff') },
+        sigmund:  { donna: (c.cos?.name||'Chief of Staff'), mike: (c.mike?.name||'Finance') },
     };
     const col = colleagues[staffKey] || {};
 
@@ -3438,7 +3442,7 @@ async function sendChatAgentic() {
 
     if (!hasAssignments || !hasProviderConfigs) {
         logTrace('No assignments or providers — aborting', false);
-        appendMessage(window.staffCustom?.cos?.name || 'Donna', 'Please configure providers and assign models in Customize Team.');
+        appendMessage(window.staffCustom?.cos?.name || 'Chief of Staff', 'Please configure providers and assign models in Customize Team.');
         return;
     }
 
@@ -3455,8 +3459,8 @@ async function sendChatAgentic() {
     btnSend.textContent = 'Routing…';
 
     try {
-        // ── Phase 1: Ask Donna which specialists to consult ──────────────────
-        const cosName = window.staffCustom?.cos?.name || 'Donna';
+        // ── Phase 1: Ask Chief of Staff which specialists to consult ──────────
+        const cosName = window.staffCustom?.cos?.name || 'Chief of Staff';
         const cosAssign = window.staffAssignments?.cos;
         logTrace(`Phase 1 setup: cos=${cosAssign?.provider}/${cosAssign?.model?.split('/').pop()}`, true);
         // Build team roster with role labels so COS knows who does what regardless of name
@@ -3488,11 +3492,11 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
         const consultRegexAgentic = new RegExp('\\[CONSULT:\\s*(' + staffNames.join('|') + ')\\]', 'gi');
         const consultedNames = [...phase1Response.matchAll(consultRegexAgentic)].map(m => m[1]);
 
-        // Animate connections — staggered 800ms apart from the moment Donna decides
+        // Animate connections — staggered 800ms apart from the moment Chief of Staff decides
         consultedNames.forEach((name, i) => animateConnection(name, i * 800));
 
         if (consultedNames.length === 0) {
-            // Donna answered directly — no consultations needed
+            // Chief of Staff answered directly — no consultations needed
             appendMessage(cosName, phase1Response);
             chatHistory.push({ role: 'assistant', content: phase1Response });
             return;
@@ -3523,7 +3527,7 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
             }
         }
 
-        // ── Phase 3: Donna synthesises all specialist input ──────────────────
+        // ── Phase 3: Chief of Staff synthesises all specialist input ─────────
         btnSend.textContent = 'Synthesising…';
         logTrace(`Phase 3: ${cosName} synthesising...`, true);
 
@@ -3551,7 +3555,7 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
             appendStaffBubble(name, resp, false, respObj.usage);
         }
 
-        // ── Donna synthesises last ───────────────────────────────────────────
+        // ── Chief of Staff synthesises last ──────────────────────────────────
         appendStaffBubble(cosName, synthesis, true, phase3Usage);
         chatHistory.push({ role: 'assistant', content: synthesis });
 
@@ -3926,7 +3930,7 @@ async function runDiag() {
     // ── STAFF ASSIGNMENTS & STATUS DOTS ──
     head('STAFF STATUS + POSITIONS');
     const KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
-    const NAMES = { cos:'Donna', tony:'Tony', mike:'Mike', steve:'Steve', harvey:'Harvey', leonardo:'Leonardo', sigmund:'Rachel' };
+    const NAMES = { cos:'Chief of Staff', tony:'Engineering', mike:'Finance & Accounting', steve:'Marketing', harvey:'Legal', leonardo:'Architecture', sigmund:'Human Resources' };
     for (const key of KEYS) {
         const assignment = window.staffAssignments?.[key];
         const dot = document.getElementById('status-dot-' + key);
@@ -3963,19 +3967,18 @@ async function runDiag() {
     // ── SVG NODE POSITIONS ──
     head('SVG NODE CIRCLES');
     const nodeMap = { cos:'soleil', tony:'elon', mike:'isaac', steve:'steve', harvey:'harvey', leonardo:'leonardo', sigmund:'donna' };
+    const ROLE_LABELS = { cos:'Chief of Staff', tony:'Engineering', mike:'Finance & Accounting', steve:'Marketing', harvey:'Legal', leonardo:'Architecture', sigmund:'Human Resources' };
     for (const [key, nodeId] of Object.entries(nodeMap)) {
         const circle = document.querySelector(`#node-${nodeId} circle`);
         const cx = circle?.getAttribute('cx') || 'N/A';
         const cy = circle?.getAttribute('cy') || 'N/A';
         const r  = circle?.getAttribute('r')  || 'N/A';
-        // dot position
         const dot = document.getElementById('status-dot-' + key);
         const dcx = dot?.getAttribute('cx') || 'N/A';
         const dcy = dot?.getAttribute('cy') || 'N/A';
-        // expected dot position = cx + r*cos(45°), cy + r*sin(45°)
         const expected = circle ? (parseFloat(cx) + parseFloat(r) * 0.707).toFixed(1) : 'N/A';
         const match = Math.abs(parseFloat(dcx) - parseFloat(expected)) < 2;
-        log(NAMES[key], 'node(' + cx + ',' + cy + ' r=' + r + ') dot(' + dcx + ',' + dcy + ') expected~(' + expected + ')', match ? null : false);
+        log(ROLE_LABELS[key], 'node(' + cx + ',' + cy + ' r=' + r + ') dot(' + dcx + ',' + dcy + ') expected~(' + expected + ')', match ? null : false);
     }
 
     // ── LIVE PROBE (runs actual HTTP checks) ──
@@ -4114,7 +4117,7 @@ async function obClearSkip() {
 
 function obRender(userName) {
     const name = userName || window._currentUserName || 'there';
-    const cosName = window.staffCustom?.cos?.name || 'Donna';
+    const cosName = window.staffCustom?.cos?.name || 'Chief of Staff';
     const cosImg  = window.staffCustom?.cos?.img  || 'https://cdn.jsdelivr.net/gh/r3dlabs/corestaff-hack-zaiplus@main/donna.png';
     const img = document.getElementById('ob-donna-img');
     if (img) img.src = cosImg;
