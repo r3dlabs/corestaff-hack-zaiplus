@@ -1913,6 +1913,7 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
 
     bubble.appendChild(nameLabel);
     bubble.appendChild(contentEl);
+    addCopyButton(bubble, () => text.replace(/\[DOCUMENT:[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
 
     // ── Metadata footer ──────────────────────────────────────────────────────
     const metaParts = [];
@@ -2359,6 +2360,7 @@ function typewriterBubble(name, text, isSynthesis = false, onDone = null) {
             const contentEl = document.createElement('div');
             contentEl.innerHTML = formatTextToHtml(text);
             rawEl.replaceWith(contentEl);
+            addCopyButton(bubble, () => text);
             chatWindow.scrollTop = chatWindow.scrollHeight;
             if (onDone) onDone();
             return;
@@ -3745,6 +3747,49 @@ async function callStaffModel(staffKey, messages, systemPrompt, maxTokens = 1024
     return { text, usage, label };
 }
 
+// ── Copy button helper — added to every staff bubble ─────────────────────────
+function addCopyButton(bubble, getTextFn) {
+    // Make bubble position:relative so button can sit top-right
+    bubble.style.position = 'relative';
+
+    const btn = document.createElement('button');
+    btn.title = 'Copy';
+    btn.style.cssText = [
+        'position:absolute', 'top:8px', 'right:8px',
+        'width:24px', 'height:24px',
+        'border-radius:5px',
+        'border:1px solid var(--border)',
+        'background:var(--bg-base)',
+        'color:var(--text-muted)',
+        'cursor:pointer',
+        'display:flex', 'align-items:center', 'justify-content:center',
+        'opacity:0', 'transition:opacity 0.15s',
+        'padding:0', 'flex-shrink:0',
+        'z-index:2',
+    ].join(';');
+    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+
+    // Show on bubble hover
+    bubble.addEventListener('mouseenter', () => btn.style.opacity = '1');
+    bubble.addEventListener('mouseleave', () => btn.style.opacity = '0');
+
+    btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        try {
+            await navigator.clipboard.writeText(getTextFn());
+            btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+            btn.style.color = '#22c55e';
+            setTimeout(() => {
+                btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+                btn.style.color = '';
+            }, 1500);
+        } catch(e) { console.warn('Copy failed:', e); }
+    });
+
+    bubble.appendChild(btn);
+    return btn;
+}
+
 // ─── STREAMING SUPPORT ────────────────────────────────────────────────────────
 
 function createStreamingBubble(name, isSynthesis = false) {
@@ -3838,6 +3883,8 @@ function createStreamingBubble(name, isSynthesis = false) {
         const contentEl = document.createElement('div');
         contentEl.innerHTML = formatTextToHtml(fullText.replace(/\[DOCUMENT[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
         rawEl.replaceWith(contentEl);
+        // Add copy button — copies plain text without markdown
+        addCopyButton(bubble, () => fullText.replace(/\[DOCUMENT[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
 
         const staffKey2 = getStaffKeyByName(name);
         const assignment = window.staffAssignments?.[staffKey2];
