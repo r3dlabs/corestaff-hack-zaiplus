@@ -701,7 +701,7 @@
                 <!-- PANE: AI PROVIDERS -->
                 <div id="spane-providers" style="height:100%;overflow-y:auto;padding:20px;box-sizing:border-box;">
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);margin-bottom:14px;">
-                        <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set All</span>
+                        <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set AI Provider for All Staff</span>
                         <select id="set-all-provider" style="flex:1;min-width:110px;max-width:160px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;" onchange="onSetAllProviderChange()"><option value="">— provider —</option></select>
                         <select id="set-all-model" style="flex:2;min-width:140px;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist',sans-serif;outline:none;"><option value="">— model —</option></select>
                         <button onclick="applyToAll()" class="btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;">Apply to All</button>
@@ -3181,10 +3181,15 @@ async function saveStaffAssignments() {
 function populateSetAllDropdown() {
     const provSel = document.getElementById('set-all-provider');
     if (!provSel) return;
-    const configuredProviders = Object.keys(window.providerConfigs || {});
+    // Include providers that are in memory OR have a non-empty API key field in the UI
+    const configuredProviders = new Set(Object.keys(window.providerConfigs || {}));
+    Object.keys(PROVIDER_DEFS).forEach(k => {
+        const keyEl = document.getElementById('papikey-' + k);
+        if (keyEl && keyEl.value.trim()) configuredProviders.add(k);
+    });
     provSel.innerHTML = '<option value="">— provider —</option>' +
         Object.entries(PROVIDER_DEFS)
-            .filter(([k]) => configuredProviders.includes(k))
+            .filter(([k]) => configuredProviders.has(k))
             .map(([k, def]) => `<option value="${k}">${def.label}</option>`)
             .join('');
     document.getElementById('set-all-model').innerHTML = '<option value="">— model —</option>';
