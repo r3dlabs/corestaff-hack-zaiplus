@@ -71,8 +71,8 @@
             to { stroke-dashoffset: -24; }
         }
         @keyframes nodeGlow {
-            0%,100% { filter: drop-shadow(0 0 2px var(--glow-color, rgba(6,182,212,0.3))); transform: scale(1.08); }
-            50%      { filter: drop-shadow(0 0 22px var(--glow-color, rgba(6,182,212,0.9))) drop-shadow(0 0 40px var(--glow-color, rgba(6,182,212,0.4))); transform: scale(1.18); }
+            0%,100% { filter: drop-shadow(0 0 3px var(--glow-color, rgba(6,182,212,0.4))); }
+            50%      { filter: drop-shadow(0 0 20px var(--glow-color, rgba(6,182,212,1))) drop-shadow(0 0 38px var(--glow-color, rgba(6,182,212,0.5))); }
         }
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(8px); }
@@ -139,8 +139,8 @@
         [data-theme="dark"] .connector-line.active-consult  { opacity: 1; filter: drop-shadow(0 0 6px rgba(6,182,212,0.8)); }
         [data-theme="dark"] .connector-line.active-response { opacity: 1; }
 
-        .node-circle { transition: all 0.3s ease; transform-origin: center; transform-box: fill-box; cursor: pointer; }
-        .node-circle.active { animation: nodeGlow 2.2s ease-in-out infinite; }
+        .node-circle { transition: filter 0.3s ease; cursor: pointer; }
+        .node-circle.active { animation: nodeGlow 2.0s ease-in-out infinite; }
 
         /* ── Modal overlay ── */
         .modal-overlay {
@@ -3965,69 +3965,84 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
         logTrace(`Consulting: ${consultedNames.join(', ')}`, true);
         btnSend.textContent = 'Consulting…';
 
-        // ── Phase 2: Call each specialist's own model ────────────────────────
-        const specialistResponses = {};
-        for (const name of consultedNames) {
-            const key = getStaffKeyByName(name);
-            if (!key || key === 'cos') continue;
+         // ── Phase 2: Call each specialist’s own model ────────────────────────────────────
+         const specialistResponses = {};
+         const consultedKeys = []; // track for cleanup after synthesis
 
-            const staffSystem = buildStaffSystemPrompt(key);
-            const staffMessages = [{ role: 'user', content: userText }];
+         for (const name of consultedNames) {
+             const key = getStaffKeyByName(name);
+             if (!key || key === 'cos') continue;
+             consultedKeys.push(key);
 
-            try {
-                setDotActive(key);
-                const { text: response, usage: specUsage } = await callStaffModel(key, staffMessages, staffSystem, 1024);
-                specialistResponses[name] = { text: response, usage: specUsage };
-                animateConnectionResponse(key);   // switch line to staff color on response
-                setDotReady(key);
-                logTrace(`✓ ${name} responded. Tokens: ${specUsage?.total || '?'}`, false);
-                clearConnectionAnimation(key, 3500); // hold staff color 3.5s then fade
-            } catch(e) {
-                setDotGray(key);
-                specialistResponses[name] = { text: `[${name} unavailable: ${e.message}]`, usage: null };
-                clearConnectionAnimation(key, 0);
-                logTrace(`✗ ${name} error: ${e.message}`, false);
-            }
-        }
+             const staffSystem = buildStaffSystemPrompt(key);
+             const staffMessages = [{ role: 'user', content: userText }];
 
-        // ── Phase 3: Chief of Staff synthesises all specialist input ─────────
-        btnSend.textContent = 'Synthesising…';
-        logTrace(`Phase 3: ${cosName} synthesising...`, true);
+             try {
+                 setDotActive(key);
+                 const { text: response, usage: specUsage } = await callStaffModel(key, staffMessages, staffSystem, 1024);
+                 specialistResponses[name] = { text: response, usage: specUsage };
+                 animateConnectionResponse(key); // switch line to staff color — stays on through synthesis
+                 setDotReady(key);
+                 logTrace(`✓ ${name} responded. Tokens: ${specUsage?.total || '?'}`, false);
+             } catch(e) {
+                 setDotGray(key);
+                 specialistResponses[name] = { text: `[${name} unavailable: ${e.message}]`, usage: null };
+                 logTrace(`✗ ${name} error: ${e.message}`, false);
+             }
+         }
 
-        const specialistSummary = Object.entries(specialistResponses)
-            .map(([name, resp]) => `${name}:\n${resp?.text || resp}`)
-            .join('\n\n');
+         // ── Phase 3: Chief of Staff synthesises all specialist input ─────────────────
+         btnSend.textContent = 'Synthesising…';
+         logTrace(`Phase 3: ${cosName} synthesising...`, true);
 
-        const phase3Messages = [
-            ...chatHistory.slice(0, -1), // exclude last user message
-            { role: 'user', content: userText },
-            { role: 'assistant', content: `I consulted the team. Here are their inputs:\n\n${specialistSummary}` },
-            { role: 'user', content: `Based on the team's input above, provide a clear, unified strategic recommendation.` }
-        ];
+         // COS node glows; all consulted staff lines keep animating in their staff colors
+         const cosNode = document.getElementById('visual-soleil');
+         if (cosNode) { cosNode.classList.add('active'); logAnim('visual-soleil glow ON (synthesising)'); }
+         setDotActive('cos');
 
-        const phase3System = buildStaffSystemPrompt('cos');
-        setDotActive('cos');
-        const cosNode = document.getElementById('visual-soleil');
-        if (cosNode) { cosNode.classList.add('active'); logAnim('▶ visual-soleil → glow ON (COS synthesising)'); }
-        else logAnim('⚠ visual-soleil not found — COS synthesis glow skipped');
-        const { text: synthesis, usage: phase3Usage } = await callStaffModel('cos', phase3Messages, phase3System, 2048);
-        setDotReady('cos');
-        if (cosNode) { cosNode.classList.remove('active'); logAnim('■ visual-soleil → glow OFF (synthesis done)'); }
-        logTrace(`Phase 3 tokens: ${phase3Usage?.total || '?'}`, false);
+         const specialistSummary = Object.entries(specialistResponses)
+             .map(([name, resp]) => `${name}:\n${resp?.text || resp}`)
+             .join('\n\n');
 
-        // ── Render each specialist as their own bubble ───────────────────────
-        for (const [name, respObj] of Object.entries(specialistResponses)) {
-            const resp = respObj.text || respObj;
-            if (typeof resp === 'string' && resp.startsWith('[') && resp.includes('unavailable')) continue;
-            const sKey = getStaffKeyByName(name);
-            const sUrls = window.staffKb?.[sKey]?.urls || null;
-            appendStaffBubble(name, resp, false, respObj.usage, sUrls);
-        }
+         const phase3Messages = [
+             ...chatHistory.slice(0, -1),
+             { role: 'user', content: userText },
+             { role: 'assistant', content: `I consulted the team. Here are their inputs:\n\n${specialistSummary}` },
+             { role: 'user', content: `Based on the team's input above, provide a clear, unified strategic recommendation.` }
+         ];
 
-        // ── Chief of Staff synthesises last ──────────────────────────────────
-        const cosUrls = window.staffKb?.['cos']?.urls || null;
-        appendStaffBubble(cosName, synthesis, true, phase3Usage, cosUrls);
-        chatHistory.push({ role: 'assistant', content: synthesis });
+         const phase3System = buildStaffSystemPrompt('cos');
+         const { text: synthesis, usage: phase3Usage } = await callStaffModel('cos', phase3Messages, phase3System, 2048);
+         logTrace(`Phase 3 tokens: ${phase3Usage?.total || '?'}`, false);
+
+         // ── Render each specialist as their own bubble ───────────────────────
+         for (const [name, respObj] of Object.entries(specialistResponses)) {
+             const resp = respObj.text || respObj;
+             if (typeof resp === 'string' && resp.startsWith('[') && resp.includes('unavailable')) continue;
+             const sKey = getStaffKeyByName(name);
+             const sUrls = window.staffKb?.[sKey]?.urls || null;
+             appendStaffBubble(name, resp, false, respObj.usage, sUrls);
+         }
+
+         // ── Chief of Staff synthesis bubble — rendered last ──────────────────────────
+         const cosUrls = window.staffKb?.['cos']?.urls || null;
+         appendStaffBubble(cosName, synthesis, true, phase3Usage, cosUrls);
+         chatHistory.push({ role: 'assistant', content: synthesis });
+
+         // ── NOW clear all animations — synthesis is on screen ─────────────────────────
+         if (cosNode) cosNode.classList.remove('active');
+         setDotReady('cos');
+         const keyToNode = { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna' };
+         consultedKeys.forEach(key => {
+             const nodeName = keyToNode[key] || key;
+             const line = document.getElementById('line-' + nodeName);
+             const node = document.getElementById('visual-' + nodeName);
+             if (line) line.classList.remove('active-consult', 'active-response', 'staff-' + key);
+             if (node) node.classList.remove('active');
+             const hasCfg = window.staffAssignments?.[key]?.provider && window.staffAssignments?.[key]?.model;
+             hasCfg ? setDotReady(key) : setDotGray(key);
+         });
+         logAnim('all animations cleared — synthesis complete');
 
         if (docReq.type) {
             const extracted = extractDocBlock(synthesis);
