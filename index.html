@@ -678,21 +678,21 @@
             </div>
 
             <!-- Scrollable body -->
-            <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:12px;">
+            <div style="flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;">
 
                 <!-- ── SECTION 1: AI PROVIDERS ─────────────────────────────── -->
                 <div id="settings-section-providers" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
                     <!-- Section header -->
-                    <div id="settings-hdr-providers" onclick="toggleSettingsSection('providers')" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--bg-elevated);user-select:none;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <div id="settings-hdr-providers" onclick="toggleSettingsSection('providers')" style="display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;background:var(--bg-elevated);border-bottom:1px solid var(--border);user-select:none;transition:background 0.15s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                         <div style="flex:1;min-width:0;">
-                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">AI Providers</div>
+                            <div style="font-size:12px;font-weight:700;color:var(--text-primary);letter-spacing:0.01em;">AI Providers</div>
                             <div id="settings-summary-providers" style="font-size:11px;color:var(--text-muted);margin-top:1px;font-family:'Geist Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
                         </div>
                         <svg id="settings-chevron-providers" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
                     <!-- Body -->
-                    <div id="settings-body-providers" style="padding:16px 18px;display:flex;flex-direction:column;gap:12px;">
+                    <div id="settings-body-providers" style="padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg-base);">
                         <!-- Set All toolbar -->
                         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;background:var(--bg-elevated);border-radius:8px;border:1px solid var(--border);">
                             <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;white-space:nowrap;">Set All</span>
@@ -807,15 +807,15 @@
 
                 <!-- ── SECTION 2: STARTUP & BUSINESS ───────────────────────── -->
                 <div id="settings-section-startup" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-                    <div id="settings-hdr-startup" onclick="toggleSettingsSection('startup')" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--bg-elevated);user-select:none;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                    <div id="settings-hdr-startup" onclick="toggleSettingsSection('startup')" style="display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;background:var(--bg-elevated);border-bottom:1px solid var(--border);user-select:none;transition:background 0.15s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
                         <div style="flex:1;min-width:0;">
-                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Startup &amp; Business</div>
+                            <div style="font-size:12px;font-weight:700;color:var(--text-primary);letter-spacing:0.01em;">Startup &amp; Business</div>
                             <div id="settings-summary-startup" style="font-size:11px;color:var(--text-muted);margin-top:1px;font-family:'Geist Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
                         </div>
                         <svg id="settings-chevron-startup" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
                     </div>
-                    <div id="settings-body-startup" style="padding:16px 18px;">
+                    <div id="settings-body-startup" style="padding:16px;background:var(--bg-base);">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                             <div>
                                 <div class="staff-section-label">Your Preferred Name</div>
@@ -839,10 +839,10 @@
 
                 <!-- ── SECTION 3: TEAM CONFIGURATION ───────────────────────── -->
                 <div id="settings-section-team" style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-                    <div id="settings-hdr-team" onclick="toggleSettingsSection('team')" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--bg-elevated);user-select:none;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <div id="settings-hdr-team" onclick="toggleSettingsSection('team')" style="display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;background:var(--bg-elevated);border-bottom:1px solid var(--border);user-select:none;transition:background 0.15s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='var(--bg-elevated)'">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted);flex-shrink:0;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         <div style="flex:1;min-width:0;">
-                            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Team Configuration</div>
+                            <div style="font-size:12px;font-weight:700;color:var(--text-primary);letter-spacing:0.01em;">Team Configuration</div>
                             <div id="settings-summary-team" style="font-size:11px;color:var(--text-muted);margin-top:1px;font-family:'Geist Mono',monospace;"></div>
                         </div>
                         <div style="display:flex;align-items:center;gap:8px;">
@@ -852,7 +852,7 @@
                             <svg id="settings-chevron-team" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
                         </div>
                     </div>
-                    <div id="settings-body-team" style="padding:16px 18px;">
+                    <div id="settings-body-team" style="padding:16px;background:var(--bg-base);">
                         <div id="customize-cards-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;"></div>
                     </div>
                 </div>
@@ -3787,11 +3787,12 @@ function closeSettingsModal() {
 function toggleSettingsSection(section) {
     const body    = document.getElementById('settings-body-' + section);
     const chevron = document.getElementById('settings-chevron-' + section);
+    const header  = document.getElementById('settings-hdr-' + section);
     if (!body) return;
     const isOpen = body.style.display !== 'none';
-    body.style.display      = isOpen ? 'none' : (section === 'team' ? 'block' : 'flex');
-    if (section !== 'team') body.style.flexDirection = 'column';
+    body.style.display      = isOpen ? 'none' : 'block';
     chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    if (header) header.style.borderBottom = isOpen ? 'none' : '1px solid var(--border)';
 }
 
 function updateSettingsSummaries() {
@@ -3825,28 +3826,22 @@ function updateSettingsSummaries() {
     }
 }
 
-// Auto-collapse configured sections on open, expand empty ones
 function autoCollapseSettingSections() {
     const configured = Object.keys(window.providerConfigs || {});
     const hasStartup  = founderName || businessName || startupDesc || hqCountry;
-    const hasTeam     = Object.values(window.staffAssignments || {}).some(a => a.provider);
 
-    // Providers: collapse if configured, expand if not
-    const pbody = document.getElementById('settings-body-providers');
-    const pchev = document.getElementById('settings-chevron-providers');
-    if (pbody && pchev) {
-        pbody.style.display    = configured.length ? 'none' : 'flex';
-        pbody.style.flexDirection = 'column';
-        pchev.style.transform  = configured.length ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
-    // Startup: collapse if configured
-    const sbody = document.getElementById('settings-body-startup');
-    const schev = document.getElementById('settings-chevron-startup');
-    if (sbody && schev) {
-        sbody.style.display   = hasStartup ? 'none' : 'block';
-        schev.style.transform = hasStartup ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
-    // Team: always starts open
+    const setSection = (section, open) => {
+        const body    = document.getElementById('settings-body-' + section);
+        const chevron = document.getElementById('settings-chevron-' + section);
+        const header  = document.getElementById('settings-hdr-' + section);
+        if (body)    body.style.display      = open ? 'block' : 'none';
+        if (chevron) chevron.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+        if (header)  header.style.borderBottom = open ? '1px solid var(--border)' : 'none';
+    };
+
+    setSection('providers', configured.length === 0);
+    setSection('startup',   !hasStartup);
+    setSection('team',      true); // team always starts open
 }
 
 // Wire up buttons
