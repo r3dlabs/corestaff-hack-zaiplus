@@ -1403,7 +1403,6 @@ const traceWindow   = document.getElementById('trace-window');
 const startupModal  = document.getElementById('startup-modal');
 const inputFounderName   = document.getElementById('input-founder-name');
 const inputStartupDesc   = document.getElementById('input-startup-desc');
-const btnLaunchBoardroom = document.getElementById('btn-launch-boardroom');
 
 // ─── THEME ──────────────────────────────────────────────────────────────────
 const html = document.documentElement;
@@ -2214,8 +2213,7 @@ window.onload = async () => {
         // Supabase failed to load — go straight to app
         console.warn('Running without Supabase auth');
         hideAuthModal();
-        if (!founderName || !startupDesc) {
-            initializeBoardroom();
+        initializeBoardroom();
         return;
     }
 
