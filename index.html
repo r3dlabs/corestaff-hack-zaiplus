@@ -3454,7 +3454,7 @@ function renderCustomizeCards() {
 
         // Status chip
         const assigned = window.staffAssignments?.[key];
-        const statusDot = assigned?.provider && assigned?.model_id
+        const statusDot = assigned?.provider && assigned?.model
             ? `<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px;"></span><span style="font-size:9px;color:#22c55e;font-family:'Geist Mono',monospace;">configured</span>`
             : `<span style="width:6px;height:6px;border-radius:50%;background:#6b7280;display:inline-block;margin-right:4px;"></span><span style="font-size:9px;color:var(--text-muted);font-family:'Geist Mono',monospace;">not set</span>`;
 
@@ -4506,7 +4506,7 @@ function updateSettingsSummaries() {
     const teamBadge = document.getElementById('stab-badge-team');
     if (teamBadge) {
         const total    = Object.keys(STAFF_DEFAULTS).length;
-        const assigned = Object.values(window.staffAssignments || {}).filter(a => a.provider && a.model_id).length;
+        const assigned = Object.values(window.staffAssignments || {}).filter(a => a.provider && a.model).length;
         teamBadge.textContent = assigned + '/' + total;
         teamBadge.style.color = assigned === total ? '#22c55e' : 'var(--text-muted)';
         teamBadge.style.borderColor = assigned === total ? 'rgba(34,197,94,0.3)' : 'var(--border)';
