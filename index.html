@@ -4045,6 +4045,26 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
         ? `\n\n[FOCUS AREAS — defined by the founder]\n${window.staffRoles[staffKey]}\n[END FOCUS AREAS]`
         : '';
 
+    // Random warm opener — cycles through a library so staff don't all sound the same
+    const OPENERS = [
+        "Here's my honest take —",
+        "Okay, thinking through this —",
+        "A few things jump out at me straightaway.",
+        "Alright, here's where my head goes on this.",
+        "This is interesting. Let me think out loud for a second.",
+        "My instinct here is —",
+        "I've been thinking about this and —",
+        "Cutting straight to it —",
+        "Worth flagging a few things from my angle.",
+        "Based on what I've seen, here's where I land.",
+        "I'll give you the unfiltered version.",
+        "A couple of things stand out to me on this.",
+        "Right, so —",
+        "This touches my world in a few ways.",
+        "Let me be straight with you on this.",
+    ];
+    const opener = OPENERS[Math.floor(Math.random() * OPENERS.length)];
+
     return `${rd.system}
 
 IDENTITY RULES — follow these absolutely:
@@ -4059,6 +4079,7 @@ GROUND RULES:
 - No markdown tables. Keep formatting clean and light.
 - Be concise — this is a conversation, not a report. Elaborate only when depth is needed.
 - Sound like a person, not a department.
+- Start your response with this exact opener (then continue naturally in your own voice): "${opener}"
 ${founderCtx}${rolesCtx}${buildMemoryBlock()}`;
 }
 
