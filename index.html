@@ -1641,9 +1641,53 @@ function detectDocRequest(text) {
 
 function getDocSystemAddition(docType, topic) {
     const additions = {
-        docx: `\nIMPORTANT: Output a section formatted EXACTLY like this:\n[DOCUMENT: DOCX]\nTITLE: <Title>\nSECTION: <Heading>\n<Body. Use "- " for bullets.>\n[END DOCUMENT]\nTopic: "${topic}". Include 4-6 sections.`,
-        xlsx: `\nIMPORTANT: Output a section formatted EXACTLY like this:\n[DOCUMENT: XLSX]\nTITLE: <Title>\nSHEET: <Sheet>\nHEADERS: Col1 | Col2 | Col3\nROW: v1 | v2 | v3\n[END DOCUMENT]\nTopic: "${topic}". 8-12 data rows.`,
-        html: `\nIMPORTANT: Output the complete HTML:\n[DOCUMENT: HTML]\n<!DOCTYPE html>...</html>\n[END DOCUMENT]\nTopic: "${topic}". Self-contained, professional, dark-mode.`
+        docx: `
+
+MANDATORY FILE OUTPUT — you MUST produce this or the task fails:
+Your response MUST contain a document block in this EXACT format. Do not describe it. Do not say you will produce it. OUTPUT IT NOW as part of your response:
+
+[DOCUMENT: DOCX]
+TITLE: ${topic}
+SECTION: Introduction
+Write the introduction here.
+SECTION: Key Points
+- Point one
+- Point two
+SECTION: Next Steps
+Write next steps here.
+[END DOCUMENT]
+
+Include 4-6 sections. Write real, substantive content. The block will be automatically converted to a .docx file.`,
+
+        xlsx: `
+
+MANDATORY FILE OUTPUT — you MUST produce this or the task fails:
+Your response MUST contain a spreadsheet block in this EXACT format. Do not describe it. OUTPUT IT NOW:
+
+[DOCUMENT: XLSX]
+TITLE: ${topic}
+SHEET: Data
+HEADERS: Column A | Column B | Column C
+ROW: value1 | value2 | value3
+ROW: value4 | value5 | value6
+[END DOCUMENT]
+
+Include 8-12 data rows. Use real values. The block will be automatically converted to a .xlsx file.`,
+
+        html: `
+
+MANDATORY FILE OUTPUT — you MUST produce this or the task fails:
+Your response MUST contain a complete HTML file in this EXACT format. Do not describe it. Do not say you will produce it. OUTPUT THE FULL HTML NOW:
+
+[DOCUMENT: HTML]
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>${topic}</title><style>/* your styles */</style></head>
+<body><!-- your full page content --></body>
+</html>
+[END DOCUMENT]
+
+Write a complete, self-contained, professional HTML page. Dark background preferred. Include real copy, real sections, real CTAs. The block will be automatically rendered and made available for download.`
     };
     return additions[docType] || '';
 }
@@ -4365,6 +4409,46 @@ async function sendChatAgentic() {
     const handoffBlock = await checkModelHandoff();
 
     btnSend.disabled = true;
+
+    // ── FAST PATH: doc requests skip routing and go directly to the right staff ──
+    if (docReq.type) {
+        btnSend.textContent = 'Generating…';
+        // Route by doc type: html→marketing, xlsx→finance, docx→cos
+        const docStaffMap = { html: 'marketing', xlsx: 'finance', docx: 'cos' };
+        const docStaffKey = docStaffMap[docReq.type] || 'cos';
+        const docStaffName = window.staffCustom?.[docStaffKey]?.name || STAFF_DEFAULTS[docStaffKey]?.name;
+        const docSystem = buildStaffSystemPrompt(docStaffKey);
+        const docHint = getDocSystemAddition(docReq.type, docReq.topic);
+        const docMessages = [{
+            role: 'user',
+            content: `${userText}
+
+${docHint}`
+        }];
+        logTrace(`Doc fast path: ${docReq.type} → ${docStaffName}`, true);
+        const docNodeEl = document.getElementById('visual-' + { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' }[docStaffKey]);
+        if (docNodeEl) docNodeEl.classList.add('active');
+        try {
+            const { text: docResponse } = await streamStaffModel(docStaffKey, docMessages, docSystem, 4096, docStaffName, false);
+            chatHistory.push({ role: 'assistant', content: docResponse });
+            const extracted = extractDocBlock(docResponse);
+            if (extracted) {
+                injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock);
+            } else {
+                // Model didn't produce the block — show error and let user retry
+                logTrace('⚠ Model did not output document block — retrying may help', false);
+            }
+        } catch(e) {
+            logTrace('Doc generation error: ' + e.message, false);
+            appendMessage(docStaffName, 'Something went wrong generating the file: ' + e.message);
+        } finally {
+            btnSend.disabled = false;
+            btnSend.textContent = 'Execute';
+            if (docNodeEl) docNodeEl.classList.remove('active');
+        }
+        return;
+    }
+
     btnSend.textContent = 'Routing…';
 
     // ── Immediately animate COS — don't wait for Phase 1 to return ──
