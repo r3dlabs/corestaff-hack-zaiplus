@@ -262,6 +262,10 @@
     color: var(--text-muted); margin-bottom: 2px;
   }
   .staff-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; margin: 0; }
+  .staff-section-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); font-family: 'Geist Mono', monospace; margin-bottom: 5px;
+  }
 
   /* ── Flow steps ── */
   .flow { display: flex; flex-direction: column; gap: 0; margin: 20px 0; }
@@ -438,6 +442,7 @@
   <div class="nav-section">About</div>
   <a class="nav-item active" href="#what-is">What is Startup Staff?</a>
   <a class="nav-item" href="#the-team">The Core Team</a>
+  <a class="nav-item" href="#roles">Roles &amp; Responsibilities</a>
   <a class="nav-item" href="#how-it-works">How It Works</a>
 
   <div class="nav-section">Getting Started</div>
@@ -498,7 +503,7 @@
             <div class="staff-card-role">Orchestrator · cos</div>
           </div>
         </div>
-        <div class="staff-card-desc">Routes every query, decides which specialists to consult, and synthesises the final recommendation. Makes two API calls per query — Phase 1 (routing) and Phase 3 (synthesis).</div>
+        <div class="staff-card-desc"><strong style="color:var(--text-primary);">Orchestration.</strong> The connective tissue of the boardroom — triages every query, routes it to the right specialists, synthesises their input into a single coherent recommendation, and closes with a clear "who does what by when."</div>
       </div>
 
       <div class="staff-card theme-engineering">
@@ -509,7 +514,7 @@
             <div class="staff-card-role">Engineering · engineering</div>
           </div>
         </div>
-        <div class="staff-card-desc">First-principles thinker. Technical feasibility, deployment strategy, build vs. buy decisions. Works hand-in-hand with the Architecture Lead.</div>
+        <div class="staff-card-desc"><strong style="color:var(--text-primary);">Delivery.</strong> Translates product vision into technical reality. Owns feasibility assessments, build vs. buy decisions, honest timeline estimates, and the balance between shipping speed and maintainability.</div>
       </div>
 
       <div class="staff-card theme-finance">
@@ -520,7 +525,7 @@
             <div class="staff-card-role">Finance · finance</div>
           </div>
         </div>
-        <div class="staff-card-desc">Burn-rate focused. Financial modelling, ROI analysis, unit economics, fundraising strategy.</div>
+        <div class="staff-card-desc"><strong style="color:var(--text-primary);">Capital.</strong> Keeps the company alive. Tracks burn rate and runway, models unit economics, manages day-to-day accounting hygiene, and builds financial models for fundraising.</div>
       </div>
 
       <div class="staff-card theme-marketing">
@@ -531,7 +536,7 @@
             <div class="staff-card-role">Marketing · marketing</div>
           </div>
         </div>
-        <div class="staff-card-desc">Narrative and growth. GTM strategy, brand positioning, customer acquisition, channel strategy.</div>
+        <div class="staff-card-desc"><strong style="color:var(--text-primary);">Growth.</strong> Shapes how the market sees the company. Defines the value proposition, orchestrates GTM strategy, allocates spend across acquisition channels, handles advertising, and tracks competitors.</div>
       </div>
 
       <div class="staff-card theme-legal">
@@ -542,7 +547,7 @@
             <div class="staff-card-role">Legal · legal</div>
           </div>
         </div>
-        <div class="staff-card-desc">Precise, risk-averse. Contracts, IP, regulatory compliance. Defaults to your HQ jurisdiction. Knows when to escalate to a real lawyer.</div>
+        <div class="staff-card-desc"><strong style="color:var(--text-primary);">Risk.</strong> Protects the company from exposure it doesn't know it has. Drafts and reviews contracts, advises on structure and equity, guards IP, and ensures PDPA, GDPR, and CCPA compliance.</div>
       </div>
 
       <div class="staff-card theme-architecture">
@@ -553,7 +558,7 @@
             <div class="staff-card-role">Architecture · architecture</div>
           </div>
         </div>
-        <div class="staff-card-desc">Systems design, infrastructure planning, long-term platform thinking. Pairs tightly with the Engineering Lead.</div>
+        <div class="staff-card-desc"><strong style="color:var(--text-primary);">Foundation.</strong> Thinks in systems, not sprints. Designs scalable architecture, makes high-stakes infrastructure choices, defines API contracts, and shapes platform strategy for the long term.</div>
       </div>
 
       <div class="staff-card theme-hr">
@@ -564,7 +569,135 @@
             <div class="staff-card-role">HR · hr</div>
           </div>
         </div>
-        <div class="staff-card-desc">Empathetic, culture-driven. Hiring strategy, team structure, compensation, people operations, culture building.</div>
+        <div class="staff-card-desc"><strong style="color:var(--text-primary);">People.</strong> Champions the humans behind the business. Sources talent, structures competitive compensation, manages performance frameworks, and catches culture risk — burnout, misalignment, toxicity — before it spreads.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="roles">
+    <span class="section-tag">About</span>
+    <h2>Roles &amp; Responsibilities</h2>
+    <p>Each staff member has a primary mandate — a single word that captures their domain — and a set of core responsibilities that define how they respond. These are injected into every AI prompt as system instructions.</p>
+
+    <h3>At a glance</h3>
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead><tr><th>Role</th><th>Mandate</th><th>Core Responsibilities</th></tr></thead>
+        <tbody>
+          <tr><td>Chief of Staff</td><td>Orchestration</td><td>Triage, meeting synthesis, challenging founder bias, and locking in next steps.</td></tr>
+          <tr><td>Engineering Lead</td><td>Delivery</td><td>Technical feasibility, build vs. buy decisions, managing tech debt, and defining realistic timelines.</td></tr>
+          <tr><td>Finance &amp; Accounting Lead</td><td>Capital</td><td>Tracking burn rate, modeling unit economics, managing day-to-day accounting, and prepping for fundraising.</td></tr>
+          <tr><td>Marketing Lead</td><td>Growth</td><td>Defining value propositions, executing GTM strategies, optimizing ad spend, and analyzing competitors.</td></tr>
+          <tr><td>Legal Lead</td><td>Risk</td><td>Drafting contracts, advising on corporate structure, protecting IP, and ensuring PDPA/GDPR/CCPA compliance.</td></tr>
+          <tr><td>Architecture Lead</td><td>Foundation</td><td>Designing scalable systems, selecting infrastructure, defining API contracts, and shaping platform strategy.</td></tr>
+          <tr><td>Human Resource Lead</td><td>People</td><td>Sourcing talent, structuring compensation, managing performance, and mitigating cultural risk.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Detailed responsibilities</h3>
+
+    <div style="display:flex;flex-direction:column;gap:20px;margin-top:16px;">
+
+      <!-- CoS -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 16px;background:rgba(var(--rgb-cos),var(--card-tint-alpha));border-bottom:1px solid rgba(var(--rgb-cos),var(--card-border-alpha));display:flex;align-items:center;gap:10px;">
+          <img src="/cos.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--color-cos);" onerror="this.style.display='none'">
+          <div><span style="font-size:13px;font-weight:700;color:var(--color-cos);">Chief of Staff</span><span style="font-size:10px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-left:10px;">Orchestration</span></div>
+        </div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div class="staff-section-label">Orchestration &amp; Routing</div><p style="font-size:12px;margin:0;">Acts as the central nervous system of the company. Intercepts incoming requests, filters out noise, and routes critical issues to the right leaders to protect the founder's time.</p></div>
+          <div><div class="staff-section-label">Synthesis</div><p style="font-size:12px;margin:0;">Distills lengthy email threads, complex meetings, and disparate data points into actionable insights and executive summaries.</p></div>
+          <div><div class="staff-section-label">Challenging Assumptions</div><p style="font-size:12px;margin:0;">Serves as an objective, trusted counterweight to founder bias. Stress-tests ideas, asks the hard questions, and ensures the team isn't operating in an echo chamber.</p></div>
+          <div><div class="staff-section-label">Closing &amp; Next Steps</div><p style="font-size:12px;margin:0;">Owns the execution follow-through. Ensures every strategic decision translates into a documented "who is doing what by when" and ruthlessly tracks it to completion.</p></div>
+        </div>
+      </div>
+
+      <!-- Engineering -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 16px;background:rgba(var(--rgb-engineering),var(--card-tint-alpha));border-bottom:1px solid rgba(var(--rgb-engineering),var(--card-border-alpha));display:flex;align-items:center;gap:10px;">
+          <img src="/engineering.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--color-engineering);" onerror="this.style.display='none'">
+          <div><span style="font-size:13px;font-weight:700;color:var(--color-engineering);">Engineering Lead</span><span style="font-size:10px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-left:10px;">Delivery</span></div>
+        </div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div class="staff-section-label">Feasibility &amp; Timelines</div><p style="font-size:12px;margin:0;">Translates product vision into technical reality. Pushes back on impossible features and provides honest, padded timelines that account for testing and unknown variables.</p></div>
+          <div><div class="staff-section-label">Build vs. Buy</div><p style="font-size:12px;margin:0;">Pragmatically decides when to write custom code versus leveraging existing third-party tools to accelerate time-to-market.</p></div>
+          <div><div class="staff-section-label">Tech Debt Management</div><p style="font-size:12px;margin:0;">Balances the need for speed with code maintainability. Intentionally decides when to take on technical debt and when to pause to pay it down.</p></div>
+          <div><div class="staff-section-label">Security &amp; Operations</div><p style="font-size:12px;margin:0;">Establishes baseline security protocols to protect company assets and user data without crippling developer velocity.</p></div>
+        </div>
+      </div>
+
+      <!-- Finance -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 16px;background:rgba(var(--rgb-finance),var(--card-tint-alpha));border-bottom:1px solid rgba(var(--rgb-finance),var(--card-border-alpha));display:flex;align-items:center;gap:10px;">
+          <img src="/finance-accounting.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--color-finance);" onerror="this.style.display='none'">
+          <div><span style="font-size:13px;font-weight:700;color:var(--color-finance);">Finance &amp; Accounting Lead</span><span style="font-size:10px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-left:10px;">Capital</span></div>
+        </div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div class="staff-section-label">Unit Economics &amp; ROI</div><p style="font-size:12px;margin:0;">Obsessively models CAC against LTV to ensure the business model is actually sustainable as it scales.</p></div>
+          <div><div class="staff-section-label">Burn Rate Management</div><p style="font-size:12px;margin:0;">Monitors runway and cash flow. Acts as the financial brakes when necessary, providing early warnings for potential cash crunches.</p></div>
+          <div><div class="staff-section-label">Fundraising Prep</div><p style="font-size:12px;margin:0;">Builds the financial models, cap table scenarios, and historical data rooms required for investor due diligence.</p></div>
+          <div><div class="staff-section-label">Accounting Guidance</div><p style="font-size:12px;margin:0;">Ensures clean bookkeeping, tax compliance, and proper categorization of expenses to avoid costly audits down the line.</p></div>
+        </div>
+      </div>
+
+      <!-- Marketing -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 16px;background:rgba(var(--rgb-marketing),var(--card-tint-alpha));border-bottom:1px solid rgba(var(--rgb-marketing),var(--card-border-alpha));display:flex;align-items:center;gap:10px;">
+          <img src="/marketing.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--color-marketing);" onerror="this.style.display='none'">
+          <div><span style="font-size:13px;font-weight:700;color:var(--color-marketing);">Marketing Lead</span><span style="font-size:10px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-left:10px;">Growth</span></div>
+        </div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div class="staff-section-label">Value Proposition &amp; Positioning</div><p style="font-size:12px;margin:0;">Sharpens the company's messaging so it cuts through the noise, stands out against competitors, and deeply resonates with the target audience.</p></div>
+          <div><div class="staff-section-label">GTM Strategy</div><p style="font-size:12px;margin:0;">Orchestrates product launches and coordinates cross-functional efforts to ensure new features actually reach and activate users.</p></div>
+          <div><div class="staff-section-label">Acquisition Channels</div><p style="font-size:12px;margin:0;">Tests, measures, and scales marketing channels (organic, paid, partnerships) to find the most efficient paths to growth.</p></div>
+          <div><div class="staff-section-label">Spend Efficiency</div><p style="font-size:12px;margin:0;">Rigorously tracks conversion rates and customer acquisition costs to ensure every advertising dollar yields a positive return.</p></div>
+        </div>
+      </div>
+
+      <!-- Legal -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 16px;background:rgba(var(--rgb-legal),var(--card-tint-alpha));border-bottom:1px solid rgba(var(--rgb-legal),var(--card-border-alpha));display:flex;align-items:center;gap:10px;">
+          <img src="/legal.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--color-legal);" onerror="this.style.display='none'">
+          <div><span style="font-size:13px;font-weight:700;color:var(--color-legal);">Legal Lead</span><span style="font-size:10px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-left:10px;">Risk</span></div>
+        </div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div class="staff-section-label">Contracts &amp; IP</div><p style="font-size:12px;margin:0;">Protects the company's core assets through ironclad IP assignments, NDAs, terms of service, and vendor agreements.</p></div>
+          <div><div class="staff-section-label">Corporate Structure</div><p style="font-size:12px;margin:0;">Advises on entity formation, subsidiary structures, board governance, and the mechanics of equity distribution.</p></div>
+          <div><div class="staff-section-label">Compliance &amp; Privacy</div><p style="font-size:12px;margin:0;">Navigates PDPA, GDPR, and CCPA — ensuring product architecture and data handling are compliant by design.</p></div>
+          <div><div class="staff-section-label">Employment Law</div><p style="font-size:12px;margin:0;">Standardizes offer letters, contractor agreements, and termination procedures to minimize liability and ensure fair practices.</p></div>
+        </div>
+      </div>
+
+      <!-- Architecture -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 16px;background:rgba(var(--rgb-architecture),var(--card-tint-alpha));border-bottom:1px solid rgba(var(--rgb-architecture),var(--card-border-alpha));display:flex;align-items:center;gap:10px;">
+          <img src="/architecture.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--color-architecture);" onerror="this.style.display='none'">
+          <div><span style="font-size:13px;font-weight:700;color:var(--color-architecture);">Architecture Lead</span><span style="font-size:10px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-left:10px;">Foundation</span></div>
+        </div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div class="staff-section-label">Systems Design &amp; Scalability</div><p style="font-size:12px;margin:0;">Blueprints the technical stack, ensuring it can handle current loads while providing a clear, cost-effective path to scale as user adoption grows.</p></div>
+          <div><div class="staff-section-label">Infrastructure Choices</div><p style="font-size:12px;margin:0;">Makes high-stakes decisions on cloud architecture, database paradigms, and deployment pipelines that the company will live with for years.</p></div>
+          <div><div class="staff-section-label">API Contracts</div><p style="font-size:12px;margin:0;">Defines robust interfaces between microservices or frontend/backend teams to prevent integration bottlenecks and allow independent deployment.</p></div>
+          <div><div class="staff-section-label">Platform Strategy</div><p style="font-size:12px;margin:0;">Looks over the horizon to anticipate future technical requirements, ensuring today's architecture won't block tomorrow's product roadmap.</p></div>
+        </div>
+      </div>
+
+      <!-- HR -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 16px;background:rgba(var(--rgb-hr),var(--card-tint-alpha));border-bottom:1px solid rgba(var(--rgb-hr),var(--card-border-alpha));display:flex;align-items:center;gap:10px;">
+          <img src="/hr.png" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--color-hr);" onerror="this.style.display='none'">
+          <div><span style="font-size:13px;font-weight:700;color:var(--color-hr);">Human Resource Lead</span><span style="font-size:10px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-left:10px;">People</span></div>
+        </div>
+        <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div class="staff-section-label">Hiring &amp; Org Design</div><p style="font-size:12px;margin:0;">Anticipates capacity bottlenecks, designs a scalable org chart, and manages the full-cycle recruiting process to secure top talent.</p></div>
+          <div><div class="staff-section-label">Compensation</div><p style="font-size:12px;margin:0;">Develops competitive, equitable salary and stock option bands that align with the company's cash position and market realities.</p></div>
+          <div><div class="staff-section-label">Culture Risk</div><p style="font-size:12px;margin:0;">Proactively monitors team mood. Identifies burnout, misalignment, or toxicity early and intervenes before it impacts the broader organization.</p></div>
+          <div><div class="staff-section-label">Performance Management</div><p style="font-size:12px;margin:0;">Implements lightweight, effective frameworks for feedback, goal setting, and performance reviews that drive growth rather than bureaucracy.</p></div>
+        </div>
       </div>
 
     </div>
