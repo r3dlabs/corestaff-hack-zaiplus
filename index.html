@@ -4338,13 +4338,34 @@ async function runDiag() {
     log('avatar img src', avatarImg?.src ? avatarImg.src.slice(0,50)+'…' : 'EMPTY', !!avatarImg?.src);
 
     // ── PROVIDERS ──
-    head('PROVIDERS');
+    head('PROVIDERS — IN MEMORY (window.providerConfigs)');
     const provKeys = Object.keys(window.providerConfigs || {});
-    log('providerConfigs', provKeys.length ? provKeys.join(', ') : 'NONE', provKeys.length > 0);
+    log('count', provKeys.length ? provKeys.length + ' provider(s): ' + provKeys.join(', ') : 'NONE', provKeys.length > 0);
     provKeys.forEach(k => {
         const cfg = window.providerConfigs[k];
         log('  ' + k + ' key', cfg.apiKey ? cfg.apiKey.slice(0,8)+'…' : 'MISSING', !!cfg.apiKey);
+        log('  ' + k + ' model', cfg.model || '(none)', !!cfg.model);
     });
+
+    head('PROVIDERS — UI INPUT FIELDS (papikey-*)');
+    let uiProviderCount = 0;
+    Object.keys(PROVIDER_DEFS).forEach(k => {
+        const keyEl    = document.getElementById('papikey-' + k);
+        const modelEl  = document.getElementById('pmodel-' + k);
+        const epEl     = document.getElementById('pendpoint-' + k);
+        const deployEl = document.getElementById('pdeployment-' + k);
+        const hasKey   = keyEl && keyEl.value.trim();
+        if (hasKey) {
+            uiProviderCount++;
+            const modelVal = deployEl?.value.trim() || modelEl?.value.trim() || '(none)';
+            const inMem    = !!window.providerConfigs?.[k];
+            log('  ' + k, 'key=' + keyEl.value.trim().slice(0,8) + '… model=' + modelVal + (inMem ? '' : ' ⚠ NOT IN MEMORY'), hasKey && inMem);
+        }
+    });
+    log('UI configured total', uiProviderCount + ' provider(s) with keys in fields', uiProviderCount > 0);
+    if (uiProviderCount !== provKeys.length) {
+        log('⚠ MISMATCH', 'memory=' + provKeys.length + ' vs UI fields=' + uiProviderCount + ' — missing providers may need Save in settings', false);
+    }
 
     // ── STAFF ASSIGNMENTS & STATUS DOTS ──
     head('STAFF STATUS + POSITIONS');
