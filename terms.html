@@ -1,135 +1,265 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
 <title>Terms of Service — Startup Staff</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #fafafa;
-    --surface: #ffffff;
-    --border: #e0e0e0;
-    --text: #0a0a0a;
-    --muted: #6b6b6b;
+  :root[data-theme="dark"] {
+    --bg-base:       #0a0a0a;
+    --bg-surface:    #111111;
+    --bg-elevated:   #1a1a1a;
+    --bg-hover:      #222222;
+    --border:        #2a2a2a;
+    --border-strong: #3a3a3a;
+    --text-primary:  #f5f5f5;
+    --text-secondary:#a0a0a0;
+    --text-muted:    #606060;
+    --accent:        #f5f5f5;
+    --accent-muted:  #2a2a2a;
+    --warn-bg:       #1a1400;
+    --warn-border:   #3a2e00;
+    --warn-text:     #d4a017;
   }
+  :root[data-theme="light"] {
+    --bg-base:       #fafafa;
+    --bg-surface:    #ffffff;
+    --bg-elevated:   #f4f4f4;
+    --bg-hover:      #ebebeb;
+    --border:        #e0e0e0;
+    --border-strong: #c8c8c8;
+    --text-primary:  #0a0a0a;
+    --text-secondary:#505050;
+    --text-muted:    #999999;
+    --accent:        #0a0a0a;
+    --accent-muted:  #f0f0f0;
+    --warn-bg:       #fffbeb;
+    --warn-border:   #fde68a;
+    --warn-text:     #92400e;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     font-family: 'Geist', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg-base);
+    color: var(--text-primary);
     line-height: 1.7;
     font-size: 15px;
+    transition: background 0.2s, color 0.2s;
+    min-height: 100vh;
   }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+  /* ── Rocket flame glow — matches index.html exactly ── */
+  @keyframes flameGlow {
+    0%,100% { opacity: 0.3; transform: scale(0.8); }
+    50%      { opacity: 0.7; transform: scale(1.2); }
+  }
+  .rocket-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .rocket-wrap .flame-glow {
+    position: absolute;
+    inset: -30%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,120,0,0.8) 0%, rgba(255,60,0,0.4) 40%, transparent 70%);
+    filter: blur(6px);
+    animation: flameGlow 1.8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .rocket-wrap .rocket-emoji { position: relative; z-index: 1; line-height: 1; }
+
+  /* ── Header ── */
   header {
     border-bottom: 1px solid var(--border);
-    padding: 18px 0;
     position: sticky;
     top: 0;
-    background: var(--bg);
+    background: var(--bg-surface);
     z-index: 10;
+    transition: background 0.2s, border-color 0.2s;
   }
   .header-inner {
-    max-width: 760px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 0 16px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
   }
-  .logo {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .logo-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
     text-decoration: none;
-    color: var(--text);
+    flex-shrink: 0;
+  }
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.1;
+  }
+  .logo-text .wordmark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .logo-text .wordmark .primary { color: var(--text-primary); }
+  .logo-text .wordmark .muted   { color: var(--text-muted); margin-left: 4px; }
+  .logo-text .edition {
+    font-size: 9px;
+    color: var(--text-muted);
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
   .back-link {
     font-size: 12px;
-    color: var(--muted);
+    color: var(--text-muted);
     text-decoration: none;
     font-family: 'Geist Mono', monospace;
     letter-spacing: 0.04em;
-    transition: color 0.15s;
+    transition: color 0.15s, border-color 0.15s;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 5px 10px;
   }
-  .back-link:hover { color: var(--text); }
+  .back-link:hover { color: var(--text-primary); border-color: var(--border-strong); }
+
+  /* ── Theme toggle — SVG moon/sun, matches index.html ── */
+  .btn-theme {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--bg-elevated);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-theme:hover { background: var(--bg-hover); border-color: var(--border-strong); }
+
+  /* ── Main ── */
   main {
     max-width: 760px;
     margin: 0 auto;
     padding: 64px 32px 120px;
   }
+
   .doc-label {
     font-family: 'Geist Mono', monospace;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--text-muted);
     margin-bottom: 16px;
   }
+
   h1 {
     font-size: 36px;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.15;
     margin-bottom: 8px;
+    color: var(--text-primary);
   }
+
   .effective {
     font-size: 13px;
-    color: var(--muted);
+    color: var(--text-muted);
     font-family: 'Geist Mono', monospace;
     margin-bottom: 48px;
     padding-bottom: 48px;
     border-bottom: 1px solid var(--border);
   }
+
   .intro {
     font-size: 16px;
-    color: var(--muted);
+    color: var(--text-secondary);
     margin-bottom: 48px;
     line-height: 1.75;
   }
+
   section { margin-bottom: 48px; }
+
   h2 {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     font-family: 'Geist Mono', monospace;
-    color: var(--muted);
+    color: var(--text-muted);
     margin-bottom: 16px;
   }
-  p { margin-bottom: 14px; color: #1a1a1a; }
+
+  p {
+    margin-bottom: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+  }
   p:last-child { margin-bottom: 0; }
+
   ul {
     padding-left: 20px;
     margin-bottom: 14px;
   }
   ul li {
     margin-bottom: 8px;
-    color: #1a1a1a;
+    color: var(--text-secondary);
+    line-height: 1.65;
   }
+
+  strong { color: var(--text-primary); font-weight: 600; }
+
   .highlight-box {
-    background: var(--surface);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 20px 24px;
     margin-bottom: 14px;
+    transition: background 0.2s, border-color 0.2s;
   }
   .highlight-box p { margin-bottom: 0; }
+
   .warning-box {
-    background: #fffbeb;
-    border: 1px solid #fde68a;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
     border-radius: 10px;
     padding: 20px 24px;
     margin-bottom: 14px;
+    transition: background 0.2s, border-color 0.2s;
   }
-  .warning-box p { margin-bottom: 0; color: #92400e; }
+  .warning-box p { margin-bottom: 0; color: var(--warn-text); }
+
+  /* ── Footer ── */
   footer {
     border-top: 1px solid var(--border);
     padding: 32px 0;
+    transition: border-color 0.2s;
   }
   .footer-inner {
     max-width: 760px;
@@ -143,24 +273,43 @@
   }
   .footer-inner p {
     font-size: 12px;
-    color: var(--muted);
+    color: var(--text-muted);
     font-family: 'Geist Mono', monospace;
     margin: 0;
   }
   .footer-inner a {
-    color: var(--muted);
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.15s;
   }
-  .footer-inner a:hover { color: var(--text); }
+  .footer-inner a:hover { color: var(--text-primary); }
+
+  @media (max-width: 600px) {
+    main { padding: 40px 20px 80px; }
+    .header-inner { padding: 0 20px; }
+    .footer-inner { padding: 0 20px; }
+    h1 { font-size: 28px; }
+  }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-inner">
-    <a href="https://startup-staff.com" class="logo">Startup Staff</a>
-    <a href="https://startup-staff.com" class="back-link">← Back to app</a>
+    <a href="https://startup-staff.com" class="logo-wrap">
+      <span class="rocket-wrap" style="font-size:20px;"><div class="flame-glow"></div><span class="rocket-emoji">🚀</span></span>
+      <div class="logo-text">
+        <div class="wordmark"><span class="primary">Startup</span><span class="muted">Staff</span></div>
+        <div class="edition">Founder Edition</div>
+      </div>
+    </a>
+    <div class="header-right">
+      <button class="btn-theme" id="btn-theme-toggle" title="Toggle theme" onclick="toggleTheme()">
+        <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <a href="https://startup-staff.com" class="back-link">← Back to app</a>
+    </div>
   </div>
 </header>
 
@@ -173,18 +322,19 @@
 
   <section>
     <h2>01 — The service</h2>
-    <p>Startup Staff is an AI-powered boardroom application that allows founders and builders to consult a configurable team of AI specialist personas. The service connects to AI providers of your choice using API keys you supply.</p>
-    <p>We are a software platform only. We do not provide legal, financial, medical, or professional advice. Responses generated by AI models through our platform are not professional advice and should not be relied upon as such.</p>
+    <p>Startup Staff is an AI-powered boardroom application that gives founders and builders access to a configurable team of AI specialist personas — a Chief of Staff (Donna), and specialists covering Engineering (Tony), Finance (Mike), Marketing (Steve), Legal (Harvey), Architecture (Leonardo), and HR (Sigmund). Every query is routed through a three-phase multi-agent pipeline: the Chief of Staff decides which specialists are relevant, each specialist responds independently using your assigned AI models, and the Chief of Staff synthesises a unified recommendation.</p>
+    <p>The service connects to AI providers of your choice — including OpenAI, Anthropic, Google Gemini, Mistral, and OpenAI-compatible endpoints — using API keys you supply. We are a software platform only.</p>
+    <p>We do not provide legal, financial, medical, or professional advice. Responses generated by AI models through our platform are not professional advice and should not be relied upon as such.</p>
   </section>
 
   <section>
     <h2>02 — Eligibility</h2>
-    <p>You must be at least 18 years old to use Startup Staff. By using the service, you represent that you meet this requirement. You must also have the legal capacity to enter into a binding agreement under the laws of your jurisdiction.</p>
+    <p>You must be at least 18 years old to use Startup Staff. By using the service, you represent that you meet this requirement and have the legal capacity to enter into a binding agreement under the laws of your jurisdiction.</p>
   </section>
 
   <section>
     <h2>03 — Your account</h2>
-    <p>You sign in using your LinkedIn account. You are responsible for maintaining the security of your account and for all activity that occurs under it.</p>
+    <p>You sign in using your LinkedIn account via Supabase OAuth. You are responsible for maintaining the security of your account and for all activity that occurs under it.</p>
     <p>You must not share your account with others or use the service on behalf of another person without their explicit authorisation.</p>
     <p>We reserve the right to suspend or terminate accounts that violate these Terms or are used in a manner we reasonably determine to be harmful, abusive, or unlawful.</p>
   </section>
@@ -194,8 +344,8 @@
     <div class="warning-box">
       <p><strong>Important:</strong> You are solely responsible for the API keys you enter into Startup Staff, all usage and charges incurred through those keys, and compliance with each AI provider's terms of service.</p>
     </div>
-    <p>By entering an API key, you authorise Startup Staff to use it to make requests to the relevant AI provider on your behalf, within the application. You must not enter API keys that you are not authorised to use.</p>
-    <p>We are not responsible for charges, overages, or usage violations incurred through your API keys. Monitor your provider dashboards and set usage limits where possible.</p>
+    <p>By entering an API key, you authorise Startup Staff to use it to make requests to the relevant AI provider on your behalf, within the application. Your API keys are stored in your Supabase account and loaded into the application at sign-in. You must not enter API keys that you are not authorised to use.</p>
+    <p>We are not responsible for charges, overages, or usage violations incurred through your API keys. Monitor your provider dashboards and set usage limits where possible. Note that a single query to Startup Staff may trigger multiple API calls — up to one routing call, one call per relevant specialist (up to six), and one synthesis call — depending on your configuration.</p>
   </section>
 
   <section>
@@ -214,21 +364,22 @@
 
   <section>
     <h2>06 — Content you provide</h2>
-    <p>You retain ownership of any content you upload to the service, including documents, URLs, and staff customisations. By uploading content, you grant us a limited licence to store, process, and display it solely for the purpose of providing the service to you.</p>
+    <p>You retain ownership of any content you upload to the service, including documents, URLs, staff customisations, knowledge base entries, and founder preferences. By uploading content, you grant us a limited licence to store, process, and display it solely for the purpose of providing the service to you.</p>
+    <p>Content you provide — including your startup description, memory entries, and knowledge base — is used to personalise AI responses within the application. It is stored in your Supabase account and is not used to train AI models.</p>
     <p>You are responsible for ensuring that content you upload does not violate any third-party rights or applicable laws.</p>
   </section>
 
   <section>
     <h2>07 — AI-generated content</h2>
     <div class="highlight-box">
-      <p>AI responses generated through Startup Staff are produced by third-party AI models. We do not control, verify, or guarantee the accuracy, completeness, or suitability of AI-generated content. Always apply your own professional judgement before acting on any AI output.</p>
+      <p>AI responses generated through Startup Staff are produced by third-party AI models (OpenAI, Anthropic, Google, Mistral, and others). We do not control, verify, or guarantee the accuracy, completeness, or suitability of AI-generated content. Always apply your own professional judgement before acting on any AI output.</p>
     </div>
     <p>We are not liable for decisions made on the basis of AI-generated responses. This is especially important for legal, financial, medical, or other professional matters where you should consult a qualified human professional.</p>
   </section>
 
   <section>
     <h2>08 — Intellectual property</h2>
-    <p>All rights in the Startup Staff application, including its design, code, branding, and interfaces, are owned by Modular Technology Solutions Pte Ltd. Nothing in these Terms grants you any right to use our trademarks, logos, or proprietary materials without our written consent.</p>
+    <p>All rights in the Startup Staff application, including its design, code, branding, interfaces, and AI persona configurations, are owned by Modular Technology Solutions Pte Ltd. Nothing in these Terms grants you any right to use our trademarks, logos, or proprietary materials without our written consent.</p>
   </section>
 
   <section>
@@ -263,9 +414,23 @@
 <footer>
   <div class="footer-inner">
     <p>© 2026 Modular Technology Solutions Pte Ltd · Singapore</p>
-    <p><a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="https://startup-staff.com">App</a></p>
+    <p><a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="/docs.html">Docs</a> &nbsp;·&nbsp; <a href="https://startup-staff.com">App</a></p>
   </div>
 </footer>
 
+<script>
+  let currentTheme = localStorage.getItem('theme') || 'light';
+  function applyTheme(t) {
+    currentTheme = t;
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    const moon = document.getElementById('theme-icon-moon');
+    const sun  = document.getElementById('theme-icon-sun');
+    if (moon) moon.style.display = t === 'light' ? 'block' : 'none';
+    if (sun)  sun.style.display  = t === 'dark'  ? 'block' : 'none';
+  }
+  function toggleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+  applyTheme(currentTheme);
+</script>
 </body>
 </html>
