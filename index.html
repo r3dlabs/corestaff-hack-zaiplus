@@ -2905,7 +2905,7 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 
     // ── xAI Grok — hardcoded known models (CORS blocks /models from browser) ──
     if (key === 'xai') {
-        const valid = apiKey.startsWith('xai-') && apiKey.length > 20;
+        const valid = apiKey.length > 20;
         const grokModels = [
             'grok-3',
             'grok-3-fast',
@@ -2917,7 +2917,7 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
         modelSelect.innerHTML = grokModels.map(m =>
             `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
         ).join('');
-        setProviderStatus(key, valid ? 'Key format valid. Select a model.' : 'Key should start with xai-', valid);
+        setProviderStatus(key, valid ? 'Key format valid. Select a model.' : 'API key too short — check your xAI key.', valid);
         return;
     }
 
@@ -4806,14 +4806,15 @@ async function probeStaffConnection(key) {
 
     // Providers with CORS restrictions — can't probe from browser
     // Treat as connected if key is present and looks valid
-    const corsRestricted = ['anthropic', 'google', 'openai', 'mistral'];
+    const corsRestricted = ['anthropic', 'google', 'openai', 'mistral', 'xai'];
     if (corsRestricted.includes(assignment.provider)) {
         const key_ = provCfg.apiKey;
         const validFormat =
             (assignment.provider === 'anthropic' && key_.startsWith('sk-ant-')) ||
             (assignment.provider === 'openai'    && key_.startsWith('sk-')) ||
             (assignment.provider === 'google'    && key_.startsWith('AIza')) ||
-            (assignment.provider === 'mistral'   && key_.length > 10);
+            (assignment.provider === 'mistral'   && key_.length > 10) ||
+            (assignment.provider === 'xai'       && key_.length > 20);
         validFormat ? setDotReady(key) : setDotGray(key);
         return validFormat;
     }
