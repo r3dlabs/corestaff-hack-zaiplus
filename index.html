@@ -277,9 +277,9 @@
         :root {
             --color-engineering:  #ef4444;
             --color-finance:      #22c55e;
-            --color-steve:        #3b82f6;
-            --color-harvey:       #eab308;
-            --color-leonardo:     #a855f7;
+            --color-marketing:        #3b82f6;
+            --color-legal:       #eab308;
+            --color-architecture:     #a855f7;
             --color-hr:           #ec4899;
         }
 
@@ -293,9 +293,9 @@
         }
         .consult-block.agent-engineering { border-left-color: var(--color-engineering); }
         .consult-block.agent-finance     { border-left-color: var(--color-finance);     }
-        .consult-block.agent-steve       { border-left-color: var(--color-steve);       }
-        .consult-block.agent-harvey      { border-left-color: var(--color-harvey);      }
-        .consult-block.agent-leonardo    { border-left-color: var(--color-leonardo);    }
+        .consult-block.agent-marketing       { border-left-color: var(--color-marketing);       }
+        .consult-block.agent-legal      { border-left-color: var(--color-legal);      }
+        .consult-block.agent-architecture    { border-left-color: var(--color-architecture);    }
         .consult-block.agent-hr          { border-left-color: var(--color-hr);          }
 
         /* ── COS synthesis block ── */
@@ -701,8 +701,9 @@
                         <!-- openai -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#10a37f;flex-shrink:0;" id="pstatus-openai"></div>
+                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/openai.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/openai.png" width="18" height="18" style="object-fit:contain;" alt="OpenAI" onerror="this.style.display='none'"></picture>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">OpenAI</span>
+                                <div id="pstatus-openai" style="width:8px;height:8px;border-radius:50%;background:#10a37f;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-openai" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-openai" onclick="testProvider('openai')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
@@ -714,8 +715,9 @@
                         <!-- anthropic -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#d4763b;flex-shrink:0;" id="pstatus-anthropic"></div>
+                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/anthropic.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/anthropic.png" width="18" height="18" style="object-fit:contain;" alt="Anthropic" onerror="this.style.display='none'"></picture>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Anthropic</span>
+                                <div id="pstatus-anthropic" style="width:8px;height:8px;border-radius:50%;background:#d4763b;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-anthropic" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-anthropic" onclick="testProvider('anthropic')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
@@ -727,8 +729,9 @@
                         <!-- google -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;" id="pstatus-google"></div>
+                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/google.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/google.png" width="18" height="18" style="object-fit:contain;" alt="Google" onerror="this.style.display='none'"></picture>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Google</span>
+                                <div id="pstatus-google" style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-google" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-google" onclick="testProvider('google')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
@@ -740,8 +743,9 @@
                         <!-- deepseek -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#5b6ef5;flex-shrink:0;" id="pstatus-deepseek"></div>
+                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/deepseek.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/deepseek.png" width="18" height="18" style="object-fit:contain;" alt="DeepSeek" onerror="this.style.display='none'"></picture>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">DeepSeek</span>
+                                <div id="pstatus-deepseek" style="width:8px;height:8px;border-radius:50%;background:#5b6ef5;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-deepseek" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-deepseek" onclick="testProvider('deepseek')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
@@ -753,8 +757,9 @@
                         <!-- groq -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#f55036;flex-shrink:0;" id="pstatus-groq"></div>
+                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/groq.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/groq.png" width="18" height="18" style="object-fit:contain;" alt="Groq" onerror="this.style.display='none'"></picture>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Groq</span>
+                                <div id="pstatus-groq" style="width:8px;height:8px;border-radius:50%;background:#f55036;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-groq" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-groq" onclick="testProvider('groq')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
@@ -766,8 +771,9 @@
                         <!-- mistral -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#ff7000;flex-shrink:0;" id="pstatus-mistral"></div>
+                                <picture style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;"><source media="(prefers-color-scheme:dark)" srcset="https://unpkg.com/@lobehub/icons-static-png@latest/dark/mistral.png"><img src="https://unpkg.com/@lobehub/icons-static-png@latest/light/mistral.png" width="18" height="18" style="object-fit:contain;" alt="Mistral" onerror="this.style.display='none'"></picture>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Mistral</span>
+                                <div id="pstatus-mistral" style="width:8px;height:8px;border-radius:50%;background:#ff7000;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-mistral" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-mistral" onclick="testProvider('mistral')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
@@ -779,8 +785,9 @@
                         <!-- gmi -->
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:14px;">
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0;" id="pstatus-gmi"></div>
+                                <div style="width:18px;height:18px;border-radius:5px;background:rgba(124,58,237,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg></div>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">GMI Cloud</span>
+                                <div id="pstatus-gmi" style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-gmi" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-gmi" onclick="testProvider('gmi')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
@@ -921,68 +928,68 @@
                     <defs>
                         <pattern id="pat-elon"     patternUnits="objectBoundingBox" width="1" height="1"><image href="/engineering.png"     width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
                         <pattern id="pat-isaac"    patternUnits="objectBoundingBox" width="1" height="1"><image href="/finance-accounting.png"    width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-steve"    patternUnits="objectBoundingBox" width="1" height="1"><image href="/marketing.png"    width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
+                        <pattern id="pat-marketing"    patternUnits="objectBoundingBox" width="1" height="1"><image href="/marketing.png"    width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
                         <pattern id="pat-donna"    patternUnits="objectBoundingBox" width="1" height="1"><image href="/hr.png"    width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-harvey"   patternUnits="objectBoundingBox" width="1" height="1"><image href="/legal.png"   width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
-                        <pattern id="pat-leonardo" patternUnits="objectBoundingBox" width="1" height="1"><image href="/architecture.png" width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
+                        <pattern id="pat-legal"   patternUnits="objectBoundingBox" width="1" height="1"><image href="/legal.png"   width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
+                        <pattern id="pat-architecture" patternUnits="objectBoundingBox" width="1" height="1"><image href="/architecture.png" width="80"  height="80"  preserveAspectRatio="xMidYMid slice"/></pattern>
                         <pattern id="pat-soleil"   patternUnits="objectBoundingBox" width="1" height="1"><image href="/cos.png"   width="140" height="140" preserveAspectRatio="xMidYMid slice"/></pattern>
                     </defs>
 
                     <!-- Lines -->
                     <line id="line-elon"     class="connector-line" x1="400" y1="400" x2="400" y2="150" stroke="var(--svg-line)" stroke-width="1.5"/>
                     <line id="line-isaac"    class="connector-line" x1="400" y1="400" x2="616" y2="275" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-steve"    class="connector-line" x1="400" y1="400" x2="616" y2="525" stroke="var(--svg-line)" stroke-width="1.5"/>
+                    <line id="line-marketing"    class="connector-line" x1="400" y1="400" x2="616" y2="525" stroke="var(--svg-line)" stroke-width="1.5"/>
                     <line id="line-donna"    class="connector-line" x1="400" y1="400" x2="400" y2="650" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-harvey"   class="connector-line" x1="400" y1="400" x2="184" y2="525" stroke="var(--svg-line)" stroke-width="1.5"/>
-                    <line id="line-leonardo" class="connector-line" x1="400" y1="400" x2="184" y2="275" stroke="var(--svg-line)" stroke-width="1.5"/>
+                    <line id="line-legal"   class="connector-line" x1="400" y1="400" x2="184" y2="525" stroke="var(--svg-line)" stroke-width="1.5"/>
+                    <line id="line-architecture" class="connector-line" x1="400" y1="400" x2="184" y2="275" stroke="var(--svg-line)" stroke-width="1.5"/>
 
                     <!-- Elon -->
                     <g id="node-elon">
                         <g id="visual-elon" class="node-circle">
                             <circle cx="400" cy="150" r="40" fill="url(#pat-elon)" stroke="#ef4444" stroke-width="2"/>
                         </g>
-                        <text x="400" y="216" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-tony">ENGINEERING</text>
-                        <text x="400" y="229" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-tony">ENGINEERING</text>
+                        <text x="400" y="216" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-engineering">ENGINEERING</text>
+                        <text x="400" y="229" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-engineering">ENGINEERING</text>
                     </g>
                     <!-- Isaac -->
                     <g id="node-isaac">
                         <g id="visual-isaac" class="node-circle">
                             <circle cx="616" cy="275" r="40" fill="url(#pat-isaac)" stroke="#22c55e" stroke-width="2"/>
                         </g>
-                        <text x="616" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-mike">FINANCE</text>
-                        <text x="616" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-mike">FINANCE</text>
+                        <text x="616" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-finance">FINANCE</text>
+                        <text x="616" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-finance">FINANCE</text>
                     </g>
                     <!-- Steve -->
-                    <g id="node-steve">
-                        <g id="visual-steve" class="node-circle">
-                            <circle cx="616" cy="525" r="40" fill="url(#pat-steve)" stroke="#3b82f6" stroke-width="2"/>
+                    <g id="node-marketing">
+                        <g id="visual-marketing" class="node-circle">
+                            <circle cx="616" cy="525" r="40" fill="url(#pat-marketing)" stroke="#3b82f6" stroke-width="2"/>
                         </g>
-                        <text x="616" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-steve">MARKETING</text>
-                        <text x="616" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-steve">MARKETING</text>
+                        <text x="616" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-marketing">MARKETING</text>
+                        <text x="616" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-marketing">MARKETING</text>
                     </g>
                     <!-- Donna -->
                     <g id="node-donna">
                         <g id="visual-donna" class="node-circle">
                             <circle cx="400" cy="650" r="40" fill="url(#pat-donna)" stroke="#ec4899" stroke-width="2"/>
                         </g>
-                        <text x="400" y="716" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-sigmund">HUMAN RESOURCES</text>
-                        <text x="400" y="729" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-sigmund">HUMAN RESOURCES</text>
+                        <text x="400" y="716" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-hr">HUMAN RESOURCES</text>
+                        <text x="400" y="729" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-hr">HUMAN RESOURCES</text>
                     </g>
                     <!-- Harvey -->
-                    <g id="node-harvey">
-                        <g id="visual-harvey" class="node-circle">
-                            <circle cx="184" cy="525" r="40" fill="url(#pat-harvey)" stroke="#eab308" stroke-width="2"/>
+                    <g id="node-legal">
+                        <g id="visual-legal" class="node-circle">
+                            <circle cx="184" cy="525" r="40" fill="url(#pat-legal)" stroke="#eab308" stroke-width="2"/>
                         </g>
-                        <text x="184" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-harvey">LEGAL</text>
-                        <text x="184" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-harvey">LEGAL</text>
+                        <text x="184" y="591" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-legal">LEGAL</text>
+                        <text x="184" y="604" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-legal">LEGAL</text>
                     </g>
                     <!-- Leonardo -->
-                    <g id="node-leonardo">
-                        <g id="visual-leonardo" class="node-circle">
-                            <circle cx="184" cy="275" r="40" fill="url(#pat-leonardo)" stroke="#a855f7" stroke-width="2"/>
+                    <g id="node-architecture">
+                        <g id="visual-architecture" class="node-circle">
+                            <circle cx="184" cy="275" r="40" fill="url(#pat-architecture)" stroke="#a855f7" stroke-width="2"/>
                         </g>
-                        <text x="184" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-leonardo">ARCHITECTURE</text>
-                        <text x="184" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-leonardo">ARCHITECTURE</text>
+                        <text x="184" y="341" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-weight="600" font-family="Geist, sans-serif" id="svg-name-architecture">ARCHITECTURE</text>
+                        <text x="184" y="354" text-anchor="middle" fill="var(--text-muted)" font-size="8" font-family="Geist Mono, monospace" id="svg-role-architecture">ARCHITECTURE</text>
                     </g>
                     <!-- Soleil (center) -->
                     <g id="node-soleil">
@@ -994,18 +1001,18 @@
                     </g>
 
                     <!-- ── STATUS DOTS ── -->
-                    <circle id="status-border-tony" cx="428.3" cy="178.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-tony" cx="428.3" cy="178.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-mike" cx="644.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-mike" cx="644.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-steve" cx="644.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-steve" cx="644.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-sigmund" cx="428.3" cy="678.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-sigmund" cx="428.3" cy="678.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-harvey" cx="212.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-harvey" cx="212.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
-                    <circle id="status-border-leonardo" cx="212.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-leonardo" cx="212.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-engineering" cx="428.3" cy="178.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-engineering" cx="428.3" cy="178.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-finance" cx="644.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-finance" cx="644.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-marketing" cx="644.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-marketing" cx="644.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-hr" cx="428.3" cy="678.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-hr" cx="428.3" cy="678.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-legal" cx="212.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-legal" cx="212.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-border-architecture" cx="212.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
+                    <circle id="status-dot-architecture" cx="212.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
                     <circle id="status-border-cos" cx="449.5" cy="449.5" r="10" fill="var(--bg-base)" opacity="1"/>
                     <circle id="status-dot-cos" cx="449.5" cy="449.5" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
                 </svg>
@@ -1150,12 +1157,12 @@
 // ─── STAFF DEFAULTS (must be first) ─────────────────────────────────────────
 const STAFF_DEFAULTS = {
     cos:      { name: 'Chief Of Staff',           role: 'Chief of Staff',       color: '#06b6d4', img: '/cos.png' },
-    tony:     { name: 'Engineering Lead',          role: 'Engineering',          color: '#ef4444', img: '/engineering.png' },
-    mike:     { name: 'Finance & Accounting Lead', role: 'Finance & Accounting', color: '#22c55e', img: '/finance-accounting.png' },
-    steve:    { name: 'Marketing Lead',            role: 'Marketing',            color: '#3b82f6', img: '/marketing.png' },
-    harvey:   { name: 'Legal Lead',                role: 'Legal',                color: '#eab308', img: '/legal.png' },
-    leonardo: { name: 'Architecture Lead',         role: 'Architecture',         color: '#a855f7', img: '/architecture.png' },
-    sigmund:  { name: 'Human Resource Lead',       role: 'Human Resources',      color: '#ec4899', img: '/hr.png' },
+    engineering:     { name: 'Engineering Lead',          role: 'Engineering',          color: '#ef4444', img: '/engineering.png' },
+    finance:     { name: 'Finance & Accounting Lead', role: 'Finance & Accounting', color: '#22c55e', img: '/finance-accounting.png' },
+    marketing:    { name: 'Marketing Lead',            role: 'Marketing',            color: '#3b82f6', img: '/marketing.png' },
+    legal:   { name: 'Legal Lead',                role: 'Legal',                color: '#eab308', img: '/legal.png' },
+    architecture: { name: 'Architecture Lead',         role: 'Architecture',         color: '#a855f7', img: '/architecture.png' },
+    hr:  { name: 'Human Resource Lead',       role: 'Human Resources',      color: '#ec4899', img: '/hr.png' },
 };
 window.staffCustom = JSON.parse(JSON.stringify(STAFF_DEFAULTS));
 
@@ -1606,12 +1613,12 @@ Name: Their insight. 2-4 sentences.
 Chief of Staff: Your synthesis. Short paragraphs, bullet action items. Direct.
 
 Specialists:
-- ${window.staffCustom.tony.name} (Engineering): First-principles, blunt, technical. Owns engineering execution, deployment, product feasibility, and build vs. buy decisions. Works hand-in-hand with ${window.staffCustom.leonardo.name}.
-- ${window.staffCustom.mike.name} (Finance & Accounting): Burn-rate obsessed, ROI-focused, conservative. Financial modelling, unit economics, fundraising strategy.
-- ${window.staffCustom.steve.name} (Marketing): Narrative-driven, growth-hacker. Go-to-market strategy, brand positioning, customer acquisition.
-- ${window.staffCustom.harvey.name} (Legal): Precise, risk-averse, equity-protective. Contracts, IP, regulatory compliance.
-- ${window.staffCustom.leonardo.name} (Architecture): Owns technical architecture, systems design, infrastructure planning, and long-term platform thinking. Works hand-in-hand with ${window.staffCustom.tony.name}.
-- ${window.staffCustom.sigmund.name} (Human Resources): Empathetic, culture and compliance focused. Hiring strategy, team structure, compensation, people operations.`;
+- ${window.staffCustom.engineering.name} (Engineering): First-principles, blunt, technical. Owns engineering execution, deployment, product feasibility, and build vs. buy decisions. Works hand-in-hand with ${window.staffCustom.architecture.name}.
+- ${window.staffCustom.finance.name} (Finance & Accounting): Burn-rate obsessed, ROI-focused, conservative. Financial modelling, unit economics, fundraising strategy.
+- ${window.staffCustom.marketing.name} (Marketing): Narrative-driven, growth-hacker. Go-to-market strategy, brand positioning, customer acquisition.
+- ${window.staffCustom.legal.name} (Legal): Precise, risk-averse, equity-protective. Contracts, IP, regulatory compliance.
+- ${window.staffCustom.architecture.name} (Architecture): Owns technical architecture, systems design, infrastructure planning, and long-term platform thinking. Works hand-in-hand with ${window.staffCustom.engineering.name}.
+- ${window.staffCustom.hr.name} (Human Resources): Empathetic, culture and compliance focused. Hiring strategy, team structure, compensation, people operations.`;
 
 function buildSystemPrompt(extra='') {
     let p = BASE_SYSTEM_PROMPT;
@@ -1888,7 +1895,7 @@ function parseSoleilResponse(text) {
         Object.entries(window.staffCustom || STAFF_DEFAULTS).forEach(([k, s]) => {
             keyForName[(s.name || '').toLowerCase()] = k;
         });
-        const roleColors = { cos:'#ec4899', tony:'#ef4444', mike:'#22c55e', steve:'#3b82f6', harvey:'#eab308', leonardo:'#a855f7', sigmund:'#ec4899' };
+        const roleColors = { cos:'#ec4899', engineering:'#ef4444', finance:'#22c55e', marketing:'#3b82f6', legal:'#eab308', architecture:'#a855f7', hr:'#ec4899' };
         const agentColor = roleColors[keyForName[name.toLowerCase()]] || 'var(--text-muted)';
         html+=`<div class="consult-block agent-${name.toLowerCase()}">
             <div style="font-size:10px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:${agentColor};font-family:'Geist Mono',monospace;margin-bottom:6px;">${name}</div>
@@ -1944,23 +1951,23 @@ function animateConnection(personaName, delayMs = 0) {
 // Map SVG node IDs to staff keys
 const NODE_TO_KEY = {
     'visual-soleil':   'cos',
-    'visual-elon':     'tony',
-    'visual-isaac':    'mike',
-    'visual-steve':    'steve',
-    'visual-harvey':   'harvey',
-    'visual-leonardo': 'leonardo',
-    'visual-donna':    'sigmund',
+    'visual-elon':     'engineering',
+    'visual-isaac':    'finance',
+    'visual-marketing':    'marketing',
+    'visual-legal':   'legal',
+    'visual-architecture': 'architecture',
+    'visual-donna':    'hr',
 };
 
 // Also allow clicking the parent <g> nodes
 const GNODE_TO_KEY = {
     'node-soleil':   'cos',
-    'node-elon':     'tony',
-    'node-isaac':    'mike',
-    'node-steve':    'steve',
-    'node-harvey':   'harvey',
-    'node-leonardo': 'leonardo',
-    'node-donna':    'sigmund',
+    'node-elon':     'engineering',
+    'node-isaac':    'finance',
+    'node-marketing':    'marketing',
+    'node-legal':   'legal',
+    'node-architecture': 'architecture',
+    'node-donna':    'hr',
 };
 
 const PROVIDER_DISPLAY = {
@@ -2131,12 +2138,12 @@ function initializeBoardroom() {
 
     // Use custom staff names if available
     const specialists = [
-        { key:'tony',     name: (window.staffCustom&&window.staffCustom.tony&&window.staffCustom.tony.name)||'Engineering Lead',          role:'Engineering',          color:'#ef4444' },
-        { key:'mike',     name: (window.staffCustom&&window.staffCustom.mike&&window.staffCustom.mike.name)||'Finance & Accounting Lead', role:'Finance & Accounting', color:'#22c55e' },
-        { key:'steve',    name: (window.staffCustom&&window.staffCustom.steve&&window.staffCustom.steve.name)||'Marketing Lead',          role:'Marketing',            color:'#3b82f6' },
-        { key:'harvey',   name: (window.staffCustom&&window.staffCustom.harvey&&window.staffCustom.harvey.name)||'Legal Lead',            role:'Legal',                color:'#eab308' },
-        { key:'leonardo', name: (window.staffCustom&&window.staffCustom.leonardo&&window.staffCustom.leonardo.name)||'Architecture Lead', role:'Architecture',         color:'#a855f7' },
-        { key:'sigmund',  name: (window.staffCustom&&window.staffCustom.sigmund&&window.staffCustom.sigmund.name)||'Human Resource Lead',  role:'Human Resources', color:'#ec4899' },
+        { key:'engineering',     name: (window.staffCustom&&window.staffCustom.engineering&&window.staffCustom.engineering.name)||'Engineering Lead',          role:'Engineering',          color:'#ef4444' },
+        { key:'finance',     name: (window.staffCustom&&window.staffCustom.finance&&window.staffCustom.finance.name)||'Finance & Accounting Lead', role:'Finance & Accounting', color:'#22c55e' },
+        { key:'marketing',    name: (window.staffCustom&&window.staffCustom.marketing&&window.staffCustom.marketing.name)||'Marketing Lead',          role:'Marketing',            color:'#3b82f6' },
+        { key:'legal',   name: (window.staffCustom&&window.staffCustom.legal&&window.staffCustom.legal.name)||'Legal Lead',            role:'Legal',                color:'#eab308' },
+        { key:'architecture', name: (window.staffCustom&&window.staffCustom.architecture&&window.staffCustom.architecture.name)||'Architecture Lead', role:'Architecture',         color:'#a855f7' },
+        { key:'hr',  name: (window.staffCustom&&window.staffCustom.hr&&window.staffCustom.hr.name)||'Human Resource Lead',  role:'Human Resources', color:'#ec4899' },
     ];
 
     const rosterHTML = specialists.map(s => `
@@ -2300,10 +2307,10 @@ function applyStaffCustomizations(custom) {
         window.staffCustom[k] = Object.assign({}, STAFF_DEFAULTS[k], custom[k] || {});
     });
 
-    const svgNames    = { cos:'svg-name-cos', tony:'svg-name-tony', mike:'svg-name-mike', steve:'svg-name-steve', harvey:'svg-name-harvey', leonardo:'svg-name-leonardo', sigmund:'svg-name-sigmund' };
-    const svgPatterns = { cos:'pat-soleil', tony:'pat-elon', mike:'pat-isaac', steve:'pat-steve', harvey:'pat-harvey', leonardo:'pat-leonardo', sigmund:'pat-donna' };
-    const aboutImgs   = { cos:'about-img-cos', tony:'about-img-tony', mike:'about-img-mike', steve:'about-img-steve', harvey:'about-img-harvey', leonardo:'about-img-leonardo', sigmund:'about-img-sigmund' };
-    const aboutNames  = { cos:'about-name-cos', tony:'about-name-tony', mike:'about-name-mike', steve:'about-name-steve', harvey:'about-name-harvey', leonardo:'about-name-leonardo', sigmund:'about-name-sigmund' };
+    const svgNames    = { cos:'svg-name-cos', engineering:'svg-name-engineering', finance:'svg-name-finance', marketing:'svg-name-marketing', legal:'svg-name-legal', architecture:'svg-name-architecture', hr:'svg-name-hr' };
+    const svgPatterns = { cos:'pat-soleil', engineering:'pat-elon', finance:'pat-isaac', marketing:'pat-marketing', legal:'pat-legal', architecture:'pat-architecture', hr:'pat-donna' };
+    const aboutImgs   = { cos:'about-img-cos', engineering:'about-img-engineering', finance:'about-img-finance', marketing:'about-img-marketing', legal:'about-img-legal', architecture:'about-img-architecture', hr:'about-img-hr' };
+    const aboutNames  = { cos:'about-name-cos', engineering:'about-name-engineering', finance:'about-name-finance', marketing:'about-name-marketing', legal:'about-name-legal', architecture:'about-name-architecture', hr:'about-name-hr' };
 
     Object.keys(STAFF_DEFAULTS).forEach(key => {
         const d = window.staffCustom[key];
@@ -2780,13 +2787,13 @@ async function loadProviderConfigs() {
 }
 // ─── CHUNK 2: PER-STAFF MODEL ASSIGNMENT ────────────────────────────────────
 
-// staff_assignments in memory: { cos: { provider, model_id }, tony: { provider, model_id }, ... }
+// staff_assignments in memory: { cos: { provider, model_id }, engineering: { provider, model_id }, ... }
 window.staffAssignments = {};
 
 function populateProviderDropdowns() {
     // Called when customize modal opens — fill provider dropdowns with configured providers
     const configuredProviders = Object.keys(window.providerConfigs || {});
-    const STAFF_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+    const STAFF_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
     if (configuredProviders.length === 0) {
         STAFF_KEYS.forEach(key => {
@@ -2883,7 +2890,7 @@ async function saveStaffAssignments() {
     const { data: { user } } = await sbClient.auth.getUser();
     if (!user) { showSettingsStatus('Not signed in.', true); return; }
 
-    const STAFF_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+    const STAFF_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
     const upserts = [];
 
     STAFF_KEYS.forEach(key => {
@@ -2989,7 +2996,7 @@ function renderCustomizeCards() {
     const grid = document.getElementById('customize-cards-grid');
     if (!grid) return;
 
-    const STAFF_ORDER = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+    const STAFF_ORDER = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
     grid.innerHTML = STAFF_ORDER.map((key, idx) => {
         const def    = STAFF_DEFAULTS[key];
@@ -3249,13 +3256,13 @@ function buildStaffSystemPrompt(staffKey) {
     // Get colleague first names for cross-referencing
     const c = window.staffCustom || STAFF_DEFAULTS;
     const colleagues = {
-        cos:      { tony: (c.tony?.name||'Engineering Lead'), mike: (c.mike?.name||'Finance & Accounting Lead'), steve: (c.steve?.name||'Marketing Lead'), harvey: (c.harvey?.name||'Legal Lead'), leo: (c.leonardo?.name||'Architecture Lead'), rachel: (c.sigmund?.name||'Human Resource Lead') },
-        tony:     { donna: (c.cos?.name||'Chief Of Staff'), mike: (c.mike?.name||'Finance & Accounting Lead'), leo: (c.leonardo?.name||'Architecture Lead') },
-        mike:     { donna: (c.cos?.name||'Chief Of Staff'), harvey: (c.harvey?.name||'Legal Lead'), tony: (c.tony?.name||'Engineering Lead') },
-        steve:    { donna: (c.cos?.name||'Chief Of Staff'), mike: (c.mike?.name||'Finance & Accounting Lead'), tony: (c.tony?.name||'Engineering Lead') },
-        harvey:   { donna: (c.cos?.name||'Chief Of Staff'), mike: (c.mike?.name||'Finance & Accounting Lead') },
-        leonardo: { tony: (c.tony?.name||'Engineering Lead'), donna: (c.cos?.name||'Chief Of Staff') },
-        sigmund:  { donna: (c.cos?.name||'Chief Of Staff'), mike: (c.mike?.name||'Finance & Accounting Lead') },
+        cos:      { engineering: (c.engineering?.name||'Engineering Lead'), finance: (c.finance?.name||'Finance & Accounting Lead'), marketing: (c.marketing?.name||'Marketing Lead'), legal: (c.legal?.name||'Legal Lead'), leo: (c.architecture?.name||'Architecture Lead'), rachel: (c.hr?.name||'Human Resource Lead') },
+        engineering:     { donna: (c.cos?.name||'Chief Of Staff'), finance: (c.finance?.name||'Finance & Accounting Lead'), leo: (c.architecture?.name||'Architecture Lead') },
+        finance:     { donna: (c.cos?.name||'Chief Of Staff'), legal: (c.legal?.name||'Legal Lead'), engineering: (c.engineering?.name||'Engineering Lead') },
+        marketing:    { donna: (c.cos?.name||'Chief Of Staff'), finance: (c.finance?.name||'Finance & Accounting Lead'), engineering: (c.engineering?.name||'Engineering Lead') },
+        legal:   { donna: (c.cos?.name||'Chief Of Staff'), finance: (c.finance?.name||'Finance & Accounting Lead') },
+        architecture: { engineering: (c.engineering?.name||'Engineering Lead'), donna: (c.cos?.name||'Chief Of Staff') },
+        hr:  { donna: (c.cos?.name||'Chief Of Staff'), finance: (c.finance?.name||'Finance & Accounting Lead') },
     };
     const col = colleagues[staffKey] || {};
 
@@ -3265,32 +3272,32 @@ function buildStaffSystemPrompt(staffKey) {
 
 Primary mandate: Orchestration. Your core responsibilities are triage, meeting synthesis, challenging founder bias, and locking in next steps.
 
-Your job is to pull the right people in, synthesise what they're saying, and give the founder a clear path forward. You're the connective tissue of this team — you know what ${col.tony} is building, what ${col.mike} is worried about, what ${col.harvey} flagged last week.
+Your job is to pull the right people in, synthesise what they're saying, and give the founder a clear path forward. You're the connective tissue of this team — you know what ${col.engineering} is building, what ${col.finance} is worried about, what ${col.legal} flagged last week.
 
 Tone: Warm but sharp. Decisive. You speak like a trusted colleague who's been in the trenches with this team. Use first names naturally. Don't be formal — be direct and human.
 
-When you synthesise: briefly mention who said what, connect the dots, and give a clear recommendation. "Based on what ${col.harvey} and ${col.mike} said, here's what I think we should do..."`,
+When you synthesise: briefly mention who said what, connect the dots, and give a clear recommendation. "Based on what ${col.legal} and ${col.finance} said, here's what I think we should do..."`,
         },
-        tony: {
-            system: `You are ${name}, the engineering lead at this startup. You sit next to ${col.donna} and ${col.leo}, you've argued with ${col.mike} about infrastructure costs, and you care deeply about building things right.
+        engineering: {
+            system: `You are ${name}, the engineering lead at this startup. You sit next to ${col.donna} and ${col.leo}, you've argued with ${col.finance} about infrastructure costs, and you care deeply about building things right.
 
 Primary mandate: Delivery. Your core responsibilities are technical feasibility, build vs. buy decisions, managing tech debt, and defining realistic timelines.
 
-You speak plainly and technically. No fluff. If something's overengineered, you'll say so. If a timeline is fantasy, you'll say that too. You reference your teammates naturally — "that's really a question for ${col.mike}" or "I'd loop in ${col.leo} on the architecture side."
+You speak plainly and technically. No fluff. If something's overengineered, you'll say so. If a timeline is fantasy, you'll say that too. You reference your teammates naturally — "that's really a question for ${col.finance}" or "I'd loop in ${col.leo} on the architecture side."
 
 Tone: Direct, a bit blunt, technically confident. You're not unfriendly — you just cut to the point. Use first names. Think out loud.`,
         },
-        mike: {
+        finance: {
             system: `You are ${name}, the finance and accounting lead at this startup. You know the burn rate, the runway, and the unit economics better than anyone. You've had the "we need to talk about spending" conversation with ${col.donna} more than once.
 
 Primary mandate: Capital. Your core responsibilities are tracking burn rate, modeling unit economics, managing day-to-day accounting, and prepping for fundraising.
 
-You're not a pessimist — you're the person who keeps the company alive. You flag risks early but you also help find the path. You reference the team naturally: "the question ${col.harvey} should weigh in on is..." or "this depends on what ${col.tony} can ship by when."
+You're not a pessimist — you're the person who keeps the company alive. You flag risks early but you also help find the path. You reference the team naturally: "the question ${col.legal} should weigh in on is..." or "this depends on what ${col.engineering} can ship by when."
 
 Tone: Measured, data-informed, occasionally dry. Friendly but firm on numbers. Use first names.`,
         },
-        steve: {
-            system: `You are ${name}, the marketing lead at this startup. You think about customers, narrative, and growth constantly. You know the product (thanks to ${col.tony}) and the budget constraints (thanks to ${col.mike}), and you work within them creatively.
+        marketing: {
+            system: `You are ${name}, the marketing lead at this startup. You think about customers, narrative, and growth constantly. You know the product (thanks to ${col.engineering}) and the budget constraints (thanks to ${col.finance}), and you work within them creatively.
 
 Primary mandate: Growth. Your core responsibilities are defining value propositions, executing Go-To-Market strategies, optimizing ad spend, and analyzing competitors.
 
@@ -3298,8 +3305,8 @@ You're energetic and idea-driven but you back it with logic. You speak like some
 
 Tone: Enthusiastic but grounded. Creative but practical. Use first names. Reference the team when relevant.`,
         },
-        harvey: {
-            system: `You are ${name}, the legal lead on this team. You've reviewed the contracts, flagged the risks, and had the uncomfortable conversations with ${col.donna} and ${col.mike} about what the company actually agreed to.
+        legal: {
+            system: `You are ${name}, the legal lead on this team. You've reviewed the contracts, flagged the risks, and had the uncomfortable conversations with ${col.donna} and ${col.finance} about what the company actually agreed to.
 
 Primary mandate: Risk. Your core responsibilities are drafting contracts, advising on corporate structure, protecting IP, and ensuring data privacy compliance (PDPA/GDPR/CCPA).
 
@@ -3307,8 +3314,8 @@ You don't talk in legalese with your team. You translate. "Here's what that clau
 
 Tone: Precise but plain-spoken. Collegial. Not stiff. Use first names.`,
         },
-        leonardo: {
-            system: `You are ${name}, the architecture lead at this startup. You and ${col.tony} go back and forth on technical decisions constantly — you take the longer view, ${col.tony} keeps it pragmatic. That tension is healthy.
+        architecture: {
+            system: `You are ${name}, the architecture lead at this startup. You and ${col.engineering} go back and forth on technical decisions constantly — you take the longer view, ${col.engineering} keeps it pragmatic. That tension is healthy.
 
 Primary mandate: Foundation. Your core responsibilities are designing scalable systems, selecting infrastructure, defining API contracts, and shaping platform strategy.
 
@@ -3316,8 +3323,8 @@ You think in systems, scale, and tradeoffs. You're the person who asks "but what
 
 Tone: Thoughtful, curious, collaborative. You're not a lone genius — you build with the team. Use first names.`,
         },
-        sigmund: {
-            system: `You are ${name}, the HR and people lead at this startup. You know everyone on this team personally — their working styles, their motivations, what's keeping them up at night. You work closely with ${col.donna} on team dynamics and with ${col.mike} on comp.
+        hr: {
+            system: `You are ${name}, the HR and people lead at this startup. You know everyone on this team personally — their working styles, their motivations, what's keeping them up at night. You work closely with ${col.donna} on team dynamics and with ${col.finance} on comp.
 
 Primary mandate: People. Your core responsibilities are sourcing talent, structuring compensation, managing performance, and mitigating cultural risk.
 
@@ -3637,7 +3644,7 @@ document.getElementById('chat-input').onkeydown = e => { if (e.key === 'Enter' &
 
 // ─── CHUNK 4: PER-STAFF KNOWLEDGE BASE ───────────────────────────────────────
 
-const STAFF_KB_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+const STAFF_KB_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
 // In-memory KB: { cos: { urls: '', files: [], urlContent: '' }, ... }
 window.staffKb = {};
@@ -3654,7 +3661,7 @@ Challenging Assumptions: Serves as an objective, trusted counterweight to founde
 
 Closing & Next Steps: Owns the execution follow-through. Ensures that every strategic decision translates into a documented "who is doing what by when" and ruthlessly tracks it to completion.`,
 
-    tony: `Feasibility & Timelines: Translates product vision into technical reality. Pushes back on impossible features and provides honest, padded timelines that account for testing and unknown variables.
+    engineering: `Feasibility & Timelines: Translates product vision into technical reality. Pushes back on impossible features and provides honest, padded timelines that account for testing and unknown variables.
 
 Build vs. Buy: Pragmatically decides when to write custom code versus leveraging existing third-party tools to accelerate time-to-market.
 
@@ -3662,7 +3669,7 @@ Tech Debt Management: Balances the need for speed with code maintainability. Int
 
 Security & Operations: Establishes baseline security protocols to protect company assets and user data without crippling developer velocity.`,
 
-    mike: `Unit Economics & ROI: Obsessively models customer acquisition cost (CAC) against lifetime value (LTV) to ensure the business model is actually sustainable as it scales.
+    finance: `Unit Economics & ROI: Obsessively models customer acquisition cost (CAC) against lifetime value (LTV) to ensure the business model is actually sustainable as it scales.
 
 Burn Rate Management: Monitors runway and cash flow. Acts as the financial brakes when necessary, providing early warnings for potential cash crunches.
 
@@ -3670,7 +3677,7 @@ Fundraising Prep: Builds the financial models, cap table scenarios, and historic
 
 Accounting Guidance: Ensures clean bookkeeping, tax compliance, and proper categorization of expenses to avoid costly audits down the line.`,
 
-    steve: `Value Proposition & Positioning: Sharpens the company's messaging so it cuts through the noise, stands out against competitors, and deeply resonates with the target audience.
+    marketing: `Value Proposition & Positioning: Sharpens the company's messaging so it cuts through the noise, stands out against competitors, and deeply resonates with the target audience.
 
 GTM Strategy: Orchestrates product launches and coordinates cross-functional efforts to ensure new features actually reach and activate users.
 
@@ -3678,7 +3685,7 @@ Acquisition Channels: Tests, measures, and scales various marketing channels (or
 
 Spend Efficiency: Rigorously tracks conversion rates and customer acquisition costs to ensure every advertising dollar yields a positive return.`,
 
-    harvey: `Contracts & IP: Protects the company's core assets through ironclad intellectual property assignments, NDAs, terms of service, and vendor agreements.
+    legal: `Contracts & IP: Protects the company's core assets through ironclad intellectual property assignments, NDAs, terms of service, and vendor agreements.
 
 Corporate Structure: Advises on entity formation, subsidiary structures, board governance, and the mechanics of equity distribution.
 
@@ -3686,7 +3693,7 @@ Compliance & Privacy: Navigates the complex web of local and international data 
 
 Employment Law: Standardizes offer letters, contractor agreements, and termination procedures to minimize liability and ensure fair practices.`,
 
-    leonardo: `Systems Design & Scalability: Blueprints the technical stack, ensuring it can handle current loads while providing a clear, cost-effective path to scale as user adoption grows.
+    architecture: `Systems Design & Scalability: Blueprints the technical stack, ensuring it can handle current loads while providing a clear, cost-effective path to scale as user adoption grows.
 
 Infrastructure Choices: Makes high-stakes decisions on cloud architecture, database paradigms, and deployment pipelines that the company will live with for years.
 
@@ -3694,7 +3701,7 @@ API Contracts: Defines robust interfaces between microservices or frontend/backe
 
 Platform Strategy: Looks over the horizon to anticipate future technical requirements, ensuring today's architecture won't block tomorrow's product roadmap.`,
 
-    sigmund: `Hiring & Org Design: Anticipates capacity bottlenecks, designs a scalable organizational chart, and manages the full-cycle recruiting process to secure top talent.
+    hr: `Hiring & Org Design: Anticipates capacity bottlenecks, designs a scalable organizational chart, and manages the full-cycle recruiting process to secure top talent.
 
 Compensation: Develops competitive, equitable salary and stock option bands that align with the company's cash position and market realities.
 
@@ -3984,9 +3991,9 @@ async function runDiag() {
 
     // ── STAFF ASSIGNMENTS & STATUS DOTS ──
     head('STAFF STATUS + POSITIONS');
-    const KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
-    const NAMES = { cos:'Chief of Staff', tony:'Engineering', mike:'Finance & Accounting', steve:'Marketing', harvey:'Legal', leonardo:'Architecture', sigmund:'Human Resources' };
-    const ROLE_LABELS = { cos:'Chief of Staff', tony:'Engineering', mike:'Finance & Accounting', steve:'Marketing', harvey:'Legal', leonardo:'Architecture', sigmund:'Human Resources' };
+    const KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
+    const NAMES = { cos:'Chief of Staff', engineering:'Engineering', finance:'Finance & Accounting', marketing:'Marketing', legal:'Legal', architecture:'Architecture', hr:'Human Resources' };
+    const ROLE_LABELS = { cos:'Chief of Staff', engineering:'Engineering', finance:'Finance & Accounting', marketing:'Marketing', legal:'Legal', architecture:'Architecture', hr:'Human Resources' };
     for (const key of KEYS) {
         const assignment = window.staffAssignments?.[key];
         const dot = document.getElementById('status-dot-' + key);
@@ -4022,7 +4029,7 @@ async function runDiag() {
 
     // ── SVG NODE POSITIONS ──
     head('SVG NODE CIRCLES');
-    const nodeMap = { cos:'soleil', tony:'elon', mike:'isaac', steve:'steve', harvey:'harvey', leonardo:'leonardo', sigmund:'donna' };
+    const nodeMap = { cos:'soleil', engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna' };
     for (const [key, nodeId] of Object.entries(nodeMap)) {
         const circle = document.querySelector(`#node-${nodeId} circle`);
         const cx = circle?.getAttribute('cx') || 'N/A';
@@ -4277,7 +4284,7 @@ document.addEventListener('keydown', e => {
 const STATUS = { GRAY: '#6b7280', GREEN: '#22c55e', RED: '#ef4444' };
 
 // Map staff keys to SVG dot IDs
-const STAFF_KEYS = ['cos','tony','mike','steve','harvey','leonardo','sigmund'];
+const STAFF_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
 function setStaffDot(key, color, title) {
     // SVG dot
