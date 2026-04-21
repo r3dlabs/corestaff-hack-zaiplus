@@ -616,7 +616,7 @@
                 <!-- Step 4: API setup -->
                 <div id="ob-step-4" style="display:none;">
                     <p style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Almost ready.</p>
-                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">To activate the team, you'll need to connect at least one AI provider. Each staff member can use their own model — or they'll all share one.</p>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">To activate the team, connect at least one AI provider and assign models. We'll open the setup screen for you next.</p>
                     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
                             <span style="font-size:18px;">⚙️</span>
@@ -628,19 +628,12 @@
                         <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
                             <span style="font-size:18px;">👥</span>
                             <div>
-                                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Assign Models</div>
-                                <div style="font-size:12px;color:var(--text-secondary);">Use Customize Team to assign specific models to Engineering, Finance, Legal and the rest of the team.</div>
-                            </div>
-                        </div>
-                        <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
-                            <span style="font-size:18px;">📚</span>
-                            <div>
-                                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Staff Knowledge</div>
-                                <div style="font-size:12px;color:var(--text-secondary);">Add URLs and documents to each staff member's knowledge base so they respond with your context.</div>
+                                <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Team &amp; Startup Settings</div>
+                                <div style="font-size:12px;color:var(--text-secondary);">Assign models, set focus areas, and add reference URLs for each staff member — all in one place.</div>
                             </div>
                         </div>
                     </div>
-                    <p style="font-size:11px;color:var(--text-muted);line-height:1.6;">You can skip this for now and configure later. The team will prompt you when needed.</p>
+                    <p style="font-size:11px;color:var(--text-muted);line-height:1.6;">Clicking Launch will open the setup screen automatically.</p>
                 </div>
 
             </div>
@@ -871,8 +864,8 @@
             <!-- Header -->
             <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
                 <div>
-                    <p style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Customize Team</p>
-                    <p style="font-size:13px;color:var(--text-secondary);">Configure each staff member's identity, model, focus areas and reference knowledge.</p>
+                    <p style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:3px;">Team &amp; Startup Settings</p>
+                    <p style="font-size:13px;color:var(--text-secondary);">Configure your startup context and each staff member's identity, model and knowledge.</p>
                 </div>
                 <button id="btn-close-customize" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:20px;line-height:1;flex-shrink:0;margin-left:16px;">&#x2715;</button>
             </div>
@@ -894,6 +887,45 @@
 
             <!-- Hero card grid — populated by renderCustomizeCards() -->
             <div id="customize-cards-grid" style="flex:1;overflow-y:auto;padding:16px 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+
+                <!-- Startup Context card — spans full width, first item in grid -->
+                <div id="startup-context-card" style="grid-column:1/-1;border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:4px;">
+
+                    <!-- Collapsed summary (shown when configured) -->
+                    <div id="startup-ctx-summary" style="display:none;padding:12px 16px;cursor:pointer;display:none;align-items:center;gap:12px;background:var(--bg-elevated);" onclick="toggleStartupContext()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                        <div style="flex:1;min-width:0;">
+                            <span id="startup-ctx-summary-text" style="font-size:12px;color:var(--text-primary);font-weight:500;"></span>
+                        </div>
+                        <svg id="startup-ctx-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--text-muted);flex-shrink:0;transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+
+                    <!-- Expanded form -->
+                    <div id="startup-ctx-body" style="padding:16px 20px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                            <div>
+                                <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:2px;">Startup Context</div>
+                                <div style="font-size:11px;color:var(--text-muted);">This context is injected into every staff prompt.</div>
+                            </div>
+                            <button id="startup-ctx-collapse-btn" onclick="toggleStartupContext()" style="display:none;background:transparent;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;line-height:1;padding:0 4px;">&#x2715;</button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div>
+                                <div class="staff-section-label">Your Name</div>
+                                <input id="ctx-founder-name" type="text" class="input-field" placeholder="e.g. Alex" style="font-size:13px;" value="">
+                            </div>
+                            <div>
+                                <div class="staff-section-label">HQ Country</div>
+                                <input id="ctx-hq-country" type="text" class="input-field" placeholder="e.g. Singapore" style="font-size:13px;" value="">
+                            </div>
+                            <div style="grid-column:1/-1;">
+                                <div class="staff-section-label">Startup Name &amp; Description</div>
+                                <textarea id="ctx-startup-desc" rows="3" class="input-field" style="resize:none;font-size:13px;" placeholder="e.g. TechFlow AI — a B2B SaaS platform automating customer onboarding using generative agents."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Footer -->
@@ -930,7 +962,6 @@
             </div>
         </div>
         <div style="display:flex;flex-direction:row;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">
-            <button id="btn-edit-startup" title="Business Profile" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></button>
             <button id="btn-providers" title="AI Providers" style="border:1px solid var(--border);border-radius:7px;padding:6px 8px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
@@ -1458,7 +1489,6 @@ const startupModal  = document.getElementById('startup-modal');
 const inputFounderName   = document.getElementById('input-founder-name');
 const inputStartupDesc   = document.getElementById('input-startup-desc');
 const btnLaunchBoardroom = document.getElementById('btn-launch-boardroom');
-const btnEditStartup     = document.getElementById('btn-edit-startup');
 
 // ─── THEME ──────────────────────────────────────────────────────────────────
 const html = document.documentElement;
@@ -2260,7 +2290,6 @@ btnFullscreen.addEventListener('click',()=>{
 
 
 
-btnEditStartup.addEventListener('click', () => obOpen(window._currentUserName || founderName));
 // btnLaunchBoardroom removed — handled by obNext()
 
 window.onload = async () => {
@@ -2487,6 +2516,20 @@ async function saveStaffCustomizations() {
     showCustomizeStatus('');
 
     try {
+        // ── 0. Save startup context from the card inputs ──────────────────
+        const newFounderName = document.getElementById('ctx-founder-name')?.value.trim() || '';
+        const newStartupDesc = document.getElementById('ctx-startup-desc')?.value.trim() || '';
+        const newHqCountry   = document.getElementById('ctx-hq-country')?.value.trim()   || '';
+        founderName = newFounderName; localStorage.setItem('founder_name', founderName);
+        startupDesc = newStartupDesc; localStorage.setItem('startup_desc', startupDesc);
+        hqCountry   = newHqCountry;   localStorage.setItem('hq_country',   hqCountry);
+        updateHqFlag(hqCountry);
+        await sbClient.from('staff_customizations').upsert([
+            { user_id: user.id, staff_key: '__founder_name__', custom_name: founderName, photo_url: null },
+            { user_id: user.id, staff_key: '__startup_desc__', custom_name: startupDesc, photo_url: null },
+            { user_id: user.id, staff_key: '__hq_country__',   custom_name: hqCountry,   photo_url: null },
+        ], { onConflict: 'user_id,staff_key' });
+
         // ── 1. Save staff customizations (name + photo) ───────────────────
         const customUpserts = Object.keys(STAFF_DEFAULTS).map(key => ({
             user_id:     user.id,
@@ -2539,6 +2582,7 @@ async function saveStaffCustomizations() {
         });
         applyStaffCustomizations(custom);
         initializeBoardroom();
+        updateStartupContextCard();
         showCustomizeStatus('✓ Saved successfully.');
         setTimeout(() => { document.getElementById('customize-modal').style.display = 'none'; }, 800);
     } catch(e) {
@@ -3040,6 +3084,67 @@ function applyToAll() {
 // ── Set All provider/model ────────────────────────────────────────────────────
 
 // ── renderCustomizeCards — builds hero card grid ─────────────────────────────
+// ─── STARTUP CONTEXT IN CUSTOMIZE MODAL ─────────────────────────────────────
+
+function populateStartupContext() {
+    document.getElementById('ctx-founder-name').value  = founderName  || '';
+    document.getElementById('ctx-startup-desc').value  = startupDesc  || '';
+    document.getElementById('ctx-hq-country').value    = hqCountry    || '';
+    updateStartupContextCard();
+}
+
+function updateStartupContextCard() {
+    const hasData = founderName || startupDesc || hqCountry;
+    const summary  = document.getElementById('startup-ctx-summary');
+    const body     = document.getElementById('startup-ctx-body');
+    const collapseBtn = document.getElementById('startup-ctx-collapse-btn');
+    const summaryText = document.getElementById('startup-ctx-summary-text');
+    const chevron  = document.getElementById('startup-ctx-chevron');
+
+    if (hasData) {
+        // Show collapsed summary, hide expand body, show collapse X button
+        const parts = [];
+        if (founderName) parts.push(founderName);
+        if (startupDesc) parts.push(startupDesc.split(/[,—–-]/)[0].trim());
+        if (hqCountry)   parts.push(countryToFlag(hqCountry) + ' ' + hqCountry);
+        summaryText.textContent = parts.join('  ·  ');
+        summary.style.display = 'flex';
+        body.style.display    = 'none';
+        collapseBtn.style.display = 'none';
+        chevron.style.transform   = 'rotate(0deg)';
+    } else {
+        // No data — keep expanded, no summary
+        summary.style.display = 'none';
+        body.style.display    = 'block';
+        collapseBtn.style.display = 'none';
+    }
+}
+
+function toggleStartupContext() {
+    const summary  = document.getElementById('startup-ctx-summary');
+    const body     = document.getElementById('startup-ctx-body');
+    const collapseBtn = document.getElementById('startup-ctx-collapse-btn');
+    const chevron  = document.getElementById('startup-ctx-chevron');
+    const isExpanded = body.style.display !== 'none';
+
+    if (isExpanded) {
+        // Collapse — only if data exists
+        const fn = document.getElementById('ctx-founder-name')?.value.trim();
+        const sd = document.getElementById('ctx-startup-desc')?.value.trim();
+        const hq = document.getElementById('ctx-hq-country')?.value.trim();
+        if (!fn && !sd && !hq) return; // don't collapse if empty
+        body.style.display        = 'none';
+        summary.style.display     = 'flex';
+        collapseBtn.style.display = 'none';
+        chevron.style.transform   = 'rotate(0deg)';
+    } else {
+        body.style.display        = 'block';
+        summary.style.display     = 'none';
+        collapseBtn.style.display = 'block';
+        chevron.style.transform   = 'rotate(180deg)';
+    }
+}
+
 function renderCustomizeCards() {
     const grid = document.getElementById('customize-cards-grid');
     if (!grid) return;
@@ -3192,6 +3297,7 @@ async function fetchKbUrlsForKey(key) {
 // ── Definitive btn-customize click handler ───────────────────────────────────
 document.getElementById('btn-customize').onclick = () => {
     if (!sbClient) { alert('Please sign in to customize your team.'); return; }
+    populateStartupContext();
     renderCustomizeCards();
     document.getElementById('customize-modal').style.display = 'flex';
 };
@@ -4149,7 +4255,12 @@ function obRender(userName) {
 
 function obNext() {
     const skipChecked = document.getElementById('ob-skip-checkbox')?.checked;
-    const dismiss = () => { obDontShow(); saveFounderPrefs(); document.getElementById('startup-modal').style.display = 'none'; initializeBoardroom(); };
+    const dismiss = () => {
+        obDontShow();
+        saveFounderPrefs();
+        document.getElementById('startup-modal').style.display = 'none';
+        initializeBoardroom();
+    };
 
     if (obStep === 1) {
         const val = document.getElementById('input-founder-name')?.value.trim();
@@ -4174,6 +4285,14 @@ function obNext() {
         document.getElementById('startup-modal').style.display = 'none';
         saveFounderPrefs();
         initializeBoardroom();
+        // Open customize modal so they can set up models — natural next step
+        setTimeout(() => {
+            if (sbClient) {
+                populateStartupContext();
+                renderCustomizeCards();
+                document.getElementById('customize-modal').style.display = 'flex';
+            }
+        }, 400);
     }
 }
 
