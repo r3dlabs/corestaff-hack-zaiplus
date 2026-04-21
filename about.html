@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<title>Docs & About — Startup Staff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Theme variables — exact match to index.html ── */
+  :root[data-theme="dark"] {
+    --bg-base:       #0a0a0a;
+    --bg-surface:    #111111;
+    --bg-elevated:   #1a1a1a;
+    --bg-hover:      #222222;
+    --border:        #2a2a2a;
+    --border-strong: #3a3a3a;
+    --text-primary:  #f5f5f5;
+    --text-secondary:#a0a0a0;
+    --text-muted:    #606060;
+    --accent:        #f5f5f5;
+    --accent-muted:  #2a2a2a;
+    --color-engineering: #ef4444;
+    --color-finance:     #22c55e;
+    --color-steve:       #3b82f6;
+    --color-harvey:      #eab308;
+    --color-leonardo:    #a855f7;
+    --color-hr:          #ec4899;
+    --color-cos:         #06b6d4;
+  }
+  :root[data-theme="light"] {
+    --bg-base:       #fafafa;
+    --bg-surface:    #ffffff;
+    --bg-elevated:   #f4f4f4;
+    --bg-hover:      #ebebeb;
+    --border:        #e0e0e0;
+    --border-strong: #c8c8c8;
+    --text-primary:  #0a0a0a;
+    --text-secondary:#505050;
+    --text-muted:    #999999;
+    --accent:        #0a0a0a;
+    --accent-muted:  #f0f0f0;
+    --color-engineering: #ef4444;
+    --color-finance:     #22c55e;
+    --color-steve:       #3b82f6;
+    --color-harvey:      #eab308;
+    --color-leonardo:    #a855f7;
+    --color-hr:          #ec4899;
+    --color-cos:         #06b6d4;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Geist', system-ui, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 14px;
+    transition: background 0.2s, color 0.2s;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+
+  /* ── Rocket flame glow ── */
+  @keyframes flameGlow {
+    0%,100% { opacity: 0.3; transform: scale(0.8); }
+    50%      { opacity: 0.7; transform: scale(1.2); }
+  }
+  .rocket-wrap {
+    position: relative; display: inline-flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .rocket-wrap .flame-glow {
+    position: absolute; inset: -30%; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,120,0,0.8) 0%, rgba(255,60,0,0.4) 40%, transparent 70%);
+    filter: blur(6px); animation: flameGlow 1.8s ease-in-out infinite;
+    pointer-events: none; z-index: 0;
+  }
+  .rocket-wrap .rocket-emoji { position: relative; z-index: 1; line-height: 1; }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+    background: var(--bg-surface);
+    z-index: 100;
+    transition: background 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+  }
+  .header-inner {
+    padding: 0 16px; height: 52px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .logo-wrap {
+    display: flex; flex-direction: row; align-items: center;
+    gap: 8px; text-decoration: none; flex-shrink: 0;
+  }
+  .logo-text { display: flex; flex-direction: column; justify-content: center; line-height: 1.1; }
+  .logo-text .wordmark { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+  .logo-text .wordmark .primary { color: var(--text-primary); }
+  .logo-text .wordmark .muted   { color: var(--text-muted); margin-left: 4px; }
+  .logo-text .edition {
+    font-size: 9px; color: var(--text-muted);
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px;
+  }
+  .header-right { display: flex; align-items: center; gap: 6px; }
+  .back-link {
+    font-size: 12px; color: var(--text-muted); text-decoration: none;
+    font-family: 'Geist Mono', monospace; letter-spacing: 0.04em;
+    border: 1px solid var(--border); border-radius: 7px; padding: 5px 10px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .back-link:hover { color: var(--text-primary); border-color: var(--border-strong); }
+  .btn-theme {
+    width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 7px;
+    background: var(--bg-elevated); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary); flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-theme:hover { background: var(--bg-hover); border-color: var(--border-strong); }
+
+  /* ── Layout ── */
+  .page-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    width: 220px;
+    min-width: 220px;
+    border-right: 1px solid var(--border);
+    background: var(--bg-surface);
+    position: sticky;
+    top: 52px;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+    padding: 24px 0 48px;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .nav-section {
+    padding: 10px 18px 4px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-muted); margin-top: 8px;
+  }
+  .nav-section:first-child { margin-top: 0; }
+  .nav-item {
+    display: block; padding: 6px 18px;
+    font-size: 12.5px; color: var(--text-secondary);
+    text-decoration: none; cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: color 0.1s, background 0.1s, border-color 0.1s;
+  }
+  .nav-item:hover { color: var(--text-primary); background: var(--bg-elevated); }
+  .nav-item.active { color: var(--text-primary); border-left-color: var(--text-primary); background: var(--accent-muted); font-weight: 500; }
+
+  /* ── Main content ── */
+  #main {
+    flex: 1; min-width: 0;
+    padding: 56px 60px 100px;
+    max-width: 820px;
+    overflow-y: auto;
+  }
+
+  section { margin-bottom: 72px; scroll-margin-top: 24px; }
+
+  .section-tag {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 10px; display: block;
+  }
+
+  h2 {
+    font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--text-primary); margin-bottom: 20px; line-height: 1.2;
+  }
+
+  h3 {
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+    margin: 28px 0 10px; letter-spacing: 0.01em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  h3::before {
+    content: ''; display: inline-block; width: 3px; height: 14px;
+    background: var(--text-muted); border-radius: 2px; flex-shrink: 0;
+  }
+
+  p { color: var(--text-secondary); margin-bottom: 12px; line-height: 1.75; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--text-primary); font-weight: 600; }
+  code {
+    font-family: 'Geist Mono', monospace;
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 6px; font-size: 12px; color: var(--text-primary);
+  }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+
+  /* ── Staff grid ── */
+  .staff-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 10px; margin: 20px 0;
+  }
+  .staff-card {
+    background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    border-left: 3px solid var(--border-strong);
+    transition: border-color 0.15s;
+  }
+  .staff-card-name { font-weight: 700; font-size: 13px; margin-bottom: 1px; }
+  .staff-card-role {
+    font-family: 'Geist Mono', monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+  .staff-card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── Flow steps ── */
+  .flow { display: flex; flex-direction: column; gap: 0; margin: 20px 0; }
+  .flow-step { display: flex; align-items: flex-start; gap: 16px; }
+  .flow-spine { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 32px; }
+  .flow-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--text-primary); border: 2px solid var(--bg-base);
+    box-shadow: 0 0 0 2px var(--text-primary); flex-shrink: 0; margin-top: 4px;
+  }
+  .flow-dot.muted { background: var(--text-muted); box-shadow: 0 0 0 2px var(--text-muted); }
+  .flow-line { width: 1px; flex: 1; min-height: 24px; background: var(--border); }
+  .flow-content { padding: 2px 0 24px; flex: 1; }
+  .flow-label {
+    font-family: 'Geist Mono', monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-muted); margin-bottom: 3px;
+  }
+  .flow-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ── Provider chips ── */
+  .provider-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 8px; margin: 16px 0;
+  }
+  .provider-card {
+    background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .provider-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 4px;
+  }
+  .provider-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .provider-detail { font-size: 11px; color: var(--text-muted); font-family: 'Geist Mono', monospace; }
+
+  /* ── Step cards (how to use) ── */
+  .step-list { display: flex; flex-direction: column; gap: 2px; margin: 16px 0; }
+  .step-card {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .step-num {
+    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); width: 28px; flex-shrink: 0; padding-top: 1px;
+  }
+  .step-body {}
+  .step-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .step-desc  { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+  /* ── Callout boxes ── */
+  .callout {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 18px; margin: 16px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+  }
+  .callout.info    { border-left: 3px solid #3b82f6; background: rgba(59,130,246,0.05); }
+  .callout.warn    { border-left: 3px solid #eab308; background: rgba(234,179,8,0.05); }
+  .callout.danger  { border-left: 3px solid #ef4444; background: rgba(239,68,68,0.05); }
+  .callout.tip     { border-left: 3px solid #22c55e; background: rgba(34,197,94,0.05); }
+  .callout-icon    { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Roadmap cards ── */
+  .roadmap-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+  .roadmap-card {
+    background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .roadmap-num {
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--text-muted); flex-shrink: 0; margin-top: 1px; width: 24px;
+  }
+  .roadmap-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .roadmap-desc  { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block; font-family: 'Geist Mono', monospace;
+    font-size: 10px; padding: 2px 7px; border-radius: 4px;
+    font-weight: 500; vertical-align: middle; margin-left: 6px;
+  }
+  .badge.green  { background: rgba(34,197,94,0.12);   color: #22c55e; }
+  .badge.yellow { background: rgba(234,179,8,0.12);   color: #eab308; }
+  .badge.red    { background: rgba(239,68,68,0.12);   color: #ef4444; }
+  .badge.blue   { background: rgba(59,130,246,0.12);  color: #3b82f6; }
+  .badge.purple { background: rgba(168,85,247,0.12);  color: #a855f7; }
+  .badge.cyan   { background: rgba(6,182,212,0.12);   color: #06b6d4; }
+
+  /* ── Table ── */
+  .doc-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .doc-table th {
+    text-align: left; font-family: 'Geist Mono', monospace;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border);
+  }
+  .doc-table td {
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
+    color: var(--text-secondary); vertical-align: top;
+  }
+  .doc-table td:first-child { color: var(--text-primary); font-weight: 500; font-family: 'Geist Mono', monospace; font-size: 12px; }
+  .doc-table tr:last-child td { border-bottom: none; }
+  .table-wrap {
+    background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin: 16px 0;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border); padding: 24px 0;
+    transition: border-color 0.2s; flex-shrink: 0;
+  }
+  .footer-inner {
+    padding: 0 16px; display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-inner p { font-size: 12px; color: var(--text-muted); font-family: 'Geist Mono', monospace; margin: 0; }
+  .footer-inner a { color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+  .footer-inner a:hover { color: var(--text-primary); }
+
+  @media (max-width: 768px) {
+    #sidebar { display: none; }
+    #main { padding: 36px 20px 80px; }
+    .staff-grid { grid-template-columns: 1fr; }
+    .provider-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-inner">
+    <a href="https://startup-staff.com" class="logo-wrap">
+      <span class="rocket-wrap" style="font-size:20px;"><div class="flame-glow"></div><span class="rocket-emoji">🚀</span></span>
+      <div class="logo-text">
+        <div class="wordmark"><span class="primary">Startup</span><span class="muted">Staff</span></div>
+        <div class="edition">Founder Edition</div>
+      </div>
+    </a>
+    <div class="header-right">
+      <button class="btn-theme" id="btn-theme-toggle" title="Toggle theme" onclick="toggleTheme()">
+        <svg id="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <a href="https://startup-staff.com" class="back-link">← Back to app</a>
+    </div>
+  </div>
+</header>
+
+<div class="page-body">
+
+<!-- ── Sidebar ── -->
+<nav id="sidebar">
+  <div class="nav-section">About</div>
+  <a class="nav-item active" href="#what-is">What is Startup Staff?</a>
+  <a class="nav-item" href="#the-team">The Core Team</a>
+  <a class="nav-item" href="#how-it-works">How It Works</a>
+
+  <div class="nav-section">Getting Started</div>
+  <a class="nav-item" href="#quickstart">Quick Start</a>
+  <a class="nav-item" href="#providers">AI Providers</a>
+  <a class="nav-item" href="#settings">Settings & Config</a>
+
+  <div class="nav-section">Using the App</div>
+  <a class="nav-item" href="#asking-questions">Asking Questions</a>
+  <a class="nav-item" href="#memory">Memory System</a>
+  <a class="nav-item" href="#knowledge-base">Knowledge Base</a>
+  <a class="nav-item" href="#exports">Document Exports</a>
+
+  <div class="nav-section">Reference</div>
+  <a class="nav-item" href="#architecture">Architecture</a>
+  <a class="nav-item" href="#data-storage">Data & Storage</a>
+
+  <div class="nav-section">Roadmap</div>
+  <a class="nav-item" href="#improvements">Future Improvements</a>
+  <a class="nav-item" href="#known-limitations">Known Limitations</a>
+</nav>
+
+<!-- ── Main ── -->
+<main id="main">
+
+  <!-- ─── ABOUT ──────────────────────────────────────────────────────────── -->
+  <section id="what-is">
+    <span class="section-tag">About</span>
+    <h2>What is Startup Staff?</h2>
+    <p>
+      <strong>Startup Staff — Founder Edition</strong> is an AI-powered boardroom for founders and builders. Instead of querying a single AI model, you get a cross-functional team of seven specialist personas that collaborate on every question you ask.
+    </p>
+    <p>
+      Every query is routed through a three-phase pipeline: your <strong>Chief of Staff</strong> decides which specialists are relevant, each specialist responds independently using their assigned AI model, and the Chief of Staff synthesises their perspectives into a single unified recommendation — complete with action items and a clear line of reasoning.
+    </p>
+    <p>
+      Startup Staff is a pure <strong>client-side single-page application</strong> — one HTML file with no build step and no backend beyond Supabase (for auth and settings sync) and direct API calls to the AI providers you configure. You bring your own API keys; we never see your prompts.
+    </p>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>Think of it as hiring a fractional C-suite — Engineering, Finance, Marketing, Legal, Architecture, and HR — available any time, for any question about your startup.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── THE TEAM ───────────────────────────────────────────────────────── -->
+  <section id="the-team">
+    <span class="section-tag">About</span>
+    <h2>The Core Team</h2>
+    <p>Your boardroom has seven members. Each has a distinct domain, personality, and assigned AI model. You can rename, re-photo, and rewrite the persona of any member from the <strong>Settings → Team Configuration</strong> panel.</p>
+
+    <div class="staff-grid">
+      <div class="staff-card" style="border-left-color: var(--color-cos);">
+        <div class="staff-card-name" style="color: var(--color-cos);">Chief of Staff</div>
+        <div class="staff-card-role">Orchestrator · cos</div>
+        <div class="staff-card-desc">Routes every query, decides which specialists to consult, and synthesises the final recommendation. Makes two API calls per query — Phase 1 (routing) and Phase 3 (synthesis).</div>
+      </div>
+      <div class="staff-card" style="border-left-color: var(--color-engineering);">
+        <div class="staff-card-name" style="color: var(--color-engineering);">Engineering Lead</div>
+        <div class="staff-card-role">Engineering · tony</div>
+        <div class="staff-card-desc">First-principles thinker. Technical feasibility, deployment strategy, build vs. buy decisions. Works hand-in-hand with the Architecture Lead.</div>
+      </div>
+      <div class="staff-card" style="border-left-color: var(--color-finance);">
+        <div class="staff-card-name" style="color: var(--color-finance);">Finance & Accounting Lead</div>
+        <div class="staff-card-role">Finance · mike</div>
+        <div class="staff-card-desc">Burn-rate focused. Financial modelling, ROI analysis, unit economics, fundraising strategy.</div>
+      </div>
+      <div class="staff-card" style="border-left-color: var(--color-steve);">
+        <div class="staff-card-name" style="color: var(--color-steve);">Marketing Lead</div>
+        <div class="staff-card-role">Marketing · steve</div>
+        <div class="staff-card-desc">Narrative and growth. GTM strategy, brand positioning, customer acquisition, channel strategy.</div>
+      </div>
+      <div class="staff-card" style="border-left-color: var(--color-harvey);">
+        <div class="staff-card-name" style="color: var(--color-harvey);">Legal Lead</div>
+        <div class="staff-card-role">Legal · harvey</div>
+        <div class="staff-card-desc">Precise, risk-averse. Contracts, IP, regulatory compliance. Defaults to your HQ jurisdiction. Knows when to escalate to a real lawyer.</div>
+      </div>
+      <div class="staff-card" style="border-left-color: var(--color-leonardo);">
+        <div class="staff-card-name" style="color: var(--color-leonardo);">Architecture Lead</div>
+        <div class="staff-card-role">Architecture · leonardo</div>
+        <div class="staff-card-desc">Systems design, infrastructure planning, long-term platform thinking. Pairs tightly with the Engineering Lead.</div>
+      </div>
+      <div class="staff-card" style="border-left-color: var(--color-hr);">
+        <div class="staff-card-name" style="color: var(--color-hr);">Human Resource Lead</div>
+        <div class="staff-card-role">HR · sigmund</div>
+        <div class="staff-card-desc">Empathetic, culture-driven. Hiring strategy, team structure, compensation, people operations, culture building.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── HOW IT WORKS ──────────────────────────────────────────────────── -->
+  <section id="how-it-works">
+    <span class="section-tag">About</span>
+    <h2>How It Works</h2>
+    <p>Every message you send goes through a three-phase multi-agent pipeline. Each phase is a separate API call to the AI model assigned to that staff member.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-spine"><div class="flow-dot"></div><div class="flow-line"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Phase 1 — Routing</div>
+          <div class="flow-desc">Your message goes to the <strong>Chief of Staff</strong> along with your startup context and memory. The CoS decides which specialists to consult for this query and responds with <code>[CONSULT: Name]</code> tags. Specialists not mentioned are skipped — saving tokens and latency.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-spine"><div class="flow-dot"></div><div class="flow-line"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Phase 2 — Specialist Consultation</div>
+          <div class="flow-desc">Each consulted specialist receives the original query plus their tailored system prompt (including their persona, any knowledge base content you've added, and memory). They respond independently on their assigned AI model. Calls are made sequentially. Up to 6 specialists can be consulted in a single query.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-spine"><div class="flow-dot muted"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Phase 3 — Synthesis</div>
+          <div class="flow-desc">The <strong>Chief of Staff</strong> receives all specialist responses and synthesises them into a unified recommendation — clear paragraphs, bullet action items, and a direct conclusion. This is the response you see in the chat. The CoS also generates a brief session memory entry to maintain continuity.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚡</span>
+      <div>A single query can trigger up to <strong>9 API calls</strong>: 1 routing + 6 specialists + 1 synthesis + 1 session summary update. Each call is billed against the API key of the assigned provider. Use the <strong>Status dots</strong> on the boardroom SVG to check which staff members are active.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── QUICK START ────────────────────────────────────────────────────── -->
+  <section id="quickstart">
+    <span class="section-tag">Getting Started</span>
+    <h2>Quick Start</h2>
+    <p>From sign-in to your first boardroom response in under five minutes:</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Sign in with LinkedIn</div>
+          <p class="step-desc">Authentication is via LinkedIn OAuth through Supabase. No password, no email confirmation. Your account is created automatically on first sign-in.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Complete onboarding</div>
+          <p class="step-desc">Donna (your Chief of Staff) will ask for your name, a description of your startup, and your HQ country. This context is injected into every AI prompt — it's what makes responses feel relevant to your specific situation. You can update this any time in Settings.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Add at least one AI provider</div>
+          <p class="step-desc">Open <strong>Settings → AI Providers</strong> and enter an API key for at least one provider. Use <strong>Set All</strong> to assign a single model to all staff at once, or configure each member individually. The status dots on the boardroom turn green once a staff member is configured.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Ask your first question</div>
+          <p class="step-desc">Type any strategic question into the chat — "Should we raise a seed round now or wait?", "What's our best GTM strategy for Southeast Asia?", "Review our SAFE agreement terms." The boardroom will handle the routing automatically.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">Enrich with Memory and Knowledge Base</div>
+          <p class="step-desc">Use the <strong>🧠 Memory</strong> button to add permanent context (key decisions, product facts, team structure). Use <strong>Staff KB</strong> in Settings to give individual specialists reference documents or URLs — e.g. your term sheet for Harvey, your technical spec for Tony.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── AI PROVIDERS ──────────────────────────────────────────────────── -->
+  <section id="providers">
+    <span class="section-tag">Getting Started</span>
+    <h2>AI Providers</h2>
+    <p>Startup Staff is model-agnostic. Each staff member can be assigned a different provider and model — you might use Claude for the Legal Lead's nuance, GPT-4o for Engineering's speed, and a free Groq model for Marketing's high-volume brainstorming.</p>
+
+    <div class="provider-grid">
+      <div class="provider-card">
+        <div class="provider-dot" style="background:#10a37f;"></div>
+        <div>
+          <div class="provider-name">OpenAI</div>
+          <div class="provider-detail">api.openai.com/v1</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">GPT-4o, GPT-4o-mini, o1, o3-mini</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-dot" style="background:#d4763b;"></div>
+        <div>
+          <div class="provider-name">Anthropic</div>
+          <div class="provider-detail">api.anthropic.com</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-dot" style="background:#4285f4;"></div>
+        <div>
+          <div class="provider-name">Google</div>
+          <div class="provider-detail">generativelanguage.googleapis.com</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 2.0</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-dot" style="background:#5b6ef5;"></div>
+        <div>
+          <div class="provider-name">DeepSeek</div>
+          <div class="provider-detail">api.deepseek.com/v1</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">DeepSeek-V3, DeepSeek-R1</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-dot" style="background:#f55036;"></div>
+        <div>
+          <div class="provider-name">Groq</div>
+          <div class="provider-detail">api.groq.com/openai/v1</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">Llama 3.1, Mixtral, Gemma — extremely fast inference</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-dot" style="background:#ff7000;"></div>
+        <div>
+          <div class="provider-name">Mistral</div>
+          <div class="provider-detail">api.mistral.ai/v1</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">Mistral Large, Mistral Small, Codestral</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-dot" style="background:#7c3aed;"></div>
+        <div>
+          <div class="provider-name">GMI Cloud</div>
+          <div class="provider-detail">api.gmi-serving.com/v1</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">OpenAI-compatible MaaS endpoint</div>
+        </div>
+      </div>
+      <div class="provider-card">
+        <div class="provider-dot" style="background:var(--border-strong);"></div>
+        <div>
+          <div class="provider-name">Custom Endpoint</div>
+          <div class="provider-detail">Any OpenAI-compatible URL</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">Local models via Ollama, LM Studio, etc.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ</span>
+      <div>For providers with CORS restrictions (OpenAI, Anthropic, Google, Mistral), the app validates your key by checking its format rather than making a live request. For OpenAI-compatible providers that allow CORS (Groq, GMI, custom endpoints), a live probe is made. Status dots reflect this accordingly.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── SETTINGS ──────────────────────────────────────────────────────── -->
+  <section id="settings">
+    <span class="section-tag">Getting Started</span>
+    <h2>Settings & Configuration</h2>
+    <p>The Settings modal (⚙️ in the header) is divided into three collapsible sections:</p>
+
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead><tr><th>Section</th><th>What you configure</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>AI Providers</td>
+            <td>API keys and default models per provider. Use <em>Set All</em> to assign one model to the entire team at once, or configure per-staff assignments individually.</td>
+          </tr>
+          <tr>
+            <td>Startup & Business</td>
+            <td>Your name, business name, startup description, and HQ country. This context is injected into every prompt and determines the default legal jurisdiction for Harvey.</td>
+          </tr>
+          <tr>
+            <td>Team Configuration</td>
+            <td>Rename staff, change their avatar photo (URL), rewrite their persona, assign individual models, and toggle each member on/off. Restore defaults resets names and photos without touching model assignments.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Staff Knowledge Base</h3>
+    <p>Each staff member can have a private knowledge base — reference URLs and uploaded documents (.txt, .md, .csv, .json) that are injected into their system prompt. Access it via the <strong>Staff KB</strong> button in the Customise modal. Use this to give Harvey your standard contract templates, Tony your technical spec, or Mike your financial model.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── ASKING QUESTIONS ──────────────────────────────────────────────── -->
+  <section id="asking-questions">
+    <span class="section-tag">Using the App</span>
+    <h2>Asking Questions</h2>
+    <p>There are no special commands required. Just type naturally. The Chief of Staff will route your query to the right specialists automatically based on the content. A few tips:</p>
+
+    <div class="step-list">
+      <div class="step-card">
+        <div class="step-num">💬</div>
+        <div class="step-body">
+          <div class="step-title">Be specific about your situation</div>
+          <p class="step-desc">The more context you give, the more useful the responses. "Should we incorporate in Singapore or Delaware?" will get a better answer if your HQ country and business description are set.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">📄</div>
+        <div class="step-body">
+          <div class="step-title">Request documents</div>
+          <p class="step-desc">Ask to "generate a report on...", "create a spreadsheet with...", or "write an HTML page for..." and the app will produce a downloadable .docx, .xlsx, or .html file attached to the response.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">🎯</div>
+        <div class="step-body">
+          <div class="step-title">Direct queries to a specific specialist</div>
+          <p class="step-desc">You can prompt specific staff: "Harvey, review this clause..." or "Mike, model our runway if we hire 3 engineers." The Chief of Staff will respect explicit routing signals.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">🔄</div>
+        <div class="step-body">
+          <div class="step-title">Follow up naturally</div>
+          <p class="step-desc">Chat history is maintained within the session and passed to the CoS in each prompt. You can follow up, push back, or ask for more detail and the team will retain context from earlier in the conversation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── MEMORY ─────────────────────────────────────────────────────────── -->
+  <section id="memory">
+    <span class="section-tag">Using the App</span>
+    <h2>Memory System</h2>
+    <p>Startup Staff has two layers of memory, both injected into every AI prompt:</p>
+
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead><tr><th>Layer</th><th>What it is</th><th>How to manage</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Default Memory</td>
+            <td>Permanent facts you want every session to know — key decisions, product context, team structure, non-negotiables. Persisted to Supabase.</td>
+            <td>Edit freely in the 🧠 Memory panel. Use Quick Add for fast additions.</td>
+          </tr>
+          <tr>
+            <td>Session Summary</td>
+            <td>An auto-generated summary of the current session, updated every few turns. Helps the CoS maintain continuity within a long conversation.</td>
+            <td>View in the Memory panel. Promote to Default Memory to preserve insights across sessions.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ</span>
+      <div>Chat history itself is <strong>not persisted</strong> — it lives in browser memory only and resets on page reload. Only Default Memory and Session Summaries you promote are saved across sessions.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── KNOWLEDGE BASE ─────────────────────────────────────────────────── -->
+  <section id="knowledge-base">
+    <span class="section-tag">Using the App</span>
+    <h2>Knowledge Base</h2>
+    <p>Each specialist can be given a personal knowledge base — context that is injected only into their system prompt, not shared with others. This lets you give each specialist exactly the reference material they need.</p>
+
+    <p>You can add two types of content per specialist:</p>
+    <ul style="padding-left:20px;color:var(--text-secondary);margin:12px 0;line-height:1.8;">
+      <li><strong>Reference URLs</strong> — one per line. The app will attempt to fetch and extract the text content at sign-in (browser CORS permitting). Most sites block cross-origin requests, so this works best for public docs, GitHub READMEs, and your own hosted content.</li>
+      <li><strong>Uploaded documents</strong> — .txt, .md, .csv, and .json files. Content is read into the knowledge base on save.</li>
+    </ul>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div>URL fetching happens directly from your browser and will fail for most sites due to CORS policies. Errors are embedded as <code>[Fetch failed]</code> notices in the KB content. For reliable knowledge injection, use uploaded files instead.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── DOCUMENT EXPORTS ───────────────────────────────────────────────── -->
+  <section id="exports">
+    <span class="section-tag">Using the App</span>
+    <h2>Document Exports</h2>
+    <p>When the app detects a document request in your message, it instructs the Chief of Staff to embed a structured block in its synthesis response. Once the response arrives, a download card appears in the chat.</p>
+
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead><tr><th>Format</th><th>Trigger phrases</th><th>Library</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>.docx</td>
+            <td>"generate a report", "create a document", "write a memo", "draft a proposal"</td>
+            <td>docx@8.5.0</td>
+          </tr>
+          <tr>
+            <td>.xlsx</td>
+            <td>"create a spreadsheet", "build a model", "make a budget", "generate a tracker"</td>
+            <td>SheetJS 0.18.5</td>
+          </tr>
+          <tr>
+            <td>.html</td>
+            <td>"create a webpage", "build a landing page", "write an HTML page"</td>
+            <td>Native Blob API</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Files are generated client-side in the browser on download button click — no server involved. Generation is lazy: the document is only built when you press Download, not when the response arrives.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── ARCHITECTURE ──────────────────────────────────────────────────── -->
+  <section id="architecture">
+    <span class="section-tag">Reference</span>
+    <h2>Architecture</h2>
+    <p>Startup Staff is deliberately minimal. The entire application is a <strong>single HTML file</strong> with inline CSS and JavaScript — no build step, no bundler, no framework.</p>
+
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead><tr><th>Layer</th><th>Technology</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td>Frontend</td><td>Vanilla HTML/CSS/JS</td><td>Single-page application, all UI and logic</td></tr>
+          <tr><td>Auth</td><td>Supabase Auth (LinkedIn OIDC)</td><td>OAuth sign-in, session management</td></tr>
+          <tr><td>Database</td><td>Supabase (PostgreSQL + RLS)</td><td>User settings, memory, KB, assignments</td></tr>
+          <tr><td>AI calls</td><td>Browser fetch → provider APIs</td><td>Direct from browser using your API keys</td></tr>
+          <tr><td>Word export</td><td>docx@8.5.0 (CDN)</td><td>Client-side .docx generation</td></tr>
+          <tr><td>Excel export</td><td>SheetJS 0.18.5 (CDN)</td><td>Client-side .xlsx generation</td></tr>
+          <tr><td>Hosting</td><td>Any static host</td><td>No server required</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Supabase tables</h3>
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead><tr><th>Table</th><th>Stores</th></tr></thead>
+        <tbody>
+          <tr><td>provider_configs</td><td>API keys and endpoints per provider, per user</td></tr>
+          <tr><td>staff_assignments</td><td>Model assignments per staff member, plus onboarding skip flag and KB content</td></tr>
+          <tr><td>staff_customizations</td><td>Custom names, photos, persona text per staff member</td></tr>
+          <tr><td>founder_prefs</td><td>Founder name, business name, description, HQ country</td></tr>
+          <tr><td>user_memory</td><td>Default memory text and latest session summary</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>All tables use Supabase Row-Level Security — users can only read and write their own rows.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── DATA & STORAGE ────────────────────────────────────────────────── -->
+  <section id="data-storage">
+    <span class="section-tag">Reference</span>
+    <h2>Data & Storage</h2>
+    <p>Understanding where your data lives:</p>
+
+    <div class="table-wrap">
+      <table class="doc-table">
+        <thead><tr><th>Data</th><th>Stored in</th><th>Persists across sessions</th></tr></thead>
+        <tbody>
+          <tr><td>Provider API keys</td><td>Supabase DB</td><td>Yes</td></tr>
+          <tr><td>Staff assignments & models</td><td>Supabase DB</td><td>Yes</td></tr>
+          <tr><td>Staff personas & photos</td><td>Supabase DB</td><td>Yes</td></tr>
+          <tr><td>Founder preferences</td><td>Supabase DB + localStorage cache</td><td>Yes</td></tr>
+          <tr><td>Default memory</td><td>Supabase DB</td><td>Yes</td></tr>
+          <tr><td>Session summary</td><td>Supabase DB (updated each turn)</td><td>Yes (until cleared)</td></tr>
+          <tr><td>Chat history</td><td>Browser memory only</td><td>No — resets on reload</td></tr>
+          <tr><td>UI theme preference</td><td>localStorage</td><td>Yes (device-specific)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout danger">
+      <span class="callout-icon">🔴</span>
+      <div><strong>API keys in browser memory.</strong> Keys are loaded from Supabase into <code>window.providerConfigs</code> at sign-in and held in plaintext during the session. Browser extensions or injected scripts could access them. Set usage limits at your provider's dashboard as a safeguard.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── ROADMAP ────────────────────────────────────────────────────────── -->
+  <section id="improvements">
+    <span class="section-tag">Roadmap</span>
+    <h2>Future Improvements</h2>
+    <p>Areas we're planning to improve, roughly in order of impact:</p>
+
+    <div class="roadmap-list">
+      <div class="roadmap-card">
+        <div class="roadmap-num">01</div>
+        <div>
+          <div class="roadmap-title">Streaming responses <span class="badge blue">UX</span></div>
+          <div class="roadmap-desc">All API calls currently use non-streaming mode. Implementing SSE streaming — especially for the Phase 3 synthesis — would dramatically reduce perceived wait time. The synthesis is the longest response and the one users wait on most.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">02</div>
+        <div>
+          <div class="roadmap-title">Parallel specialist calls <span class="badge yellow">Performance</span></div>
+          <div class="roadmap-desc">Phase 2 specialist calls run sequentially. Switching to <code>Promise.all()</code> would cut total latency from <em>N × specialist_latency</em> to <em>max(specialist_latency)</em> — a major win when 3+ specialists are consulted.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">03</div>
+        <div>
+          <div class="roadmap-title">Persistent chat history <span class="badge blue">Feature</span></div>
+          <div class="roadmap-desc">Chat history resets on every page reload. Saving conversations to Supabase (with a sessions table) would enable history browsing, resume after closing the tab, and conversation search — all high-value for returning users.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">04</div>
+        <div>
+          <div class="roadmap-title">API key proxy / backend <span class="badge red">Security</span></div>
+          <div class="roadmap-desc">A thin server-side proxy (Supabase Edge Function or Cloudflare Worker) would make LLM calls on behalf of the user — keeping API keys entirely off the client. This is the single biggest security improvement possible.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">05</div>
+        <div>
+          <div class="roadmap-title">CORS proxy for URL knowledge base <span class="badge yellow">Reliability</span></div>
+          <div class="roadmap-desc">The Staff KB URL fetcher hits external URLs directly from the browser, which fails for most sites due to CORS policies. A server-side fetch proxy would make URL-based knowledge injection work reliably.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">06</div>
+        <div>
+          <div class="roadmap-title">Token budget management <span class="badge yellow">Cost</span></div>
+          <div class="roadmap-desc">There's no token counting or context pruning. As chat history grows, prompts become very large — eventually exceeding model context windows. A sliding window on chat history (after summarisation) would control costs and prevent overflow errors on smaller models.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">07</div>
+        <div>
+          <div class="roadmap-title">Per-specialist typing indicators <span class="badge blue">UX</span></div>
+          <div class="roadmap-desc">"Tony is thinking..." bubbles during Phase 2 would make the multi-agent process feel more alive and give users a sense of progress rather than a blank wait. The routing phase already shows status text; specialists don't yet.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">08</div>
+        <div>
+          <div class="roadmap-title">Retry per specialist <span class="badge blue">UX</span></div>
+          <div class="roadmap-desc">API errors in Phase 2 are swallowed and displayed as <code>[Name unavailable]</code>. A per-specialist retry button on the bubble, or a global retry for the last query, would significantly improve experience when a provider has a transient failure.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">09</div>
+        <div>
+          <div class="roadmap-title">Modular codebase <span class="badge purple">Maintainability</span></div>
+          <div class="roadmap-desc">The app is ~4,300 lines in a single HTML file. Introducing a minimal build step (Vite + vanilla JS) would enable code splitting, proper imports, and better separation of concerns — without losing the zero-backend philosophy.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">10</div>
+        <div>
+          <div class="roadmap-title">Multi-tab / multi-device sync <span class="badge yellow">Reliability</span></div>
+          <div class="roadmap-desc">Settings changed in one tab aren't reflected in other open sessions without a reload. A Supabase Realtime subscription on the relevant tables, or a <code>BroadcastChannel</code> for same-device, would keep all sessions in sync.</div>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-num">11</div>
+        <div>
+          <div class="roadmap-title">Mobile-optimised layout <span class="badge cyan">Accessibility</span></div>
+          <div class="roadmap-desc">The boardroom SVG and dual-panel layout are designed for desktop. A fully rethought mobile layout — collapsible team panel, bottom chat bar, card-based specialist responses — would open Startup Staff to on-the-go use.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ─── KNOWN LIMITATIONS ─────────────────────────────────────────────── -->
+  <section id="known-limitations">
+    <span class="section-tag">Roadmap</span>
+    <h2>Known Limitations</h2>
+
+    <div class="callout danger">
+      <span class="callout-icon">🔴</span>
+      <div><strong>API keys in browser memory.</strong> <code>window.providerConfigs</code> holds all API keys in plaintext during the session. Any JS running on the page — including browser extensions — can read them. Mitigation: use a backend proxy (see roadmap #04) and always set usage limits at your provider's dashboard.</div>
+    </div>
+    <div class="callout danger">
+      <span class="callout-icon">🔴</span>
+      <div><strong>No rate limiting.</strong> Nothing prevents rapid-fire queries. With all six specialists configured, a single query triggers up to 9 API calls. This can result in significant API cost burn without control. Use provider-level rate limits and spending caps as a safeguard.</div>
+    </div>
+    <div class="callout warn">
+      <span class="callout-icon">🟡</span>
+      <div><strong>Context window growth.</strong> <code>chatHistory</code> is never pruned. Long conversations passed to the CoS in Phase 1 and Phase 3 will eventually exceed model context windows, causing API errors. Session summarisation partially mitigates this but doesn't truncate the raw history array.</div>
+    </div>
+    <div class="callout warn">
+      <span class="callout-icon">🟡</span>
+      <div><strong>URL KB fetch CORS.</strong> URL fetching fails for most sites due to browser CORS policies. Errors appear as <code>[Fetch failed]</code> in the KB content. Use uploaded files for reliable knowledge injection.</div>
+    </div>
+    <div class="callout warn">
+      <span class="callout-icon">🟡</span>
+      <div><strong>Silent DB write failures.</strong> Some Supabase upserts are fire-and-forget — errors are not surfaced to the user. In-memory state and database can diverge silently. If settings seem not to stick, try re-saving and refreshing.</div>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ</span>
+      <div><strong>AI responses are not professional advice.</strong> This is an AI-powered tool. Legal, financial, and medical outputs are starting points for your own research — not substitutes for qualified professionals.</div>
+    </div>
+  </section>
+
+</main>
+</div><!-- /page-body -->
+
+<footer>
+  <div class="footer-inner">
+    <p>© 2026 Modular Technology Solutions Pte Ltd · Singapore</p>
+    <p><a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="/docs.html">Docs</a> &nbsp;·&nbsp; <a href="https://startup-staff.com">App</a></p>
+  </div>
+</footer>
+
+<script>
+  // ── Theme — identical pattern to index.html ──
+  let currentTheme = localStorage.getItem('theme') || 'light';
+  function applyTheme(t) {
+    currentTheme = t;
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    const moon = document.getElementById('theme-icon-moon');
+    const sun  = document.getElementById('theme-icon-sun');
+    if (moon) moon.style.display = t === 'light' ? 'block' : 'none';
+    if (sun)  sun.style.display  = t === 'dark'  ? 'block' : 'none';
+  }
+  function toggleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+  applyTheme(currentTheme);
+
+  // ── Scroll spy ──
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('section[id]');
+  const mainEl   = document.getElementById('main');
+
+  function updateActive() {
+    let current = sections[0]?.id || '';
+    sections.forEach(s => {
+      if (s.getBoundingClientRect().top <= 80) current = s.id;
+    });
+    navItems.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+
+  mainEl.addEventListener('scroll', updateActive);
+  window.addEventListener('scroll', updateActive);
+  updateActive();
+
+  // ── Smooth scroll ──
+  navItems.forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
