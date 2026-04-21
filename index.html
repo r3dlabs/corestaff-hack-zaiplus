@@ -691,7 +691,7 @@
             <!-- Tab bar -->
             <div style="display:flex;border-bottom:1px solid var(--border);background:var(--bg-elevated);flex-shrink:0;padding:0 20px;">
                 <button id="stab-providers" onclick="switchSettingsTab('providers')" style="padding:12px 18px;border:none;border-bottom:2px solid var(--text-primary);background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-primary);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">AI Providers <span id="stab-badge-providers" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
-                <button id="stab-startup" onclick="switchSettingsTab('startup')" style="padding:12px 18px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">Startup &amp; Business <span id="stab-badge-startup" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
+                <button id="stab-startup" onclick="switchSettingsTab('startup')" style="padding:12px 18px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">Business Information <span id="stab-badge-startup" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
                 <button id="stab-team" onclick="switchSettingsTab('team')" style="padding:12px 18px;border:none;border-bottom:2px solid transparent;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text-muted);font-family:'Geist',sans-serif;white-space:nowrap;transition:color 0.15s,border-color 0.15s;margin-bottom:-1px;">Team Configuration <span id="stab-badge-team" style="display:inline-block;margin-left:5px;font-size:9px;font-family:'Geist Mono',monospace;padding:1px 6px;border-radius:4px;background:var(--bg-base);border:1px solid var(--border);color:var(--text-muted);"></span></button>
             </div>
 
@@ -2459,7 +2459,14 @@ function applyStaffCustomizations(custom) {
         }
 
         const customImg = document.getElementById('custom-img-' + key);
-        if (customImg) { customImg.src = d.img; customImg.style.borderColor = d.color; }
+        if (customImg) {
+            customImg.style.borderColor = d.color;
+            if (d.img) {
+                customImg.innerHTML = `<img src="${d.img}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none'">`;
+            } else {
+                customImg.innerHTML = (d.name || '??').slice(0,2).toUpperCase();
+            }
+        }
         const customNameInput = document.getElementById('custom-name-' + key);
         if (customNameInput) customNameInput.value = d.name;
     });
@@ -3213,7 +3220,9 @@ function renderCustomizeCards() {
             <!-- Hero header (click to toggle) -->
             <div class="staff-hero-header" onclick="toggleHeroCard('${key}')" onmouseover="this.style.background='${hoverBg_c}'" onmouseout="this.style.background='transparent'">
                 <div style="position:relative;flex-shrink:0;">
-                    <img id="custom-img-${key}" src="${custom.img || def.img}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid ${color};" onerror="this.src=''">
+                    <div id="custom-img-${key}" style="width:48px;height:48px;border-radius:50%;border:2px solid ${color};background:rgba(${rgb_c?rgb_c[0]+','+rgb_c[1]+','+rgb_c[2]:'160,160,160'},0.15);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:${color};overflow:hidden;flex-shrink:0;">
+                        ${custom.img ? `<img src="${custom.img}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none'">` : (custom.name||def.name).slice(0,2).toUpperCase()}
+                    </div>
                     <label for="custom-upload-${key}" onclick="event.stopPropagation()" style="position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;border-radius:50%;background:var(--text-primary);color:var(--bg-base);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:9px;" title="Upload photo">+</label>
                     <input type="file" id="custom-upload-${key}" data-key="${key}" accept="image/*" style="display:none;">
                 </div>
