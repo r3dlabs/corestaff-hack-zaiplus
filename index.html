@@ -1751,6 +1751,16 @@ function logTrace(msg, highlight=false) {
     traceWindow.scrollTop = traceWindow.scrollHeight;
 }
 
+function logAnim(msg) {
+    // Animation-specific trace — always highlighted, prefixed with [ANIM] tag
+    const p = document.createElement('div');
+    const now = new Date();
+    const ts = now.toLocaleTimeString('en-SG', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+    p.innerHTML = `<span style="color:var(--text-muted);margin-right:8px;user-select:none;">${ts}</span><span style="color:#06b6d4;font-weight:700;">[ANIM]</span> ${msg}`;
+    traceWindow.appendChild(p);
+    traceWindow.scrollTop = traceWindow.scrollHeight;
+}
+
 function formatTextToHtml(text) {
     if (!text) return '';
 
@@ -2052,6 +2062,9 @@ function animateConnection(personaName, delayMs = 0) {
             line.classList.add('active-consult');
             node.classList.add('active');
             setDotActive(key);
+            logAnim(`▶ line-${n} → active-consult (cyan) | visual-${n} → glow ON`);
+        } else {
+            logAnim(`⚠ animateConnection(${personaName}): line=${!!line} node=${!!node} — elements missing, no animation`);
         }
     }, delayMs);
 }
@@ -2068,6 +2081,9 @@ function animateConnectionResponse(key) {
     if (line) {
         line.classList.remove('active-consult');
         line.classList.add('active-response', `staff-${key}`);
+        logAnim(`◀ line-${nodeName} → active-response staff-${key} (staff color)`);
+    } else {
+        logAnim(`⚠ animateConnectionResponse(${key}): line-${nodeName} not found`);
     }
 }
 
@@ -2083,6 +2099,7 @@ function clearConnectionAnimation(key, delayMs = 3500) {
         const node = document.getElementById(`visual-${nodeName}`);
         if (line) line.classList.remove('active-consult', 'active-response', `staff-${key}`);
         if (node) node.classList.remove('active');
+        logAnim(`■ line-${nodeName} + visual-${nodeName} → cleared (${key})`);
         const hasCfg = window.staffAssignments?.[key]?.provider && window.staffAssignments?.[key]?.model;
         hasCfg ? setDotReady(key) : setDotGray(key);
     }, delayMs);
@@ -3980,10 +3997,11 @@ Keep it tight. Be direct. Use first names.` + (handoffBlock ? `\n\n${handoffBloc
         const phase3System = buildStaffSystemPrompt('cos');
         setDotActive('cos');
         const cosNode = document.getElementById('visual-soleil');
-        if (cosNode) cosNode.classList.add('active'); // keep COS glowing through full synthesis
+        if (cosNode) { cosNode.classList.add('active'); logAnim('▶ visual-soleil → glow ON (COS synthesising)'); }
+        else logAnim('⚠ visual-soleil not found — COS synthesis glow skipped');
         const { text: synthesis, usage: phase3Usage } = await callStaffModel('cos', phase3Messages, phase3System, 2048);
         setDotReady('cos');
-        if (cosNode) cosNode.classList.remove('active');
+        if (cosNode) { cosNode.classList.remove('active'); logAnim('■ visual-soleil → glow OFF (synthesis done)'); }
         logTrace(`Phase 3 tokens: ${phase3Usage?.total || '?'}`, false);
 
         // ── Render each specialist as their own bubble ───────────────────────
@@ -4490,6 +4508,50 @@ async function runDiag() {
         errKeys.forEach(k => {
             const e = window._apiErrors[k];
             log(`${NAMES[k] || k} [${e.time}]`, `${e.status} — ${e.msg}`, false);
+        });
+    }
+
+    // ── ANIMATION STATE ──
+    head('ANIMATION STATE — CONNECTOR LINES');
+    const lineMap = { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' };
+    for (const [key, nodeId] of Object.entries(lineMap)) {
+        if (key === 'cos') continue; // no line for center node
+        const line = document.getElementById('line-' + nodeId);
+        if (!line) { log('line-' + nodeId, 'ELEMENT NOT FOUND', false); continue; }
+        const classes = Array.from(line.classList).join(' ') || '(none)';
+        const computedAnim = getComputedStyle(line).animationName || 'none';
+        const computedOpacity = getComputedStyle(line).opacity;
+        const stroke = line.getAttribute('stroke') || '?';
+        const isAnimating = computedAnim !== 'none' && computedAnim !== '';
+        const hasActiveClass = line.classList.contains('active-consult') || line.classList.contains('active-response');
+        log('line-' + nodeId + ' (' + NAMES[key] + ')',
+            'classes=[' + classes + '] anim=' + computedAnim + ' opacity=' + computedOpacity + ' stroke=' + stroke,
+            hasActiveClass ? true : null);
+    }
+
+    head('ANIMATION STATE — NODE GLOWS');
+    const visualMap = { cos:'soleil', engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna' };
+    for (const [key, nodeId] of Object.entries(visualMap)) {
+        const node = document.getElementById('visual-' + nodeId);
+        if (!node) { log('visual-' + nodeId, 'ELEMENT NOT FOUND', false); continue; }
+        const classes = Array.from(node.classList).join(' ') || '(none)';
+        const computedAnim = getComputedStyle(node).animationName || 'none';
+        const glowColor = node.style.getPropertyValue('--glow-color') || '(not set)';
+        const isActive = node.classList.contains('active');
+        const isAnimating = computedAnim !== 'none' && computedAnim !== '';
+        log('visual-' + nodeId + ' (' + NAMES[key] + ')',
+            'classes=[' + classes + '] anim=' + computedAnim + ' --glow-color=' + glowColor,
+            isActive ? (isAnimating ? true : false) : null);
+        if (isActive && !isAnimating) log('  ⚠ has .active but no animation running — CSS may not be applying', null, false);
+    }
+
+    head('ANIMATION STATE — RECENT TRACE EVENTS');
+    const traceLines = Array.from(traceWindow.querySelectorAll('div')).slice(-12);
+    if (traceLines.length === 0) {
+        out.push('<span style="color:#aaa">· Trace window is empty.</span>');
+    } else {
+        traceLines.forEach(el => {
+            out.push('<span style="color:#7af;">' + (el.innerText || el.textContent).replace(/</g,'&lt;') + '</span>');
         });
     }
 
