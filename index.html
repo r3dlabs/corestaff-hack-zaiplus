@@ -122,7 +122,7 @@
             opacity: 0.7;
             stroke-width: 2.5;
         }
-        .node-circle { transition: all 0.3s ease; transform-origin: center; transform-box: fill-box; }
+        .node-circle { transition: all 0.3s ease; transform-origin: center; transform-box: fill-box; cursor: pointer; }
         .node-circle.active { animation: nodeGlow 1.5s ease-in-out infinite; transform: scale(1.12); }
 
         /* ── Modal overlay ── */
@@ -1538,6 +1538,32 @@
         </div>
     </div>
 
+    <!-- ── NODE PROVIDER POPOVER ─────────────────────────────────────────── -->
+    <div id="node-popover" style="display:none;position:fixed;z-index:50;pointer-events:auto;">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:10px;padding:12px 14px;min-width:190px;max-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.25);animation:slideUp 0.15s ease;">
+            <!-- Persona header -->
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
+                <div id="np-avatar" style="width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid #888;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text-secondary);"></div>
+                <div>
+                    <div id="np-name" style="font-size:12px;font-weight:700;color:var(--text-primary);line-height:1.2;"></div>
+                    <div id="np-role" style="font-size:9px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-top:1px;"></div>
+                </div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:9px;display:flex;flex-direction:column;gap:5px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="font-size:9px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);">Provider</span>
+                    <span id="np-provider" style="font-size:11px;font-family:'Geist Mono',monospace;color:var(--text-primary);font-weight:500;"></span>
+                </div>
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+                    <span style="font-size:9px;font-family:'Geist Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);flex-shrink:0;">Model</span>
+                    <span id="np-model" style="font-size:11px;font-family:'Geist Mono',monospace;color:var(--text-primary);font-weight:500;text-align:right;word-break:break-all;"></span>
+                </div>
+            </div>
+        </div>
+        <!-- Arrow pointer -->
+        <div id="np-arrow" style="position:absolute;width:10px;height:10px;background:var(--bg-surface);border:1px solid var(--border-strong);transform:rotate(45deg);"></div>
+    </div>
+
     <!-- ── RESTORE DEFAULTS CONFIRM MODAL ───────────────────────────────── -->
     <div id="restore-defaults-modal" class="modal-overlay" style="display:none;">
         <div class="modal-box" style="max-width:400px;">
@@ -2372,6 +2398,167 @@ function animateConnection(personaName, delayMs = 0) {
         }
     }, delayMs);
 }
+
+// ─── NODE PROVIDER POPOVER ───────────────────────────────────────────────────
+
+// Map SVG node IDs to staff keys
+const NODE_TO_KEY = {
+    'visual-soleil':   'cos',
+    'visual-elon':     'tony',
+    'visual-isaac':    'mike',
+    'visual-steve':    'steve',
+    'visual-harvey':   'harvey',
+    'visual-leonardo': 'leonardo',
+    'visual-donna':    'sigmund',
+};
+
+// Also allow clicking the parent <g> nodes
+const GNODE_TO_KEY = {
+    'node-soleil':   'cos',
+    'node-elon':     'tony',
+    'node-isaac':    'mike',
+    'node-steve':    'steve',
+    'node-harvey':   'harvey',
+    'node-leonardo': 'leonardo',
+    'node-donna':    'sigmund',
+};
+
+const PROVIDER_DISPLAY = {
+    gmi:       'GMI MaaS',
+    anthropic: 'Anthropic',
+    openai:    'OpenAI',
+    deepseek:  'DeepSeek',
+    mistral:   'Mistral',
+    google:    'Google',
+};
+
+let _popoverKey = null;
+
+function showNodePopover(key, targetEl) {
+    const popover  = document.getElementById('node-popover');
+    const arrow    = document.getElementById('np-arrow');
+    if (!popover) return;
+
+    // Populate content
+    const staffData    = window.staffCustom?.[key] || STAFF_DEFAULTS[key] || {};
+    const assignment   = window.staffAssignments?.[key];
+    const providerKey  = assignment?.provider;
+    const modelId      = assignment?.model_id || assignment?.model;
+    const providerName = providerKey ? (PROVIDER_DISPLAY[providerKey] || providerKey) : null;
+
+    // Avatar
+    const avatarEl = document.getElementById('np-avatar');
+    avatarEl.style.borderColor = staffData.color || '#888';
+    avatarEl.innerHTML = '';
+    if (staffData.img) {
+        const img = document.createElement('img');
+        img.src = staffData.img;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+        img.onerror = () => { avatarEl.removeChild(img); avatarEl.textContent = (staffData.name||'?')[0].toUpperCase(); };
+        avatarEl.appendChild(img);
+    } else {
+        avatarEl.textContent = (staffData.name||'?')[0].toUpperCase();
+    }
+
+    document.getElementById('np-name').textContent     = staffData.name || staffData.role || key;
+    document.getElementById('np-name').style.color     = staffData.color || 'var(--text-primary)';
+    document.getElementById('np-role').textContent     = staffData.role || '';
+
+    if (providerName && modelId) {
+        document.getElementById('np-provider').textContent = providerName;
+        document.getElementById('np-model').textContent    = modelId;
+        document.getElementById('np-provider').style.color = 'var(--text-primary)';
+        document.getElementById('np-model').style.color    = 'var(--text-primary)';
+    } else {
+        document.getElementById('np-provider').textContent = '—';
+        document.getElementById('np-model').textContent    = 'Not configured';
+        document.getElementById('np-provider').style.color = 'var(--text-muted)';
+        document.getElementById('np-model').style.color    = 'var(--text-muted)';
+    }
+
+    // Position — get bounding rect of the clicked node
+    popover.style.display = 'block';
+    const svgContainer = document.getElementById('boardroom-svg').parentElement;
+    const svgRect      = svgContainer.getBoundingClientRect();
+    const nodeRect     = targetEl.getBoundingClientRect();
+
+    const nodeCx = nodeRect.left + nodeRect.width  / 2;
+    const nodeCy = nodeRect.top  + nodeRect.height / 2;
+
+    const pw = popover.offsetWidth  || 210;
+    const ph = popover.offsetHeight || 110;
+
+    // Decide which side to place the popover — prefer right, fallback left
+    const spaceRight = window.innerWidth - nodeCx - 20;
+    const spaceLeft  = nodeCx - 20;
+    const spaceBelow = window.innerHeight - nodeCy - 20;
+    const spaceAbove = nodeCy - 20;
+
+    let top, left, arrowTop, arrowLeft, arrowBorderSide;
+
+    if (spaceRight >= pw + 12) {
+        // Place right of node
+        left = nodeCx + nodeRect.width / 2 + 12;
+        top  = Math.min(Math.max(nodeCy - ph / 2, 8), window.innerHeight - ph - 8);
+        arrowLeft = -6;
+        arrowTop  = nodeCy - top - 5;
+        arrowBorderSide = 'border-right:none;border-top:none;';
+    } else if (spaceLeft >= pw + 12) {
+        // Place left of node
+        left = nodeCx - nodeRect.width / 2 - pw - 12;
+        top  = Math.min(Math.max(nodeCy - ph / 2, 8), window.innerHeight - ph - 8);
+        arrowLeft = pw - 4;
+        arrowTop  = nodeCy - top - 5;
+        arrowBorderSide = 'border-left:none;border-bottom:none;';
+    } else if (spaceAbove >= ph + 12) {
+        // Place above node
+        top  = nodeCy - nodeRect.height / 2 - ph - 12;
+        left = Math.min(Math.max(nodeCx - pw / 2, 8), window.innerWidth - pw - 8);
+        arrowTop  = ph - 4;
+        arrowLeft = nodeCx - left - 5;
+        arrowBorderSide = 'border-left:none;border-top:none;';
+    } else {
+        // Place below node
+        top  = nodeCy + nodeRect.height / 2 + 12;
+        left = Math.min(Math.max(nodeCx - pw / 2, 8), window.innerWidth - pw - 8);
+        arrowTop  = -6;
+        arrowLeft = nodeCx - left - 5;
+        arrowBorderSide = 'border-right:none;border-bottom:none;';
+    }
+
+    popover.style.top  = top  + 'px';
+    popover.style.left = left + 'px';
+    arrow.style.top    = arrowTop  + 'px';
+    arrow.style.left   = arrowLeft + 'px';
+    arrow.style.cssText += arrowBorderSide;
+
+    _popoverKey = key;
+}
+
+function hideNodePopover() {
+    const p = document.getElementById('node-popover');
+    if (p) p.style.display = 'none';
+    _popoverKey = null;
+}
+
+// Wire up click on each node group
+document.addEventListener('DOMContentLoaded', () => {});
+// Use immediate wiring since DOM is ready at script execution time
+Object.entries(GNODE_TO_KEY).forEach(([nodeId, key]) => {
+    const el = document.getElementById(nodeId);
+    if (!el) return;
+    el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (_popoverKey === key) { hideNodePopover(); return; }
+        showNodePopover(key, el);
+    });
+});
+
+// Close popover on outside click
+document.addEventListener('click', (e) => {
+    const popover = document.getElementById('node-popover');
+    if (popover && !popover.contains(e.target)) hideNodePopover();
+});
 
 // ─── SEND ────────────────────────────────────────────────────────────────────
 
