@@ -968,9 +968,21 @@
                             </div>
                             <div style="flex:1;">
                                 <div style="font-size:12px;font-weight:600;color:var(--text-primary);">Telegram</div>
-                                <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;">Bot messaging · coming soon</div>
+                                <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;">Bot messaging</div>
                             </div>
-                            <div style="font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">soon</div>
+                            <div id="tool-status-telegram" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);flex-shrink:0;" title="Not configured"></div>
+                            <div id="tool-badge-telegram" style="font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
+                        </div>
+                        <div style="padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
+                            <div>
+                                <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Bot Token</div>
+                                <input id="tool-token-telegram" type="password" placeholder="123456:ABCdef..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;box-sizing:border-box;">
+                            </div>
+                            <div>
+                                <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;margin-bottom:4px;">Chat ID</div>
+                                <input id="tool-chatid-telegram" type="text" placeholder="e.g. 6209566488" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;box-sizing:border-box;">
+                            </div>
+                            <div style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;line-height:1.5;">Create a bot via <a href="https://t.me/BotFather" target="_blank" style="color:var(--text-secondary);">@BotFather</a> · Get chat_id from <code style="background:var(--bg-hover);padding:1px 4px;border-radius:3px;">getUpdates</code></div>
                         </div>
                     </div>
 
@@ -1564,6 +1576,23 @@ const PROVIDERS = {
     }
 };
 
+// Telegram send — works directly from browser (no CORS issues)
+window.sendTelegram = async function(message) {
+    const cfg = window.toolConfigs?.telegram;
+    if (!cfg?.token || !cfg?.chatId) throw new Error('Telegram not configured. Add your bot token and chat ID in Settings → Tools.');
+    const url = `https://api.telegram.org/bot${cfg.token}/sendMessage`;
+    const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: cfg.chatId, text: message, parse_mode: 'HTML' })
+    });
+    if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.description || 'Telegram send failed');
+    }
+    return await resp.json();
+};
+
 // ─── STATE ──────────────────────────────────────────────────────────────────
 // Old global API state removed — now per-staff via providerConfigs
 let chatHistory = [];
@@ -1630,9 +1659,14 @@ function parseRequestIntent(text) {
     const result = { type: null, filename: null, topic: null, email: null };
 
     // ── Detect email recipient ──────────────────────────────────────────────
-    // Matches: "email it to x@y.com", "send to x@y.com", "send it to x@y.com"
     const emailMatch = text.match(/(?:email|send)(?:\s+it)?\s+to\s+([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/i);
     if (emailMatch) result.email = emailMatch[1].trim();
+
+    // ── Detect telegram send intent ─────────────────────────────────────────
+    // "send a telegram", "telegram message", "notify me on telegram", "send telegram"
+    if (/\b(send|notify|message|ping)\b.{0,20}\btelegram\b|\btelegram\b.{0,20}\b(send|message|notify|ping)\b/i.test(text)) {
+        result.sendTelegram = true;
+    }
 
     // ── Detect doc type ─────────────────────────────────────────────────────
     if (/\b(generate|create|make|write|produce|draft)\b.{0,60}\b(document|doc|word|report|brief|memo|proposal|plan)\b/i.test(text) || /\.docx\b/i.test(text)) {
@@ -4267,7 +4301,8 @@ PLATFORM CONTEXT — critical facts about this environment:
 - File generation is already built in: the system can produce and download .docx (Word), .xlsx (Excel), and .html files natively. If the founder asks for a document, it gets generated immediately — not scheduled.
 - Each staff member streams responses directly into the chat in real time.
 - Do NOT use project management language (deliverables, timelines, sprints, EOD) unless the founder is explicitly asking you to help plan a project for their human team outside this system.
-- Email delivery is available: the founder can say "email it to x@y.com" and the generated file will be sent automatically via Resend. You do not need to do anything — the system handles it.`;
+- Email delivery is available: the founder can say "email it to x@y.com" and the generated file will be sent automatically via Resend.
+- Telegram messaging is available: the founder can say "send a telegram: <message>" and it will be sent instantly to their Telegram. You do not need to do anything — the system handles it.`;
 
     return `${rd.system}${platformCtx}
 
@@ -4530,6 +4565,30 @@ ${docHint}`
         } catch(e) {
             logTrace('Email send failed: ' + e.message, false);
             appendStaffBubble(cosName, `Couldn't send the email: ${e.message}`, false, null, null);
+        } finally {
+            btnSend.disabled = false;
+            btnSend.textContent = 'Execute';
+        }
+        return;
+    }
+
+
+    // ── FAST PATH: Telegram send ──────────────────────────────────────────────
+    if (docReq.sendTelegram) {
+        btnSend.textContent = 'Sending…';
+        const cosName = window.staffCustom?.cos?.name || 'Helen';
+        try {
+            if (!window.toolConfigs?.telegram?.token) {
+                appendStaffBubble(cosName, 'Telegram not configured. Add your bot token and chat ID in Settings → Tools.', false, null, null);
+            } else {
+                const message = docReq.body || docReq.subject || userText;
+                await window.sendTelegram(message);
+                appendStaffBubble(cosName, 'Done — message sent to your Telegram.', false, null, null);
+                logTrace('Telegram message sent', true);
+            }
+        } catch(e) {
+            logTrace('Telegram send failed: ' + e.message, false);
+            appendStaffBubble(cosName, `Couldn't send the Telegram message: ${e.message}`, false, null, null);
         } finally {
             btnSend.disabled = false;
             btnSend.textContent = 'Execute';
@@ -4880,11 +4939,17 @@ async function saveToolConfigs() {
 
     const resendKey  = document.getElementById('tool-apikey-resend')?.value.trim();
     const resendFrom = document.getElementById('tool-from-resend')?.value.trim();
+    const tgToken    = document.getElementById('tool-token-telegram')?.value.trim();
+    const tgChatId   = document.getElementById('tool-chatid-telegram')?.value.trim();
 
     const upserts = [];
     if (resendKey || resendFrom) {
         upserts.push({ user_id: user.id, tool: 'resend', config: JSON.stringify({ apiKey: resendKey, from: resendFrom }) });
         window.toolConfigs.resend = { apiKey: resendKey, from: resendFrom };
+    }
+    if (tgToken || tgChatId) {
+        upserts.push({ user_id: user.id, tool: 'telegram', config: JSON.stringify({ token: tgToken, chatId: tgChatId }) });
+        window.toolConfigs.telegram = { token: tgToken, chatId: tgChatId };
     }
 
     if (upserts.length > 0) {
@@ -4920,6 +4985,13 @@ async function loadToolConfigs() {
                     if (fromEl && cfg.from)   fromEl.value = cfg.from;
                     updateResendStatus();
                 }
+                if (row.tool === 'telegram') {
+                    const tokenEl  = document.getElementById('tool-token-telegram');
+                    const chatEl   = document.getElementById('tool-chatid-telegram');
+                    if (tokenEl && cfg.token)  tokenEl.value  = cfg.token;
+                    if (chatEl  && cfg.chatId) chatEl.value   = cfg.chatId;
+                    updateTelegramStatus();
+                }
             } catch(e) {}
         });
     } catch(e) { console.warn('Failed to load tool configs:', e); }
@@ -4930,6 +5002,15 @@ function updateResendStatus() {
     const dot   = document.getElementById('tool-status-resend');
     const badge = document.getElementById('tool-badge-resend');
     const ok = cfg?.apiKey && cfg.apiKey.startsWith('re_') && cfg.apiKey.length > 10;
+    if (dot)   { dot.style.background = ok ? '#22c55e' : 'var(--text-muted)'; dot.title = ok ? 'Configured' : 'Not configured'; }
+    if (badge) { badge.textContent = ok ? 'configured' : 'not configured'; badge.style.color = ok ? '#22c55e' : 'var(--text-muted)'; }
+}
+
+function updateTelegramStatus() {
+    const cfg = window.toolConfigs?.telegram;
+    const dot   = document.getElementById('tool-status-telegram');
+    const badge = document.getElementById('tool-badge-telegram');
+    const ok = cfg?.token && cfg.token.length > 10 && cfg?.chatId;
     if (dot)   { dot.style.background = ok ? '#22c55e' : 'var(--text-muted)'; dot.title = ok ? 'Configured' : 'Not configured'; }
     if (badge) { badge.textContent = ok ? 'configured' : 'not configured'; badge.style.color = ok ? '#22c55e' : 'var(--text-muted)'; }
 }
