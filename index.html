@@ -4116,12 +4116,12 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
 
     const platformCtx = `
 
-PLATFORM CONTEXT — what already exists in this system:
-- This boardroom runs inside Startup Staff, a web app the founder has built.
-- File generation is already built in: the system can produce and download .docx (Word), .xlsx (Excel), and .html files natively. You do not need to build or recommend building this — it exists.
-- Each staff member streams their responses directly into the chat in real time.
-- The founder can ask any staff member to generate a document and it will be created automatically.
-- Do NOT suggest building capabilities that already exist. If asked about file generation, document creation, or downloads — confirm it's supported and advise on content/structure instead.`;
+PLATFORM CONTEXT — critical facts about this environment:
+- You and your teammates are AI, not humans. You have no schedules, no timelines, no EOD deadlines. You can produce any output RIGHT NOW in this conversation.
+- NEVER assign future tasks like "Tony will do this by tomorrow" or "we'll have this ready in 48 hours." That is not how this works. If something needs to be done, do it now or confirm it is being done now.
+- File generation is already built in: the system can produce and download .docx (Word), .xlsx (Excel), and .html files natively. If the founder asks for a document, it gets generated immediately — not scheduled.
+- Each staff member streams responses directly into the chat in real time.
+- Do NOT use project management language (deliverables, timelines, sprints, EOD) unless the founder is explicitly asking you to help plan a project for their human team outside this system.`;
 
     return `${rd.system}${platformCtx}
 
@@ -4422,7 +4422,7 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
              ...chatHistory.slice(0, -1),
              { role: 'user', content: userText },
              { role: 'assistant', content: `I consulted the team. Here are their inputs:\n\n${specialistSummary}` },
-             { role: 'user', content: `Based on the team's input above, provide a clear, unified strategic recommendation.` }
+             { role: 'user', content: `Based on the team's input above, provide a clear, unified strategic recommendation. IMPORTANT: You and your team are AI — you can produce any output right now. Do NOT assign future tasks or timelines to team members. Do NOT say things like "Tony will do X by tomorrow" or "we'll have this ready in 48 hours." If a document or deliverable was requested, confirm it is being generated now. Close with a clear decision or next action the founder should take — not tasks for the AI team.` }
          ];
 
          const phase3System = buildStaffSystemPrompt('cos');
