@@ -2044,27 +2044,33 @@ function parseSoleilResponse(text) {
 
 function animateConnection(personaName, delayMs = 0) {
     setTimeout(() => {
-        const n = personaName.toLowerCase();
-        const line = document.getElementById(`line-${n}`);
-        const node = document.getElementById(`visual-${n}`);
-        // Build nameToKey from live staffCustom so renamed staff still animate correctly
+        // Step 1: resolve staff key from persona name
         const nameToKey = {};
         Object.entries(window.staffCustom || STAFF_DEFAULTS).forEach(([k, s]) => {
             nameToKey[(s.name || STAFF_DEFAULTS[k]?.name || '').toLowerCase()] = k;
         });
-        // Always include the staff key itself as a fallback
         Object.keys(STAFF_DEFAULTS).forEach(k => { nameToKey[k] = k; });
         const key = nameToKey[personaName.toLowerCase()] || personaName.toLowerCase();
+
+        // Step 2: resolve SVG node name from staff key — never from persona name directly
+        const keyToNode = {
+            engineering: 'elon', finance: 'isaac', marketing: 'marketing',
+            legal: 'legal', architecture: 'architecture', hr: 'donna', cos: 'soleil'
+        };
+        const nodeName = keyToNode[key] || key;
+        const line = document.getElementById('line-' + nodeName);
+        const node = document.getElementById('visual-' + nodeName);
+
         if (line && node) {
-            logTrace(`Consulting ${personaName}…`);
-            // Phase 1: COS reaching OUT — cyan consult color
-            line.classList.remove('active-response', 'active-consult', ...Array.from(line.classList).filter(c => c.startsWith('staff-')));
+            logTrace('Consulting ' + personaName + '...');
+            line.classList.remove('active-response', 'active-consult',
+                ...Array.from(line.classList).filter(c => c.startsWith('staff-')));
             line.classList.add('active-consult');
             node.classList.add('active');
             setDotActive(key);
-            logAnim(`▶ line-${n} → active-consult (cyan) | visual-${n} → glow ON`);
+            logAnim('line-' + nodeName + ' active-consult (cyan) | visual-' + nodeName + ' glow ON [' + personaName + '=' + key + ']');
         } else {
-            logAnim(`⚠ animateConnection(${personaName}): line=${!!line} node=${!!node} — elements missing, no animation`);
+            logAnim('animateConnection(' + personaName + '): key=' + key + ' nodeName=' + nodeName + ' line=' + !!line + ' node=' + !!node + ' — SVG elements not found');
         }
     }, delayMs);
 }
