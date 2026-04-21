@@ -3641,6 +3641,181 @@ async function callStaffModel(staffKey, messages, systemPrompt, maxTokens = 1024
     return { text, usage, label };
 }
 
+// ─── STREAMING SUPPORT ────────────────────────────────────────────────────────
+
+function createStreamingBubble(name, isSynthesis = false) {
+    const chatWindow = document.getElementById('chat-window');
+    const key = getStaffKeyByName(name);
+    const staffData = window.staffCustom?.[key] || STAFF_DEFAULTS[key] || {};
+    const color = staffData.color || 'var(--text-secondary)';
+    const hexToRgb = hex => {
+        const h = hex.replace('#','');
+        if (h.length !== 6) return null;
+        return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+    };
+    const rgb = hexToRgb(color);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const bubbleBg     = rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${isDark?0.07:0.11})` : 'var(--bg-elevated)';
+    const bubbleBorder = rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${isDark?0.22:0.28})` : 'var(--border)';
+    const metaBorder   = rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${isDark?0.15:0.20})` : 'var(--border)';
+
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;justify-content:flex-start;margin-bottom:4px;';
+    const avatar = document.createElement('div');
+    avatar.style.cssText = `width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-right:10px;background:var(--bg-elevated);border:2px solid ${color};overflow:hidden;`;
+    const imgSrc = staffData.img || '';
+    if (imgSrc) {
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+        img.onerror = () => { if (avatar.contains(img)) avatar.removeChild(img); avatar.textContent = name.slice(0,2).toUpperCase(); };
+        avatar.appendChild(img);
+    } else {
+        avatar.textContent = name.slice(0,2).toUpperCase();
+    }
+
+    const bubble = document.createElement('div');
+    bubble.style.cssText = `background:${bubbleBg};border:1px solid ${bubbleBorder};border-radius:12px;padding:12px 14px;max-width:560px;animation:fadeIn 0.2s ease;font-size:13.5px;line-height:1.6;`;
+
+    const nameLabel = document.createElement('div');
+    nameLabel.style.cssText = `font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${color};margin-bottom:6px;font-family:'Geist Mono',monospace;display:flex;align-items:center;gap:6px;`;
+    nameLabel.innerHTML = `${name}${isSynthesis ? ' <span style="opacity:0.6;font-weight:400;">&middot; Synthesis</span>' : ''}`;
+
+    const rawEl = document.createElement('div');
+    rawEl.style.cssText = 'white-space:pre-wrap;color:var(--text-primary);word-break:break-word;';
+
+    const cursor = document.createElement('span');
+    cursor.style.cssText = `display:inline-block;width:2px;height:1.1em;background:${color};margin-left:1px;vertical-align:text-bottom;animation:streamBlink 0.8s step-end infinite;`;
+    rawEl.appendChild(cursor);
+
+    bubble.appendChild(nameLabel);
+    bubble.appendChild(rawEl);
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(bubble);
+    chatWindow.appendChild(wrapper);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    if (!document.getElementById('stream-blink-style')) {
+        const s = document.createElement('style');
+        s.id = 'stream-blink-style';
+        s.textContent = '@keyframes streamBlink { 0%,100%{opacity:1} 50%{opacity:0} }';
+        document.head.appendChild(s);
+    }
+
+    function onChunk(chunk) {
+        cursor.insertAdjacentText('beforebegin', chunk);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function finalize(fullText, usage, urls) {
+        cursor.remove();
+        const contentEl = document.createElement('div');
+        contentEl.innerHTML = formatTextToHtml(fullText.replace(/\[DOCUMENT[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
+        rawEl.replaceWith(contentEl);
+
+        const staffKey2 = getStaffKeyByName(name);
+        const assignment = window.staffAssignments?.[staffKey2];
+        const providerKey = assignment?.provider;
+        const modelId = assignment?.model_id;
+        const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
+        const metaParts = [];
+        if (provLabel && modelId) metaParts.push(`<span style="opacity:0.8;">${provLabel} &middot; ${modelId}</span>`);
+        if (usage?.total) metaParts.push(`<span title="Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}">&block; ${usage.total.toLocaleString()} tokens</span>`);
+        const urlList = urls ? urls.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http')) : [];
+        if (urlList.length > 0) {
+            const urlLinks = urlList.map(u => {
+                const short = u.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0,50);
+                return `<a href="${u}" target="_blank" rel="noopener" style="display:block;color:var(--text-secondary);text-decoration:none;margin-top:2px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&middot; ${short}</a>`;
+            }).join('');
+            metaParts.push(`<span>Sources:<br>${urlLinks}</span>`);
+        } else {
+            metaParts.push(`<span style="opacity:0.6;">Internal Training Knowledge</span>`);
+        }
+        if (metaParts.length > 0) {
+            const meta = document.createElement('div');
+            meta.style.cssText = `margin-top:8px;padding-top:6px;border-top:1px solid ${metaBorder};display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.02em;`;
+            meta.innerHTML = metaParts.join('<span style="opacity:0.3;">&middot;</span>');
+            bubble.appendChild(meta);
+        }
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    return { onChunk, finalize };
+}
+
+async function streamStaffModel(staffKey, messages, systemPrompt, maxTokens, name, isSynthesis = false) {
+    const fetchOpts = buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens);
+    if (!fetchOpts) throw new Error(`No provider configured for ${window.staffCustom?.[staffKey]?.name || staffKey}.`);
+    const { url, options, isAnthropic, isGoogle, label } = fetchOpts;
+    logTrace(`[${name}] -> ${label} (streaming)`, false);
+
+    // Google: SSE blocked by CORS — simulate with word-by-word chunks from non-stream response
+    if (isGoogle) {
+        const { onChunk, finalize } = createStreamingBubble(name, isSynthesis);
+        const resp = await fetch(url, { ...options, signal: AbortSignal.timeout(90000) });
+        if (!resp.ok) { let eb={}; try{eb=await resp.json();}catch(e){} throw new Error(`${label} -- ${eb.error?.message||resp.statusText}`); }
+        const data = await resp.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const usage = data.usageMetadata ? { prompt: data.usageMetadata.promptTokenCount, completion: data.usageMetadata.candidatesTokenCount, total: data.usageMetadata.totalTokenCount } : null;
+        for (const word of text.split(' ')) { onChunk(word + ' '); await new Promise(r=>setTimeout(r,10)); }
+        finalize(text, usage, window.staffKb?.[staffKey]?.urls || null);
+        return { text, usage, label };
+    }
+
+    // Inject stream:true into request body
+    const streamBody = JSON.parse(options.body);
+    streamBody.stream = true;
+    const streamOptions = { ...options, body: JSON.stringify(streamBody), signal: AbortSignal.timeout(90000) };
+
+    const resp = await fetch(url, streamOptions);
+    if (!resp.ok) {
+        let eb={}; try{eb=await resp.json();}catch(e){}
+        const rawMsg = eb.error?.message || eb.message || resp.statusText || '';
+        window._apiErrors[staffKey] = { msg: rawMsg, status: resp.status, time: new Date().toLocaleTimeString(), label };
+        throw new Error(`${label} -- ${rawMsg}`);
+    }
+
+    const { onChunk, finalize } = createStreamingBubble(name, isSynthesis);
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let usageData = null;
+    let buf = '';
+    let inputTokens = 0;
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop();
+        for (const line of lines) {
+            if (!line.startsWith('data:')) continue;
+            const payload = line.slice(5).trim();
+            if (payload === '[DONE]') continue;
+            try {
+                const p = JSON.parse(payload);
+                let chunk = '';
+                if (isAnthropic) {
+                    if (p.type === 'message_start' && p.message?.usage) inputTokens = p.message.usage.input_tokens || 0;
+                    if (p.type === 'content_block_delta' && p.delta?.type === 'text_delta') chunk = p.delta.text || '';
+                    if (p.type === 'message_delta' && p.usage) usageData = { prompt: inputTokens, completion: p.usage.output_tokens||0, total: inputTokens + (p.usage.output_tokens||0) };
+                } else {
+                    chunk = p.choices?.[0]?.delta?.content || '';
+                    if (p.usage) usageData = { prompt: p.usage.prompt_tokens||0, completion: p.usage.completion_tokens||0, total: p.usage.total_tokens||0 };
+                }
+                if (chunk) { fullText += chunk; onChunk(chunk); }
+            } catch(e) {}
+        }
+    }
+
+    finalize(fullText, usageData, window.staffKb?.[staffKey]?.urls || null);
+    return { text: fullText, usage: usageData, label };
+}
+
+
+
 // Build per-staff system prompt
 function buildStaffSystemPrompt(staffKey) {
     const def = STAFF_DEFAULTS[staffKey];
@@ -3970,10 +4145,10 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
             setDotActive('cos');
             const directSystem = buildStaffSystemPrompt('cos');
             try {
-                const { text: directResponse, usage: directUsage } = await callStaffModel('cos', chatHistory, directSystem, 1024);
+                const { text: directResponse, usage: directUsage } = await streamStaffModel('cos', chatHistory, directSystem, 1024, cosName, true);
                 setDotReady('cos');
                 if (cosNodeEl) cosNodeEl.classList.remove('active');
-                appendStaffBubble(cosName, directResponse, true, directUsage, window.staffKb?.['cos']?.urls || null);
+                // bubble already rendered by streamStaffModel
                 chatHistory.push({ role: 'assistant', content: directResponse });
             } catch(e) {
                 setDotGray('cos');
@@ -3986,7 +4161,7 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
         logTrace(`Consulting: ${consultedNames.join(', ')}`, true);
         btnSend.textContent = 'Consulting…';
 
-         // ── Phase 2: Call each specialist’s own model ────────────────────────────────────
+         // ── Phase 2: Call each specialist’s own model — render each bubble immediately on response ──
          const specialistResponses = {};
          const consultedKeys = []; // track for cleanup after synthesis
 
@@ -4000,9 +4175,9 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
 
              try {
                  setDotActive(key);
-                 const { text: response, usage: specUsage } = await callStaffModel(key, staffMessages, staffSystem, 1024);
+                 const { text: response, usage: specUsage } = await streamStaffModel(key, staffMessages, staffSystem, 1024, name, false);
                  specialistResponses[name] = { text: response, usage: specUsage };
-                 animateConnectionResponse(key); // switch line to staff color — stays on through synthesis
+                 animateConnectionResponse(key);
                  setDotReady(key);
                  logTrace(`✓ ${name} responded. Tokens: ${specUsage?.total || '?'}`, false);
              } catch(e) {
@@ -4033,22 +4208,13 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
          ];
 
          const phase3System = buildStaffSystemPrompt('cos');
-         const { text: synthesis, usage: phase3Usage } = await callStaffModel('cos', phase3Messages, phase3System, 2048);
+         const { text: synthesis, usage: phase3Usage } = await streamStaffModel('cos', phase3Messages, phase3System, 2048, cosName, true);
          logTrace(`Phase 3 tokens: ${phase3Usage?.total || '?'}`, false);
 
-         // ── Render each specialist as their own bubble ───────────────────────
-         for (const [name, respObj] of Object.entries(specialistResponses)) {
-             const resp = respObj.text || respObj;
-             if (typeof resp === 'string' && resp.startsWith('[') && resp.includes('unavailable')) continue;
-             const sKey = getStaffKeyByName(name);
-             const sUrls = window.staffKb?.[sKey]?.urls || null;
-             appendStaffBubble(name, resp, false, respObj.usage, sUrls);
-         }
-
-         // ── Chief of Staff synthesis bubble — rendered last ──────────────────────────
-         const cosUrls = window.staffKb?.['cos']?.urls || null;
-         appendStaffBubble(cosName, synthesis, true, phase3Usage, cosUrls);
+         // ── Chief of Staff synthesis bubble — rendered after all specialists ─────────────────────────
+         // synthesis bubble already rendered by streamStaffModel
          chatHistory.push({ role: 'assistant', content: synthesis });
+
 
          // ── NOW clear all animations — synthesis is on screen ─────────────────────────
          if (cosNode) cosNode.classList.remove('active');
