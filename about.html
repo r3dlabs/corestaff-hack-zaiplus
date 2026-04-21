@@ -14,9 +14,9 @@
     /* Shared RGB values for personas */
     --rgb-engineering: 239, 68, 68;
     --rgb-finance:     34, 197, 94;
-    --rgb-steve:       59, 130, 246;
-    --rgb-harvey:      234, 179, 8;
-    --rgb-leonardo:    168, 85, 247;
+    --rgb-marketing:       59, 130, 246;
+    --rgb-legal:      234, 179, 8;
+    --rgb-architecture:    168, 85, 247;
     --rgb-hr:          236, 72, 153;
     --rgb-cos:         6, 182, 212;
 
@@ -29,9 +29,9 @@
     /* Reconstruct legacy hex values via rgb() for fallback and text colors */
     --color-engineering: rgb(var(--rgb-engineering));
     --color-finance:     rgb(var(--rgb-finance));
-    --color-steve:       rgb(var(--rgb-steve));
-    --color-harvey:      rgb(var(--rgb-harvey));
-    --color-leonardo:    rgb(var(--rgb-leonardo));
+    --color-marketing:       rgb(var(--rgb-marketing));
+    --color-legal:      rgb(var(--rgb-legal));
+    --color-architecture:    rgb(var(--rgb-architecture));
     --color-hr:          rgb(var(--rgb-hr));
     --color-cos:         rgb(var(--rgb-cos));
   }
@@ -250,9 +250,9 @@
   .theme-cos        { background: rgba(var(--rgb-cos), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-cos), var(--card-border-alpha)); }
   .theme-engineering{ background: rgba(var(--rgb-engineering), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-engineering), var(--card-border-alpha)); }
   .theme-finance    { background: rgba(var(--rgb-finance), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-finance), var(--card-border-alpha)); }
-  .theme-steve      { background: rgba(var(--rgb-steve), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-steve), var(--card-border-alpha)); }
-  .theme-harvey     { background: rgba(var(--rgb-harvey), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-harvey), var(--card-border-alpha)); }
-  .theme-leonardo   { background: rgba(var(--rgb-leonardo), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-leonardo), var(--card-border-alpha)); }
+  .theme-marketing      { background: rgba(var(--rgb-marketing), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-marketing), var(--card-border-alpha)); }
+  .theme-legal     { background: rgba(var(--rgb-legal), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-legal), var(--card-border-alpha)); }
+  .theme-architecture   { background: rgba(var(--rgb-architecture), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-architecture), var(--card-border-alpha)); }
   .theme-hr         { background: rgba(var(--rgb-hr), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-hr), var(--card-border-alpha)); }
 
   .staff-card-name { font-weight: 700; font-size: 13px; margin-bottom: 1px; }
@@ -290,11 +290,20 @@
   .provider-card {
     background: var(--bg-surface); border: 1px solid var(--border);
     border-radius: 12px; padding: 12px 14px;
-    display: flex; align-items: flex-start; gap: 10px;
+    display: flex; align-items: flex-start; gap: 12px;
+    transition: border-color 0.15s;
   }
-  .provider-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    flex-shrink: 0; margin-top: 4px;
+  .provider-card:hover { border-color: var(--border-strong); }
+  .provider-logo {
+    width: 28px; height: 28px; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .provider-svg-icon {
+    width: 22px; height: 22px; object-fit: contain;
+    /* Most brand SVGs are dark — invert in dark mode */
+  }
+  [data-theme="dark"] .provider-svg-icon {
+    filter: invert(1) brightness(1.8);
   }
   .provider-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
   .provider-detail { font-size: 11px; color: var(--text-muted); font-family: 'Geist Mono', monospace; }
@@ -308,8 +317,10 @@
   }
   .step-num {
     font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600;
-    color: var(--text-muted); width: 28px; flex-shrink: 0; padding-top: 1px;
+    color: var(--text-muted); width: 28px; flex-shrink: 0; padding-top: 2px;
+    text-align: center; line-height: 1.4;
   }
+  .step-num.emoji { font-size: 17px; padding-top: 0; line-height: 1.2; }
   .step-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
   .step-desc  { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
 
@@ -324,7 +335,15 @@
   .callout.warn   { background: rgba(var(--rgb-warn), var(--card-tint-alpha));    border: 1px solid rgba(var(--rgb-warn), var(--card-border-alpha)); }
   .callout.danger { background: rgba(var(--rgb-danger), var(--card-tint-alpha));  border: 1px solid rgba(var(--rgb-danger), var(--card-border-alpha)); }
   .callout.tip    { background: rgba(var(--rgb-success), var(--card-tint-alpha)); border: 1px solid rgba(var(--rgb-success), var(--card-border-alpha)); }
-  .callout-icon   { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .callout-icon {
+    flex-shrink: 0; margin-top: 1px;
+    width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+  }
+  .callout-icon svg { width: 16px; height: 16px; }
+  .callout.tip    .callout-icon svg { color: rgb(var(--rgb-success)); }
+  .callout.info   .callout-icon svg { color: rgb(var(--rgb-info)); }
+  .callout.warn   .callout-icon svg { color: rgb(var(--rgb-warn)); }
+  .callout.danger .callout-icon svg { color: rgb(var(--rgb-danger)); }
 
   /* ── Roadmap cards ── */
   .roadmap-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
@@ -350,7 +369,7 @@
   .badge.yellow { background: rgba(var(--rgb-warn), 0.12);     color: rgb(var(--rgb-warn)); }
   .badge.red    { background: rgba(var(--rgb-danger), 0.12);   color: rgb(var(--rgb-danger)); }
   .badge.blue   { background: rgba(var(--rgb-info), 0.12);     color: rgb(var(--rgb-info)); }
-  .badge.purple { background: rgba(var(--rgb-leonardo), 0.12); color: rgb(var(--rgb-leonardo)); }
+  .badge.purple { background: rgba(var(--rgb-architecture), 0.12); color: rgb(var(--rgb-architecture)); }
   .badge.cyan   { background: rgba(var(--rgb-cos), 0.12);      color: rgb(var(--rgb-cos)); }
 
   /* ── Table ── */
@@ -457,7 +476,7 @@
     </p>
 
     <div class="callout tip">
-      <span class="callout-icon">💡</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span>
       <div>Think of it as hiring a fractional C-suite — Engineering, Finance, Marketing, Legal, Architecture, and HR — available any time, for any question about your startup.</div>
     </div>
   </section>
@@ -487,7 +506,7 @@
           <img src="/engineering.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-engineering);" alt="Engineering Lead" onerror="this.style.display='none'">
           <div>
             <div class="staff-card-name" style="color: var(--color-engineering);">Engineering Lead</div>
-            <div class="staff-card-role">Engineering · tony</div>
+            <div class="staff-card-role">Engineering · engineering</div>
           </div>
         </div>
         <div class="staff-card-desc">First-principles thinker. Technical feasibility, deployment strategy, build vs. buy decisions. Works hand-in-hand with the Architecture Lead.</div>
@@ -498,40 +517,40 @@
           <img src="/finance-accounting.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-finance);" alt="Finance & Accounting Lead" onerror="this.style.display='none'">
           <div>
             <div class="staff-card-name" style="color: var(--color-finance);">Finance & Accounting Lead</div>
-            <div class="staff-card-role">Finance · mike</div>
+            <div class="staff-card-role">Finance · finance</div>
           </div>
         </div>
         <div class="staff-card-desc">Burn-rate focused. Financial modelling, ROI analysis, unit economics, fundraising strategy.</div>
       </div>
 
-      <div class="staff-card theme-steve">
+      <div class="staff-card theme-marketing">
         <div style="display:flex; align-items:center; gap:12px;">
-          <img src="/marketing.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-steve);" alt="Marketing Lead" onerror="this.style.display='none'">
+          <img src="/marketing.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-marketing);" alt="Marketing Lead" onerror="this.style.display='none'">
           <div>
-            <div class="staff-card-name" style="color: var(--color-steve);">Marketing Lead</div>
-            <div class="staff-card-role">Marketing · steve</div>
+            <div class="staff-card-name" style="color: var(--color-marketing);">Marketing Lead</div>
+            <div class="staff-card-role">Marketing · marketing</div>
           </div>
         </div>
         <div class="staff-card-desc">Narrative and growth. GTM strategy, brand positioning, customer acquisition, channel strategy.</div>
       </div>
 
-      <div class="staff-card theme-harvey">
+      <div class="staff-card theme-legal">
         <div style="display:flex; align-items:center; gap:12px;">
-          <img src="/legal.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-harvey);" alt="Legal Lead" onerror="this.style.display='none'">
+          <img src="/legal.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-legal);" alt="Legal Lead" onerror="this.style.display='none'">
           <div>
-            <div class="staff-card-name" style="color: var(--color-harvey);">Legal Lead</div>
-            <div class="staff-card-role">Legal · harvey</div>
+            <div class="staff-card-name" style="color: var(--color-legal);">Legal Lead</div>
+            <div class="staff-card-role">Legal · legal</div>
           </div>
         </div>
         <div class="staff-card-desc">Precise, risk-averse. Contracts, IP, regulatory compliance. Defaults to your HQ jurisdiction. Knows when to escalate to a real lawyer.</div>
       </div>
 
-      <div class="staff-card theme-leonardo">
+      <div class="staff-card theme-architecture">
         <div style="display:flex; align-items:center; gap:12px;">
-          <img src="/architecture.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-leonardo);" alt="Architecture Lead" onerror="this.style.display='none'">
+          <img src="/architecture.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-architecture);" alt="Architecture Lead" onerror="this.style.display='none'">
           <div>
-            <div class="staff-card-name" style="color: var(--color-leonardo);">Architecture Lead</div>
-            <div class="staff-card-role">Architecture · leonardo</div>
+            <div class="staff-card-name" style="color: var(--color-architecture);">Architecture Lead</div>
+            <div class="staff-card-role">Architecture · architecture</div>
           </div>
         </div>
         <div class="staff-card-desc">Systems design, infrastructure planning, long-term platform thinking. Pairs tightly with the Engineering Lead.</div>
@@ -542,7 +561,7 @@
           <img src="/hr.png" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--color-hr);" alt="Human Resource Lead" onerror="this.style.display='none'">
           <div>
             <div class="staff-card-name" style="color: var(--color-hr);">Human Resource Lead</div>
-            <div class="staff-card-role">HR · sigmund</div>
+            <div class="staff-card-role">HR · hr</div>
           </div>
         </div>
         <div class="staff-card-desc">Empathetic, culture-driven. Hiring strategy, team structure, compensation, people operations, culture building.</div>
@@ -583,7 +602,7 @@
     </div>
 
     <div class="callout warn">
-      <span class="callout-icon">⚡</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
       <div>A single query can trigger up to <strong>9 API calls</strong>: 1 routing + 6 specialists + 1 synthesis + 1 session summary update. Each call is billed against the API key of the assigned provider. Use the <strong>Status dots</strong> on the boardroom SVG to check which staff members are active.</div>
     </div>
   </section>
@@ -628,7 +647,7 @@
         <div class="step-num">05</div>
         <div class="step-body">
           <div class="step-title">Enrich with Memory and Knowledge Base</div>
-          <p class="step-desc">Use the <strong>🧠 Memory</strong> button to add permanent context (key decisions, product facts, team structure). Use <strong>Staff KB</strong> in Settings to give individual specialists reference documents or URLs — e.g. your term sheet for Harvey, your technical spec for Tony.</p>
+          <p class="step-desc">Use the <strong>🧠 Memory</strong> button to add permanent context (key decisions, product facts, team structure). Use <strong>Staff KB</strong> in Settings to give individual specialists reference documents or URLs — e.g. your term sheet for the Legal Lead, your technical spec for the Engineering Lead.</p>
         </div>
       </div>
     </div>
@@ -643,7 +662,7 @@
 
     <div class="provider-grid">
       <div class="provider-card">
-        <div class="provider-dot" style="background:#10a37f;"></div>
+        <div class="provider-logo"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg" width="22" height="22" alt="OpenAI" class="provider-svg-icon"></div>
         <div>
           <div class="provider-name">OpenAI</div>
           <div class="provider-detail">api.openai.com/v1</div>
@@ -651,15 +670,15 @@
         </div>
       </div>
       <div class="provider-card">
-        <div class="provider-dot" style="background:#d4763b;"></div>
+        <div class="provider-logo"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/anthropic.svg" width="22" height="22" alt="Anthropic" class="provider-svg-icon"></div>
         <div>
           <div class="provider-name">Anthropic</div>
           <div class="provider-detail">api.anthropic.com</div>
-          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku</div>
+          <div class="provider-detail" style="margin-top:3px;color:var(--text-secondary);font-family:'Geist',sans-serif;font-size:11px;">Claude Sonnet, Claude Opus, Claude Haiku</div>
         </div>
       </div>
       <div class="provider-card">
-        <div class="provider-dot" style="background:#4285f4;"></div>
+        <div class="provider-logo"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/google.svg" width="22" height="22" alt="Google" class="provider-svg-icon"></div>
         <div>
           <div class="provider-name">Google</div>
           <div class="provider-detail">generativelanguage.googleapis.com</div>
@@ -667,7 +686,7 @@
         </div>
       </div>
       <div class="provider-card">
-        <div class="provider-dot" style="background:#5b6ef5;"></div>
+        <div class="provider-logo"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/deepseek.svg" width="22" height="22" alt="DeepSeek" class="provider-svg-icon"></div>
         <div>
           <div class="provider-name">DeepSeek</div>
           <div class="provider-detail">api.deepseek.com/v1</div>
@@ -675,7 +694,7 @@
         </div>
       </div>
       <div class="provider-card">
-        <div class="provider-dot" style="background:#f55036;"></div>
+        <div class="provider-logo"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/groq.svg" width="22" height="22" alt="Groq" class="provider-svg-icon"></div>
         <div>
           <div class="provider-name">Groq</div>
           <div class="provider-detail">api.groq.com/openai/v1</div>
@@ -683,7 +702,7 @@
         </div>
       </div>
       <div class="provider-card">
-        <div class="provider-dot" style="background:#ff7000;"></div>
+        <div class="provider-logo"><img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/mistral.svg" width="22" height="22" alt="Mistral" class="provider-svg-icon"></div>
         <div>
           <div class="provider-name">Mistral</div>
           <div class="provider-detail">api.mistral.ai/v1</div>
@@ -691,7 +710,7 @@
         </div>
       </div>
       <div class="provider-card">
-        <div class="provider-dot" style="background:#7c3aed;"></div>
+        <div class="provider-logo" style="background:rgba(124,58,237,0.12);border-radius:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
         <div>
           <div class="provider-name">GMI Cloud</div>
           <div class="provider-detail">api.gmi-serving.com/v1</div>
@@ -699,7 +718,7 @@
         </div>
       </div>
       <div class="provider-card">
-        <div class="provider-dot" style="background:var(--border-strong);"></div>
+        <div class="provider-logo" style="background:var(--bg-elevated);border-radius:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
         <div>
           <div class="provider-name">Custom Endpoint</div>
           <div class="provider-detail">Any OpenAI-compatible URL</div>
@@ -709,7 +728,7 @@
     </div>
 
     <div class="callout info">
-      <span class="callout-icon">ℹ</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
       <div>For providers with CORS restrictions (OpenAI, Anthropic, Google, Mistral), the app validates your key by checking its format rather than making a live request. For OpenAI-compatible providers that allow CORS (Groq, GMI, custom endpoints), a live probe is made. Status dots reflect this accordingly.</div>
     </div>
   </section>
@@ -731,7 +750,7 @@
           </tr>
           <tr>
             <td>Startup & Business</td>
-            <td>Your name, business name, startup description, and HQ country. This context is injected into every prompt and determines the default legal jurisdiction for Harvey.</td>
+            <td>Your name, business name, startup description, and HQ country. This context is injected into every prompt and determines the default legal jurisdiction for the Legal Lead.</td>
           </tr>
           <tr>
             <td>Team Configuration</td>
@@ -742,7 +761,7 @@
     </div>
 
     <h3>Staff Knowledge Base</h3>
-    <p>Each staff member can have a private knowledge base — reference URLs and uploaded documents (.txt, .md, .csv, .json) that are injected into their system prompt. Access it via the <strong>Staff KB</strong> button in the Customise modal. Use this to give Harvey your standard contract templates, Tony your technical spec, or Mike your financial model.</p>
+    <p>Each staff member can have a private knowledge base — reference URLs and uploaded documents (.txt, .md, .csv, .json) that are injected into their system prompt. Access it via the <strong>Staff KB</strong> button in the Customise modal. Use this to give the Legal Lead your standard contract templates, the Engineering Lead your technical spec, or the Finance Lead your financial model.</p>
   </section>
 
   <hr class="divider">
@@ -754,28 +773,28 @@
 
     <div class="step-list">
       <div class="step-card">
-        <div class="step-num">💬</div>
+        <div class="step-num emoji">💬</div>
         <div class="step-body">
           <div class="step-title">Be specific about your situation</div>
           <p class="step-desc">The more context you give, the more useful the responses. "Should we incorporate in Singapore or Delaware?" will get a better answer if your HQ country and business description are set.</p>
         </div>
       </div>
       <div class="step-card">
-        <div class="step-num">📄</div>
+        <div class="step-num emoji">📄</div>
         <div class="step-body">
           <div class="step-title">Request documents</div>
           <p class="step-desc">Ask to "generate a report on...", "create a spreadsheet with...", or "write an HTML page for..." and the app will produce a downloadable .docx, .xlsx, or .html file attached to the response.</p>
         </div>
       </div>
       <div class="step-card">
-        <div class="step-num">🎯</div>
+        <div class="step-num emoji">🎯</div>
         <div class="step-body">
           <div class="step-title">Direct queries to a specific specialist</div>
-          <p class="step-desc">You can prompt specific staff: "Harvey, review this clause..." or "Mike, model our runway if we hire 3 engineers." The Chief of Staff will respect explicit routing signals.</p>
+          <p class="step-desc">You can prompt specific staff: "the Legal Lead, review this clause..." or "the Finance Lead, model our runway if we hire 3 engineers." The Chief of Staff will respect explicit routing signals.</p>
         </div>
       </div>
       <div class="step-card">
-        <div class="step-num">🔄</div>
+        <div class="step-num emoji">🔄</div>
         <div class="step-body">
           <div class="step-title">Follow up naturally</div>
           <p class="step-desc">Chat history is maintained within the session and passed to the CoS in each prompt. You can follow up, push back, or ask for more detail and the team will retain context from earlier in the conversation.</p>
@@ -810,7 +829,7 @@
     </div>
 
     <div class="callout info">
-      <span class="callout-icon">ℹ</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
       <div>Chat history itself is <strong>not persisted</strong> — it lives in browser memory only and resets on page reload. Only Default Memory and Session Summaries you promote are saved across sessions.</div>
     </div>
   </section>
@@ -829,7 +848,7 @@
     </ul>
 
     <div class="callout warn">
-      <span class="callout-icon">⚠️</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
       <div>URL fetching happens directly from your browser and will fail for most sites due to CORS policies. Errors are embedded as <code>[Fetch failed]</code> notices in the KB content. For reliable knowledge injection, use uploaded files instead.</div>
     </div>
   </section>
@@ -929,7 +948,7 @@
     </div>
 
     <div class="callout danger">
-      <span class="callout-icon">🔴</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
       <div><strong>API keys in browser memory.</strong> Keys are loaded from Supabase into <code>window.providerConfigs</code> at sign-in and held in plaintext during the session. Browser extensions or injected scripts could access them. Set usage limits at your provider's dashboard as a safeguard.</div>
     </div>
   </section>
@@ -988,7 +1007,7 @@
         <div class="roadmap-num">07</div>
         <div>
           <div class="roadmap-title">Per-specialist typing indicators <span class="badge blue">UX</span></div>
-          <div class="roadmap-desc">"Tony is thinking..." bubbles during Phase 2 would make the multi-agent process feel more alive and give users a sense of progress rather than a blank wait. The routing phase already shows status text; specialists don't yet.</div>
+          <div class="roadmap-desc">"the Engineering Lead is thinking..." bubbles during Phase 2 would make the multi-agent process feel more alive and give users a sense of progress rather than a blank wait. The routing phase already shows status text; specialists don't yet.</div>
         </div>
       </div>
       <div class="roadmap-card">
@@ -1029,27 +1048,27 @@
     <h2>Known Limitations</h2>
 
     <div class="callout danger">
-      <span class="callout-icon">🔴</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
       <div><strong>API keys in browser memory.</strong> <code>window.providerConfigs</code> holds all API keys in plaintext during the session. Any JS running on the page — including browser extensions — can read them. Mitigation: use a backend proxy (see roadmap #04) and always set usage limits at your provider's dashboard.</div>
     </div>
     <div class="callout danger">
-      <span class="callout-icon">🔴</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
       <div><strong>No rate limiting.</strong> Nothing prevents rapid-fire queries. With all six specialists configured, a single query triggers up to 9 API calls. This can result in significant API cost burn without control. Use provider-level rate limits and spending caps as a safeguard.</div>
     </div>
     <div class="callout warn">
-      <span class="callout-icon">🟡</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
       <div><strong>Context window growth.</strong> <code>chatHistory</code> is never pruned. Long conversations passed to the CoS in Phase 1 and Phase 3 will eventually exceed model context windows, causing API errors. Session summarisation partially mitigates this but doesn't truncate the raw history array.</div>
     </div>
     <div class="callout warn">
-      <span class="callout-icon">🟡</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
       <div><strong>URL KB fetch CORS.</strong> URL fetching fails for most sites due to browser CORS policies. Errors appear as <code>[Fetch failed]</code> in the KB content. Use uploaded files for reliable knowledge injection.</div>
     </div>
     <div class="callout warn">
-      <span class="callout-icon">🟡</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
       <div><strong>Silent DB write failures.</strong> Some Supabase upserts are fire-and-forget — errors are not surfaced to the user. In-memory state and database can diverge silently. If settings seem not to stick, try re-saving and refreshing.</div>
     </div>
     <div class="callout info">
-      <span class="callout-icon">ℹ</span>
+      <span class="callout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
       <div><strong>AI responses are not professional advice.</strong> This is an AI-powered tool. Legal, financial, and medical outputs are starting points for your own research — not substitutes for qualified professionals.</div>
     </div>
   </section>
@@ -1058,7 +1077,7 @@
 </div><footer>
   <div class="footer-inner">
     <p>© 2026 Modular Technology Solutions Pte Ltd · Singapore</p>
-    <p><a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="/docs.html">Docs</a> &nbsp;·&nbsp; <a href="https://startup-staff.com">App</a></p>
+    <p><a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms of Service</a> &nbsp;·&nbsp; <a href="/about.html">About</a> &nbsp;·&nbsp; <a href="https://startup-staff.com">App</a></p>
   </div>
 </footer>
 
