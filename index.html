@@ -610,9 +610,15 @@
                 <div id="ob-step-3" style="display:none;">
                     <p style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;" id="ob-step3-greeting"></p>
                     <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6;">Where is your business headquartered? This helps the team apply the right legal, tax, and regulatory context by default — unless you specify otherwise.</p>
-                    <div style="margin-bottom:8px;">
-                        <label class="field-label">Headquarters country</label>
-                        <input type="text" id="input-hq-country" class="input-field" placeholder="e.g. Singapore" autocomplete="country-name" style="font-size:15px;">
+                    <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
+                        <div style="flex:1;">
+                            <label class="field-label">Headquarters country</label>
+                            <input type="text" id="input-hq-country" class="input-field" placeholder="e.g. Singapore" autocomplete="off" list="country-list-ob" style="font-size:15px;" oninput="updateFlagPreview(this.value,'ob-flag-preview')">
+                            <datalist id="country-list-ob"></datalist>
+                        </div>
+                        <div id="ob-flag-preview" style="width:52px;height:52px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;margin-top:18px;">
+                            <span style="font-size:22px;color:var(--text-muted);">🌍</span>
+                        </div>
                     </div>
                     <p style="font-size:11px;color:var(--text-muted);line-height:1.6;">When operating in multiple jurisdictions, the team will default to this country for tax, legal, and compliance matters unless you specify otherwise in your query.</p>
                 </div>
@@ -814,8 +820,16 @@
                             <textarea id="ctx-startup-desc" rows="4" class="input-field" style="resize:vertical;font-size:13px;" placeholder="e.g. Startup Staff is an AI-powered boardroom for founders — a cross-functional team of specialist personas that routes every query through the right expert and synthesises a unified strategic recommendation."></textarea>
                         </div>
                         <div>
-                            <div class="staff-section-label">Registered HQ Country</div>
-                            <input id="ctx-hq-country" type="text" class="input-field" placeholder="e.g. Singapore" style="font-size:13px;">
+                                <div class="staff-section-label">Registered HQ Country</div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <div style="flex:1;">
+                                        <input id="ctx-hq-country" type="text" class="input-field" placeholder="e.g. Singapore" autocomplete="off" list="country-list-settings" style="font-size:13px;" oninput="updateFlagPreview(this.value,'settings-flag-preview')">
+                                        <datalist id="country-list-settings"></datalist>
+                                    </div>
+                                    <div id="settings-flag-preview" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--border);overflow:hidden;flex-shrink:0;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;">
+                                        <span style="font-size:18px;color:var(--text-muted);">🌍</span>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -1826,7 +1840,11 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null) {
         metaParts.push(`<span title="Session summary was included in this prompt">📋 session</span>`);
     }
     if (hqCountry) {
-        metaParts.push(`<span title="HQ jurisdiction context: ${hqCountry}">${countryToFlag(hqCountry)} ${hqCountry}</span>`);
+        const flagUrl = countryFlagUrl(hqCountry);
+        const flagHtml = flagUrl
+            ? `<img src="${flagUrl}" style="width:14px;height:14px;object-fit:cover;border-radius:2px;vertical-align:middle;" onerror="this.outerHTML='${countryToFlag(hqCountry)}'"> ${hqCountry}`
+            : `${countryToFlag(hqCountry)} ${hqCountry}`;
+        metaParts.push(`<span title="HQ jurisdiction context: ${hqCountry}">${flagHtml}</span>`);
     }
 
     if (metaParts.length > 0) {
@@ -1854,10 +1872,10 @@ function appendMessage(sender, text) {
             const img = document.createElement('img');
             img.src = userAvatarSrc;
             img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-            img.onerror = () => { avatar.removeChild(img); avatar.textContent = (window._currentUserName||'U')[0].toUpperCase(); };
+            img.onerror = () => { avatar.removeChild(img); avatar.textContent = (window._currentUserName||'U').slice(0,2).toUpperCase(); };
             avatar.appendChild(img);
         } else {
-            avatar.textContent = (window._currentUserName||'U')[0].toUpperCase();
+            avatar.textContent = (window._currentUserName||'U').slice(0,2).toUpperCase();
         }
     } else {
         // Staff — resolve color from staffCustom for border
@@ -1872,7 +1890,7 @@ function appendMessage(sender, text) {
             img.onerror = () => { if (avatar.contains(img)) avatar.removeChild(img); avatar.textContent = staffImg.fallback; };
             avatar.appendChild(img);
         } else {
-            avatar.textContent = sender[0].toUpperCase();
+            avatar.textContent = sender.slice(0,2).toUpperCase();
         }
     }
     const bubble = document.createElement('div');
@@ -2020,10 +2038,10 @@ function showNodePopover(key, targetEl) {
         const img = document.createElement('img');
         img.src = staffData.img;
         img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-        img.onerror = () => { avatarEl.removeChild(img); avatarEl.textContent = (staffData.name||'?')[0].toUpperCase(); };
+        img.onerror = () => { avatarEl.removeChild(img); avatarEl.textContent = (staffData.name||'??').slice(0,2).toUpperCase(); };
         avatarEl.appendChild(img);
     } else {
-        avatarEl.textContent = (staffData.name||'?')[0].toUpperCase();
+        avatarEl.textContent = (staffData.name||'??').slice(0,2).toUpperCase();
     }
 
     document.getElementById('np-name').textContent     = staffData.name || staffData.role || key;
@@ -3852,11 +3870,14 @@ function switchSettingsTab(tab) {
 function openSettingsModal() {
     if (!sbClient) { alert('Please sign in to access settings.'); return; }
     populateStartupContext();
+    populateCountryDatalist('country-list-settings');
     renderCustomizeCards();
     populateSetAllDropdown();
     updateSettingsSummaries();
     switchSettingsTab('providers');
     document.getElementById('settings-modal').style.display = 'flex';
+    // Load flag preview if country already set
+    if (hqCountry) updateFlagPreview(hqCountry, 'settings-flag-preview');
     setTimeout(verifyAllConfiguredProviders, 300);
 }
 
@@ -4189,36 +4210,111 @@ async function runDiag() {
 let obStep = 1;
 const OB_TOTAL = 4;
 
-function countryToFlag(name) {
-    const map = {
-        'singapore':'🇸🇬','united states':'🇺🇸','usa':'🇺🇸','us':'🇺🇸',
-        'united kingdom':'🇬🇧','uk':'🇬🇧','great britain':'🇬🇧',
-        'australia':'🇦🇺','canada':'🇨🇦','germany':'🇩🇪','france':'🇫🇷',
-        'japan':'🇯🇵','china':'🇨🇳','india':'🇮🇳','indonesia':'🇮🇩',
-        'malaysia':'🇲🇾','thailand':'🇹🇭','philippines':'🇵🇭','vietnam':'🇻🇳',
-        'south korea':'🇰🇷','korea':'🇰🇷','taiwan':'🇹🇼','hong kong':'🇭🇰',
-        'new zealand':'🇳🇿','ireland':'🇮🇪','netherlands':'🇳🇱','sweden':'🇸🇪',
-        'switzerland':'🇨🇭','spain':'🇪🇸','italy':'🇮🇹','portugal':'🇵🇹',
-        'brazil':'🇧🇷','mexico':'🇲🇽','uae':'🇦🇪','united arab emirates':'🇦🇪',
-        'saudi arabia':'🇸🇦','israel':'🇮🇱','south africa':'🇿🇦','nigeria':'🇳🇬',
-        'kenya':'🇰🇪','denmark':'🇩🇰','norway':'🇳🇴','finland':'🇫🇮',
-        'belgium':'🇧🇪','austria':'🇦🇹','poland':'🇵🇱','czechia':'🇨🇿',
-        'czech republic':'🇨🇿','russia':'🇷🇺','ukraine':'🇺🇦','turkey':'🇹🇷',
-        'greece':'🇬🇷','romania':'🇷🇴','hungary':'🇭🇺','argentina':'🇦🇷',
-        'chile':'🇨🇱','colombia':'🇨🇴','peru':'🇵🇪','egypt':'🇪🇬',
-        'pakistan':'🇵🇰','bangladesh':'🇧🇩','sri lanka':'🇱🇰','myanmar':'🇲🇲',
-        'cambodia':'🇰🇭','laos':'🇱🇦','brunei':'🇧🇳',
-    };
-    return map[name.toLowerCase().trim()] || '🏳️';
+// ─── COUNTRY DATA & FLAG HELPERS ─────────────────────────────────────────────
+
+const COUNTRY_DATA = [
+    ['Afghanistan','af'],['Albania','al'],['Algeria','dz'],['Andorra','ad'],
+    ['Angola','ao'],['Argentina','ar'],['Armenia','am'],['Australia','au'],
+    ['Austria','at'],['Azerbaijan','az'],['Bahrain','bh'],['Bangladesh','bd'],
+    ['Belarus','by'],['Belgium','be'],['Bolivia','bo'],['Bosnia and Herzegovina','ba'],
+    ['Botswana','bw'],['Brazil','br'],['Brunei','bn'],['Bulgaria','bg'],
+    ['Cambodia','kh'],['Cameroon','cm'],['Canada','ca'],['Chile','cl'],
+    ['China','cn'],['Colombia','co'],['Costa Rica','cr'],['Croatia','hr'],
+    ['Cuba','cu'],['Cyprus','cy'],['Czechia','cz'],['Czech Republic','cz'],
+    ['Denmark','dk'],['Dominican Republic','do'],['Ecuador','ec'],['Egypt','eg'],
+    ['El Salvador','sv'],['Estonia','ee'],['Ethiopia','et'],['Finland','fi'],
+    ['France','fr'],['Georgia','ge'],['Germany','de'],['Ghana','gh'],
+    ['Greece','gr'],['Guatemala','gt'],['Honduras','hn'],['Hong Kong','hk'],
+    ['Hungary','hu'],['Iceland','is'],['India','in'],['Indonesia','id'],
+    ['Iran','ir'],['Iraq','iq'],['Ireland','ie'],['Israel','il'],
+    ['Italy','it'],['Jamaica','jm'],['Japan','jp'],['Jordan','jo'],
+    ['Kazakhstan','kz'],['Kenya','ke'],['Kuwait','kw'],['Kyrgyzstan','kg'],
+    ['Laos','la'],['Latvia','lv'],['Lebanon','lb'],['Libya','ly'],
+    ['Lithuania','lt'],['Luxembourg','lu'],['Malaysia','my'],['Malta','mt'],
+    ['Mexico','mx'],['Moldova','md'],['Mongolia','mn'],['Montenegro','me'],
+    ['Morocco','ma'],['Mozambique','mz'],['Myanmar','mm'],['Nepal','np'],
+    ['Netherlands','nl'],['New Zealand','nz'],['Nicaragua','ni'],['Nigeria','ng'],
+    ['North Korea','kp'],['Norway','no'],['Oman','om'],['Pakistan','pk'],
+    ['Palestine','ps'],['Panama','pa'],['Paraguay','py'],['Peru','pe'],
+    ['Philippines','ph'],['Poland','pl'],['Portugal','pt'],['Qatar','qa'],
+    ['Romania','ro'],['Russia','ru'],['Rwanda','rw'],['Saudi Arabia','sa'],
+    ['Senegal','sn'],['Serbia','rs'],['Singapore','sg'],['Slovakia','sk'],
+    ['Slovenia','si'],['Somalia','so'],['South Africa','za'],['South Korea','kr'],
+    ['South Sudan','ss'],['Spain','es'],['Sri Lanka','lk'],['Sudan','sd'],
+    ['Sweden','se'],['Switzerland','ch'],['Syria','sy'],['Taiwan','tw'],
+    ['Tajikistan','tj'],['Tanzania','tz'],['Thailand','th'],['Tunisia','tn'],
+    ['Turkey','tr'],['Turkmenistan','tm'],['Uganda','ug'],['Ukraine','ua'],
+    ['United Arab Emirates','ae'],['UAE','ae'],['United Kingdom','gb'],
+    ['UK','gb'],['Great Britain','gb'],['United States','us'],['USA','us'],
+    ['Uruguay','uy'],['Uzbekistan','uz'],['Venezuela','ve'],['Vietnam','vn'],
+    ['Yemen','ye'],['Zambia','zm'],['Zimbabwe','zw'],
+];
+
+// Build name→code lookup (lowercase)
+const COUNTRY_CODE_MAP = {};
+COUNTRY_DATA.forEach(([name, code]) => {
+    COUNTRY_CODE_MAP[name.toLowerCase()] = code;
+});
+
+function countryNameToCode(name) {
+    if (!name) return null;
+    return COUNTRY_CODE_MAP[name.toLowerCase().trim()] || null;
 }
 
+function countryFlagUrl(nameOrCode) {
+    if (!nameOrCode) return null;
+    const code = countryNameToCode(nameOrCode) || nameOrCode.toLowerCase().trim();
+    if (code.length !== 2) return null;
+    return `https://flagcdn.com/w160/${code}.png`;
+}
+
+// Legacy emoji fallback (kept for metadata footer)
+function countryToFlag(name) {
+    const code = countryNameToCode(name);
+    if (!code) return '🏳️';
+    try {
+        return String.fromCodePoint(...code.toUpperCase().split('').map(c => 0x1F1E6 - 65 + c.charCodeAt(0)));
+    } catch { return '🏳️'; }
+}
+
+// Populate datalist with all country names
+function populateCountryDatalist(datalistId) {
+    const dl = document.getElementById(datalistId);
+    if (!dl || dl.children.length > 0) return;
+    COUNTRY_DATA.forEach(([name]) => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        dl.appendChild(opt);
+    });
+}
+
+// Update a flag circle preview element — uses real flagcdn image
+function updateFlagPreview(countryName, previewId) {
+    const el = document.getElementById(previewId);
+    if (!el) return;
+    const url = countryFlagUrl(countryName);
+    if (url) {
+        el.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.innerHTML='<span style=\\'font-size:18px;\\'>🌍</span>'">`;
+    } else {
+        el.innerHTML = '<span style="font-size:18px;color:var(--text-muted);">🌍</span>';
+    }
+}
+
+// Header HQ flag badge — real image in a circle
 function updateHqFlag(country) {
     const badge = document.getElementById('hq-flag-badge');
     if (!badge) return;
     if (!country) { badge.style.display = 'none'; return; }
-    badge.textContent = countryToFlag(country);
-    badge.title = country;
-    badge.style.display = 'flex';
+    const url = countryFlagUrl(country);
+    if (url) {
+        badge.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:7px;" onerror="this.parentElement.textContent='${countryToFlag(country)}'">`;
+        badge.title = country;
+        badge.style.display = 'flex';
+    } else {
+        badge.textContent = countryToFlag(country);
+        badge.title = country;
+        badge.style.display = 'flex';
+    }
 }
 
 async function obCheckAndOpen(userName) {
