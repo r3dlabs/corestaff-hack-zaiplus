@@ -2344,9 +2344,11 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
 
     // Timestamp
     const _tsEl = document.createElement('div');
+    const _tsNow1 = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
     _tsEl.style.cssText = 'font-size:9px;color:var(--text-muted);font-family:"Geist Mono",monospace;margin-top:5px;opacity:0.5;text-align:right;';
-    _tsEl.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    _tsEl.textContent = _tsNow1;
     bubble.appendChild(_tsEl);
+    logTrace(`[TS] appendStaffBubble(${name}) → "${_tsNow1}" appended to bubble. bubble.children=${bubble.children.length}`, false);
 
     wrapper.appendChild(avatar);
     wrapper.appendChild(bubble);
@@ -2400,9 +2402,11 @@ function appendMessage(sender, text) {
     }
     // Timestamp
     const _tsUser = document.createElement('div');
+    const _tsNow2 = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
     _tsUser.style.cssText = 'font-size:9px;color:var(--text-muted);font-family:"Geist Mono",monospace;margin-top:4px;opacity:0.45;text-align:right;';
-    _tsUser.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    _tsUser.textContent = _tsNow2;
     bubble.appendChild(_tsUser);
+    logTrace(`[TS] appendMessage(${sender}) → "${_tsNow2}" appended. sender=${sender} bubble.children=${bubble.children.length}`, false);
     wrapper.appendChild(avatar); wrapper.appendChild(bubble);
     chatWindow.appendChild(wrapper);
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -4261,6 +4265,8 @@ async function probeModelOnline(staffKey) {
     const provConf = window.providerConfigs?.[assignment.provider];
     if (!provConf?.apiKey) return;
 
+    logTrace(`[Probe] ${staffKey} → ${assignment.provider}/${assignment.model} — sending date probe…`, false);
+
     try {
         const fetchOpts = buildStaffFetchOptions(staffKey,
             [{ role: 'user', content: "What is today's exact date? Reply with ONLY the date in YYYY-MM-DD format, nothing else." }],
@@ -4282,7 +4288,7 @@ async function probeModelOnline(staffKey) {
 
         // Extract a date from the reply
         const dateMatch = reply.match(/(\d{4})-(\d{2})-(\d{2})/);
-        if (!dateMatch) { window.staffOnlineStatus[staffKey] = { online: false, cutoff: null }; return; }
+        if (!dateMatch) { window.staffOnlineStatus[staffKey] = { online: false, cutoff: null }; logTrace(`[Probe] ${staffKey} → ⚠ No date in response: "${reply.slice(0,40)}"`, false); return; }
 
         const repliedDate = new Date(dateMatch[0]);
         const today = new Date();
@@ -4292,16 +4298,19 @@ async function probeModelOnline(staffKey) {
         const isOnline = diffDays <= 3;
         const cutoff = isOnline ? null : `${dateMatch[1]}-${dateMatch[2]}`; // YYYY-MM
         window.staffOnlineStatus[staffKey] = { online: isOnline, cutoff };
+        logTrace(`[Probe] ${staffKey} → ${isOnline ? '🌐 Online (date matched today)' : `📚 Offline · cutoff ${cutoff}`} (replied: ${dateMatch[0]})`, true);
 
     } catch(e) {
         // Timeout or error — can't determine, leave as null
         window.staffOnlineStatus[staffKey] = null;
+        logTrace(`[Probe] ${staffKey} → ⚠ Error: ${e.message}`, false);
     }
 }
 
 // Run probes for all assigned staff — silently in background
 async function probeAllOnlineStatus() {
     const keys = ['cos','engineering','finance','marketing','legal','architecture','hr'];
+    logTrace('[Probe] Starting online status probes for all staff…', true);
     // Stagger slightly to avoid hammering the API
     for (const key of keys) {
         probeModelOnline(key); // fire and forget — no await
@@ -4566,6 +4575,7 @@ function createStreamingBubble(name, isSynthesis = false) {
         const modelId = assignment?.model_id || assignment?.model;
         const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
          // ── Meta footer — built as DOM nodes so click handlers work reliably ──
+         logTrace(`[Bubble] ${name} → online=${online} citations=${citations?.length||0} model=${modelId||'?'} provider=${providerKey||'?'}`, false);
          const _metaItems = [];
          // 1. Online badge
          const _badgeEl = document.createElement('span');
@@ -4619,9 +4629,11 @@ function createStreamingBubble(name, isSynthesis = false) {
          }
          // Timestamp
          const _tsEl2 = document.createElement('div');
+         const _tsNow3 = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
          _tsEl2.style.cssText = 'font-size:9px;color:var(--text-muted);font-family:"Geist Mono",monospace;margin-top:5px;opacity:0.5;text-align:right;';
-         _tsEl2.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+         _tsEl2.textContent = _tsNow3;
          bubble.appendChild(_tsEl2);
+         logTrace(`[TS] streamingBubble(${name}) → "${_tsNow3}" appended. bubble.children=${bubble.children.length} bubble.offsetHeight=${bubble.offsetHeight}`, false);
          chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
