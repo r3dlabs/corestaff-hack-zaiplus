@@ -1663,9 +1663,17 @@ function parseRequestIntent(text) {
     if (emailMatch) result.email = emailMatch[1].trim();
 
     // ── Detect telegram send intent ─────────────────────────────────────────
-    // "send a telegram", "telegram message", "notify me on telegram", "send telegram"
     if (/\b(send|notify|message|ping)\b.{0,20}\btelegram\b|\btelegram\b.{0,20}\b(send|message|notify|ping)\b/i.test(text)) {
         result.sendTelegram = true;
+    }
+
+    // ── Detect "send previous/that/the doc on telegram" ─────────────────────
+    // Matches: "send that on telegram", "send the html on telegram",
+    //          "send previous document to telegram", "send it on telegram"
+    if (/\b(send|forward|push)\b.{0,30}\b(that|it|this|the|previous|last|the html|the pdf|the doc|the document|the file)\b.{0,30}\btelegram\b/i.test(text) ||
+        /\btelegram\b.{0,30}\b(that|it|this|the|previous|last|html|pdf|doc|document|file)\b/i.test(text)) {
+        result.sendTelegram = true;
+        result.sendPreviousDoc = true;
     }
 
     // ── Detect doc type ─────────────────────────────────────────────────────
@@ -4707,6 +4715,15 @@ ${docHint}`
              const extracted = extractDocBlock(docResponse);
              if (extracted) {
                  injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock, docReq.isPdf ? 'pdf' : null);
+                 // Store for "send that" / "send previous" follow-up commands
+                 window._lastGeneratedDoc = {
+                     type: extracted.docType || docReq.type,
+                     filename: docReq.filename,
+                     rawBlock: extracted.rawBlock,
+                     topic: docReq.topic,
+                     isPdf: !!docReq.isPdf,
+                     ts: Date.now()
+                 };
 
                  // ── Email action ──────────────────────────────────────────
                  if (docReq.email) {
@@ -4791,6 +4808,39 @@ ${docHint}`
         return;
     }
 
+
+    // ── FAST PATH: send previous generated doc to Telegram ─────────────────
+    if (docReq.sendPreviousDoc && docReq.sendTelegram) {
+        btnSend.textContent = 'Sending…';
+        const cosName = window.staffCustom?.cos?.name || 'Helen';
+        const last = window._lastGeneratedDoc;
+        try {
+            if (!window.toolConfigs?.telegram?.token) {
+                appendStaffBubble(cosName, 'Telegram not configured. Add your bot token and chat ID in Settings → Tools.', false, null, null);
+            } else if (!last || (Date.now() - last.ts) > 30 * 60 * 1000) {
+                appendStaffBubble(cosName, "I don't have a recent document to send — the last one was too long ago or nothing has been generated yet. Ask me to generate one first.", false, null, null);
+            } else {
+                let tgMessage;
+                if (last.type === 'html') {
+                    // For HTML/PDF: send the full HTML content as a Telegram message (truncated if huge)
+                    const preview = last.rawBlock.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 3000);
+                    tgMessage = `📄 <b>${last.topic || last.filename}</b>\n\n${preview}${last.rawBlock.length > 3000 ? '\n\n[truncated — download the full file from Startup Staff]' : ''}`;
+                } else {
+                    tgMessage = `📁 <b>${last.topic || last.filename}</b> (${last.type.toUpperCase()}) is ready.\nDownload it from your Startup Staff boardroom.`;
+                }
+                await window.sendTelegram(tgMessage);
+                appendStaffBubble(cosName, `Done — ${last.topic || last.filename} sent to your Telegram ✓`, false, null, null);
+                logTrace('Previous doc sent to Telegram', true);
+            }
+        } catch(e) {
+            logTrace('Telegram send failed: ' + e.message, false);
+            appendStaffBubble(cosName, `Couldn't send to Telegram: ${e.message}`, false, null, null);
+        } finally {
+            btnSend.disabled = false;
+            btnSend.textContent = 'Execute';
+        }
+        return;
+    }
 
     // ── FAST PATH: Telegram send ──────────────────────────────────────────────
     if (docReq.sendTelegram) {
