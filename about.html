@@ -1378,6 +1378,17 @@
     </div>
 
 <script>
+// ─── GLOBAL ERROR CATCHER — captures startup crashes for diagnostics ─────────
+window._startupError = null;
+window.addEventListener('error', e => {
+    window._startupError = (e.message || 'Unknown error') + ' @ ' + (e.filename || '?') + ':' + e.lineno;
+    console.error('[STARTUP ERROR]', window._startupError);
+});
+window.addEventListener('unhandledrejection', e => {
+    window._startupError = window._startupError || ('Unhandled promise: ' + (e.reason?.message || e.reason || 'unknown'));
+    console.error('[UNHANDLED REJECTION]', window._startupError);
+});
+
 
 // ─── STAFF DEFAULTS (must be first) ─────────────────────────────────────────
 const STAFF_DEFAULTS = {
@@ -5899,9 +5910,40 @@ async function runDiag() {
         }
     }
 
-    // ── AUTH ──
-    head('AUTH');
-    log('sbClient', sbClient ? 'loaded' : 'NULL', !!sbClient);
+    // ── AUTH & LOGIN ──
+    head('AUTH & LOGIN');
+    log('sbClient init', sbClient ? 'OK' : 'NULL — Supabase failed to load', !!sbClient);
+    log('Supabase URL', typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL.slice(0,40) : 'UNDEFINED', typeof SUPABASE_URL !== 'undefined');
+    log('Supabase ANON key', typeof SUPABASE_ANON !== 'undefined' ? SUPABASE_ANON.slice(0,20)+'…' : 'UNDEFINED', typeof SUPABASE_ANON !== 'undefined');
+    log('window.supabase lib', typeof window.supabase !== 'undefined' ? 'loaded' : 'NOT LOADED — CDN failed', typeof window.supabase !== 'undefined');
+
+    // Check all critical DOM elements for auth
+    const authEls = ['auth-modal','btn-linkedin-login','auth-error','user-avatar-btn','user-avatar-img','user-dropdown','user-full-name','user-email','btn-user-avatar','btn-logout','app-header','startup-modal','chat-window','chat-input','btn-send'];
+    head('AUTH DOM ELEMENTS');
+    authEls.forEach(id => {
+        const el = document.getElementById(id);
+        log(id, el ? 'EXISTS' : 'MISSING — will crash at startup', !!el);
+    });
+
+    // Check auth modal visibility
+    head('AUTH MODAL STATE');
+    const authModalEl = document.getElementById('auth-modal');
+    if (authModalEl) {
+        log('auth-modal display', authModalEl.style.display || '(none set)', authModalEl.style.display !== 'none');
+        log('auth-modal z-index', getComputedStyle(authModalEl).zIndex, true);
+        const r = authModalEl.getBoundingClientRect();
+        log('auth-modal size', r.width + 'x' + r.height, r.width > 0 && r.height > 0);
+        const btn = document.getElementById('btn-linkedin-login');
+        if (btn) {
+            const br = btn.getBoundingClientRect();
+            log('LinkedIn btn visible', br.width > 0 && br.height > 0 ? 'YES' : 'HIDDEN/ZERO SIZE', br.width > 0);
+            log('LinkedIn btn disabled', btn.disabled ? 'YES — stuck disabled' : 'NO', !btn.disabled);
+            log('LinkedIn btn text', btn.textContent.trim().slice(0,40), true);
+        }
+    }
+
+    // Supabase session check
+    head('SUPABASE SESSION');
     if (sbClient) {
         try {
             const { data: { session }, error } = await sbClient.auth.getSession();
@@ -5910,18 +5952,42 @@ async function runDiag() {
             if (session) {
                 log('user email', session.user.email, true);
                 log('user name', session.user.user_metadata?.full_name || 'N/A', true);
-                log('avatar_url', session.user.user_metadata?.avatar_url ? 'present' : 'MISSING', !!session.user.user_metadata?.avatar_url);
                 log('token expires', new Date(session.expires_at * 1000).toLocaleTimeString(), true);
+                log('provider', session.user.app_metadata?.provider || 'unknown', true);
             }
         } catch(e) { log('getSession() THREW', e.message, false); }
+
+        // Test Supabase connectivity
+        try {
+            const t0 = Date.now();
+            const { error: pingErr } = await sbClient.from('provider_configs').select('count').limit(1);
+            const ms = Date.now() - t0;
+            log('Supabase DB ping', pingErr ? 'FAILED: ' + pingErr.message : ms + 'ms', !pingErr);
+        } catch(e) { log('Supabase DB ping THREW', e.message, false); }
+    } else {
+        log('Session check', 'SKIPPED — sbClient is null', false);
+        // Try to explain why
+        try {
+            const testClient = window.supabase?.createClient('https://test.supabase.co', 'test');
+            log('supabase.createClient', testClient ? 'works' : 'returns null', !!testClient);
+        } catch(e) {
+            log('supabase.createClient error', e.message, false);
+        }
     }
+
+    // Check for JS errors that may have occurred at startup
+    head('RUNTIME CHECKS');
+    log('window._startupError', window._startupError || 'none detected', !window._startupError);
+    log('auth-modal shown at load', authModalEl?.style.display === 'flex' ? 'YES (correct)' : authModalEl?.style.display || 'unknown', authModalEl?.style.display === 'flex');
+    log('boardroom visible', document.getElementById('app-header')?.style.display === 'flex' ? 'YES' : 'NO (expected if not logged in)', true);
+    log('page URL', window.location.href.slice(0,80), true);
+    log('OAuth callback params', window.location.hash.includes('access_token') ? 'FOUND — OAuth redirect in progress' : window.location.search.includes('error') ? 'ERROR in URL: ' + window.location.search.slice(0,60) : 'none', !window.location.search.includes('error'));
 
     // ── UI STATE ──
     head('UI STATE');
-    const authModal = document.getElementById('auth-modal');
     const avatarWrapper = document.getElementById('user-avatar-btn');
     const avatarImg = document.getElementById('user-avatar-img');
-    log('auth-modal display', authModal?.style.display || 'N/A', authModal?.style.display === 'none');
+    log('auth-modal display', authModalEl?.style.display || 'N/A', authModalEl?.style.display === 'none');
     log('user-avatar-btn display', avatarWrapper?.style.display || 'N/A', avatarWrapper?.style.display !== 'none');
     log('avatar img src', avatarImg?.src ? avatarImg.src.slice(0,50)+'…' : 'EMPTY', !!avatarImg?.src);
 
