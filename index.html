@@ -4855,7 +4855,7 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
 PLATFORM CONTEXT — critical facts about this environment:
 - You and your teammates are AI, not humans. You have no schedules, no timelines, no EOD deadlines. You can produce any output RIGHT NOW in this conversation.
 - NEVER assign future tasks like "Tony will do this by tomorrow" or "we'll have this ready in 48 hours." That is not how this works. If something needs to be done, do it now or confirm it is being done now.
-- File generation is built in: the system produces HTML pages and PDFs (print-ready HTML). All outputs use the Startup Staff brand design system (logo, fonts, colors) matching the current theme. If someone asks for a Word doc or spreadsheet, generate a well-structured HTML equivalent instead — document layout for reports, table layout for data. The founder can say "make it dark" or "make it light" to control the theme.
+- File generation is built in: the system produces HTML pages and PDFs (print-ready HTML). All outputs use the Startup Staff brand design system (logo, fonts, colors) matching the current theme. For HTML/PDF generation: the domain expert (legal, HR, finance, marketing) provides content, architecture provides design guidance, and ENGINEERING generates the final HTML using both inputs. Engineering MUST output the [DOCUMENT: HTML]...[END DOCUMENT] block. The founder can say "make it dark" or "make it light" to control the theme.
 - Each staff member streams responses directly into the chat in real time.
 - Do NOT use project management language (deliverables, timelines, sprints, EOD) unless the founder is explicitly asking you to help plan a project for their human team outside this system.
 - Email delivery is available: the founder can say "email it to x@y.com" and the generated file will be sent automatically via Resend.
@@ -5036,187 +5036,9 @@ async function sendChatAgentic() {
 
     btnSend.disabled = true;
 
-    // ── FAST PATH: doc requests — engineering builds, domain expert provides content, architecture guides design ──
-    if (docReq.type) {
-        btnSend.textContent = 'Generating…';
 
-        // ── Detect content domain from topic keywords ──────────────────────────
-        const _topic = (docReq.topic + ' ' + userText).toLowerCase();
-        const _domainMap = [
-            { keys: ['contract','agreement','terms','privacy','gdpr','pdpa','compliance','legal','ip','nda','policy','liability','clause'], staff: 'legal' },
-            { keys: ['job','hire','hiring','description','jd','role','position','onboard','compensation','salary','culture','hr','people','team'], staff: 'hr' },
-            { keys: ['budget','financial','forecast','model','revenue','cost','pricing','p&l','cash','burn','runway','invoice','accounting'], staff: 'finance' },
-            { keys: ['pitch','gtm','marketing','campaign','landing','product','brand','value proposition','elevator','customer','acquisition','positioning'], staff: 'marketing' },
-        ];
-        let _contentStaffKey = 'cos'; // default to COS
-        for (const entry of _domainMap) {
-            if (entry.keys.some(k => _topic.includes(k))) { _contentStaffKey = entry.staff; break; }
-        }
-
-        const _engKey   = 'engineering';
-        const _archKey  = 'architecture';
-        const _engName  = window.staffCustom?.[_engKey]?.name  || STAFF_DEFAULTS[_engKey]?.name;
-        const _archName = window.staffCustom?.[_archKey]?.name || STAFF_DEFAULTS[_archKey]?.name;
-        const _cName    = window.staffCustom?.[_contentStaffKey]?.name || STAFF_DEFAULTS[_contentStaffKey]?.name;
-
-        logTrace(`Doc fast path: domain=${_contentStaffKey}(${_cName}) → arch(${_archName}) → eng(${_engName})`, true);
-
-        // Animate all three nodes
-        const _nodeMap = { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' };
-        const _engNode  = document.getElementById('visual-' + _nodeMap[_engKey]);
-        const _archNode = document.getElementById('visual-' + _nodeMap[_archKey]);
-        const _cNode    = document.getElementById('visual-' + _nodeMap[_contentStaffKey]);
-
-        // ── Phase A: Content expert provides brief (silent, no bubble) ─────────
-        btnSend.textContent = 'Getting content brief…';
-        if (_cNode) _cNode.classList.add('active');
-        let _contentBrief = '';
-        try {
-            const _cSystem = buildStaffSystemPrompt(_contentStaffKey);
-            const _cMessages = [{ role:'user', content:`The founder needs a ${docReq.type.toUpperCase()} document: "${userText}"
-
-Your role: Provide a concise content brief — key messages, required sections, tone, and any domain-specific requirements (legal clauses, HR compliance, financial accuracy etc). Do NOT write the full document. Just the content specification in bullet points. Max 300 words.` }];
-            const { text: _cText } = await callStaffModel(_contentStaffKey, _cMessages, _cSystem, 600);
-            _contentBrief = _cText;
-            logTrace(`${_cName} content brief: ${_cText.slice(0,80)}…`, false);
-        } catch(e) {
-            logTrace(`Content brief failed (${e.message}) — proceeding without`, false);
-        }
-        if (_cNode) _cNode.classList.remove('active');
-
-        // ── Phase B: Architecture provides design guidance (silent, no bubble) ──
-        btnSend.textContent = 'Getting design guidance…';
-        if (_archNode) _archNode.classList.add('active');
-        let _designBrief = '';
-        try {
-            const _archSystem = buildStaffSystemPrompt(_archKey);
-            const _archMessages = [{ role:'user', content:`The founder needs a ${docReq.type.toUpperCase()} document: "${userText}"
-
-Your role: Provide design and layout guidance for this document. Specify: visual structure, section hierarchy, use of whitespace, typography choices, color usage from the brand palette, and any UX considerations. Max 200 words.` }];
-            const { text: _archText } = await callStaffModel(_archKey, _archMessages, _archSystem, 400);
-            _designBrief = _archText;
-            logTrace(`${_archName} design brief: ${_archText.slice(0,80)}…`, false);
-        } catch(e) {
-            logTrace(`Design brief failed (${e.message}) — proceeding without`, false);
-        }
-        if (_archNode) _archNode.classList.remove('active');
-
-        // ── Phase C: Engineering generates the final HTML ──────────────────────
-        btnSend.textContent = 'Engineering generating…';
-        if (_engNode) _engNode.classList.add('active');
-
-        const docHint = getDocSystemAddition(docReq.type, docReq.topic, docReq.redirectedFrom);
-        const _contentSection = _contentBrief ? `
-
-CONTENT BRIEF FROM ${_cName.toUpperCase()} (${_contentStaffKey}):
-${_contentBrief}` : '';
-        const _designSection  = _designBrief  ? `
-
-DESIGN GUIDANCE FROM ${_archName.toUpperCase()}:
-${_designBrief}` : '';
-
-        const docStaffKey  = _engKey;
-        const docStaffName = _engName;
-        const docSystem    = buildStaffSystemPrompt(_engKey);
-        const docMessages  = [{
-            role: 'user',
-            content: `${userText}${_contentSection}${_designSection}
-
-${docHint}`
-        }];
-
-        const docNodeEl = _engNode;
-        try {
-             const { text: docResponse } = await streamStaffModel(docStaffKey, docMessages, docSystem, 8192, docStaffName, false);
-             chatHistory.push({ role: 'assistant', content: docResponse });
-             const extracted = extractDocBlockRobust(docResponse);
-             if (extracted) {
-                 injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock, docReq.isPdf ? 'pdf' : null);
-                 // Store for "send that" / "send previous" follow-up commands
-                 window._lastGeneratedDoc = {
-                     type: extracted.docType || docReq.type,
-                     filename: docReq.filename,
-                     rawBlock: extracted.rawBlock,
-                     topic: docReq.topic,
-                     isPdf: !!docReq.isPdf,
-                     ts: Date.now()
-                 };
-
-                 // ── Email action ──────────────────────────────────────────
-                 if (docReq.email) {
-                     logTrace(`Sending to ${docReq.email}…`, true);
-                     try {
-                         let emailHtml, emailSubject;
-                         if (extracted.docType === 'html') {
-                             // Send the full HTML page as email body
-                             emailHtml = extracted.rawBlock;
-                             emailSubject = docReq.topic || 'Your file from Startup Staff';
-                         } else {
-                             // For docx/xlsx send a notification with download prompt
-                             emailHtml = `<p>Hi,</p><p>Your <strong>${(extracted.docType||docReq.type).toUpperCase()}</strong> file <em>${docReq.filename}</em> has been generated by your Startup Staff team.</p><p>Download it from your Startup Staff boardroom.</p>`;
-                             emailSubject = `Your ${(extracted.docType||docReq.type).toUpperCase()} file is ready: ${docReq.topic}`;
-                         }
-                         await window.sendEmail({ to: docReq.email, subject: emailSubject, html: emailHtml });
-                         // Inject a small confirmation into chat
-                         const cosName2 = window.staffCustom?.cos?.name || 'Helen';
-                         appendStaffBubble(cosName2, `Sent to ${docReq.email} ✓`, false, null, null);
-                         logTrace(`Email sent to ${docReq.email}`, true);
-                     } catch(emailErr) {
-                         logTrace(`Email failed: ${emailErr.message}`, false);
-                         const cosName2 = window.staffCustom?.cos?.name || 'Helen';
-                         appendStaffBubble(cosName2, `Couldn't send the email: ${emailErr.message}`, false, null, null);
-                     }
-                 }
-
-                 // ── Telegram action ───────────────────────────────────────
-                 if (docReq.sendTelegram) {
-                     try {
-                         const tgMsg = docReq.isPdf
-                             ? `📑 Your PDF (${docReq.topic || docReq.filename}) is ready. Open Startup Staff and download it, then print to save as PDF.`
-                             : `📄 Your ${(extracted?.docType || docReq.type || '').toUpperCase()} file (${docReq.topic || docReq.filename}) is ready. Open Startup Staff to download it.`;
-                         await window.sendTelegram(tgMsg);
-                         const cosName3 = window.staffCustom?.cos?.name || 'Helen';
-                         appendStaffBubble(cosName3, 'Telegram notification sent ✓', false, null, null);
-                         logTrace('Telegram notification sent', true);
-                     } catch(tgErr) {
-                         logTrace('Telegram notification failed: ' + tgErr.message, false);
-                     }
-                 }
-             } else {
-                 logTrace('⚠ First attempt yielded no document block — retrying once…', false);
-                 // Retry once with a stronger nudge
-                 try {
-                     const retryMessages = [...docMessages, 
-                         { role: 'assistant', content: docResponse.slice(0, 200) + '...' },
-                         { role: 'user', content: 'You stopped before completing the document. Continue from where you left off and output the COMPLETE [DOCUMENT: HTML]...[END DOCUMENT] block now. Do not repeat what you already wrote — just output the full document block.' }
-                     ];
-                     const { text: retryResponse } = await streamStaffModel(docStaffKey, retryMessages, docSystem, 8192, docStaffName, false);
-                     const retryExtracted = extractDocBlockRobust(retryResponse);
-                     if (retryExtracted) {
-                         logTrace('[DOC] Retry succeeded ✓', true);
-                         injectDownloadCard(retryExtracted.docType || docReq.type, docReq.filename, retryExtracted.rawBlock, docReq.isPdf ? 'pdf' : null);
-                         window._lastGeneratedDoc = { type: retryExtracted.docType || docReq.type, filename: docReq.filename, rawBlock: retryExtracted.rawBlock, topic: docReq.topic, isPdf: !!docReq.isPdf, ts: Date.now() };
-                     } else {
-                         logTrace('[DOC] ✗ Retry also failed — model may not support this output format', false);
-                         const cosNameFail = window.staffCustom?.cos?.name || 'Helen';
-                         appendStaffBubble(cosNameFail, 'The document generation didn\'t complete. Try rephrasing your request or switching to a more capable model.', false, null, null);
-                     }
-                 } catch(retryErr) {
-                     logTrace('[DOC] Retry error: ' + retryErr.message, false);
-                 }
-             }
-         } catch(e) {
-             logTrace('Doc generation error: ' + e.message, false);
-             appendMessage(docStaffName, 'Something went wrong generating the file: ' + e.message);
-         } finally {
-             btnSend.disabled = false;
-             btnSend.textContent = 'Execute';
-             if (docNodeEl) docNodeEl.classList.remove('active');
-             if (_archNode) _archNode.classList.remove('active');
-             if (_cNode) _cNode.classList.remove('active');
-         }
-         return;
-    }
+    // Doc requests now flow through normal Phase 1→2→3 routing
+    // The doc hint is injected into Phase 2 staff messages below
 
 
     // ── FAST PATH: plain email send — no discussion, just send ──────────────
@@ -5351,7 +5173,7 @@ ${docHint}`
 
         // Build mandate map for routing context
         const mandateMap = {
-            engineering:  'technical feasibility, code, build vs buy, timelines, infrastructure',
+            engineering:  'technical feasibility, code, HTML/PDF generation, build vs buy, timelines, infrastructure',
             finance:      'money, budgets, costs, revenue, tax, accounting, financial modelling, unit economics, runway',
             marketing:    'GTM, positioning, channels, campaigns, brand, growth, customer acquisition',
             legal:        'compliance, contracts, regulation, IP, PDPA, GDPR, legal risk',
@@ -5379,6 +5201,9 @@ Examples:
 Q: "What are the tax deadlines in Singapore?" → [CONSULT: ${(window.staffCustom?.finance?.name || STAFF_DEFAULTS.finance?.name)}]
 Q: "Should we hire a CTO?" → [CONSULT: ${(window.staffCustom?.hr?.name || STAFF_DEFAULTS.hr?.name)}]
 Q: "What's our GTM strategy?" → [CONSULT: ${(window.staffCustom?.marketing?.name || STAFF_DEFAULTS.marketing?.name)}]
+Q: "Generate a landing page / HTML / PDF" → [CONSULT: ${(window.staffCustom?.marketing?.name || STAFF_DEFAULTS.marketing?.name)}] [CONSULT: ${(window.staffCustom?.architecture?.name || STAFF_DEFAULTS.architecture?.name)}] [CONSULT: ${(window.staffCustom?.engineering?.name || STAFF_DEFAULTS.engineering?.name)}]
+Q: "Create a contract / terms / privacy policy" → [CONSULT: ${(window.staffCustom?.legal?.name || STAFF_DEFAULTS.legal?.name)}] [CONSULT: ${(window.staffCustom?.engineering?.name || STAFF_DEFAULTS.engineering?.name)}]
+Q: "Generate a job description" → [CONSULT: ${(window.staffCustom?.hr?.name || STAFF_DEFAULTS.hr?.name)}] [CONSULT: ${(window.staffCustom?.engineering?.name || STAFF_DEFAULTS.engineering?.name)}]
 
 Wrong output — NEVER do this:
 Sure, let me loop in the team... [CONSULT: Name] Great question...
@@ -5446,22 +5271,37 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
              consultedKeys.push(key);
 
              const staffSystem = buildStaffSystemPrompt(key, _shuffledOpeners[_openerIdx++ % _shuffledOpeners.length]);
-             // Frame the question so the model responds only as this specific staff member
              const _docHint = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic, docReq.redirectedFrom) : '';
              const _mandate = { engineering:'technical feasibility, code, timelines, infrastructure', finance:'money, costs, tax, accounting, financial modelling, unit economics', marketing:'GTM, positioning, channels, brand, growth', legal:'compliance, contracts, regulation, IP, legal risk', architecture:'system design, scalability, platform strategy', hr:'hiring, people, culture, compensation, org structure' }[key] || 'your domain';
+
+             // Inject recent chat history so staff have conversation context
+             const _historySlice = chatHistory.slice(-10); // last 10 turns
+             const _historyBlock = _historySlice.length > 1
+                 ? `
+
+CONVERSATION CONTEXT (recent exchanges):
+${_historySlice.map(m => `${m.role === 'user' ? 'Founder' : 'Team'}: ${m.content.slice(0,300)}`).join('\n')}
+`
+                 : '';
+
              const staffMessages = docReq.fullTeam
-                 ? [{ role: 'user', content: `The founder wants the full team's input on: "${userText}"\n\nYou are ${name} (${_mandate}). Give your honest perspective from your domain. Be concise — other team members will also weigh in. Speak in first person as yourself.${_docHint}` }]
-                 : [{ role: 'user', content: `The founder has asked: "${userText}"\n\nYou are ${name}. Your mandate covers: ${_mandate}.\n\nIMPORTANT:\n- Answer ONLY from your mandate. Do not answer for other domains.\n- Do NOT repeat or paraphrase what another team member would say.\n- Do NOT produce a generic answer that anyone could give — give YOUR specific take.\n- Speak in first person as yourself only.${_docHint}` }];
+                 ? [..._historySlice, { role: 'user', content: `The founder wants the full team's input on: "${userText}"${_historyBlock}\n\nYou are ${name} (${_mandate}). Give your honest perspective from your domain. Be concise — other team members will also weigh in. Speak in first person as yourself.${_docHint}` }]
+                 : [..._historySlice, { role: 'user', content: `The founder has asked: "${userText}"${_historyBlock}\n\nYou are ${name}. Your mandate covers: ${_mandate}.\n\nIMPORTANT:\n- Answer ONLY from your mandate. Do not answer for other domains.\n- Do NOT repeat or paraphrase what another team member would say.\n- Do NOT produce a generic answer that anyone could give — give YOUR specific take.\n- Speak in first person as yourself only.${_docHint}` }];
+
+             // Engineering gets more tokens when generating docs
+             const _maxTok = (docReq.type && key === 'engineering') ? 8192 : 1024;
 
              try {
-                 // animation handled by createStreamingBubble
-                 const { text: response, usage: specUsage } = await streamStaffModel(key, staffMessages, staffSystem, 1024, name, false);
+                 const { text: response, usage: specUsage } = await streamStaffModel(key, staffMessages, staffSystem, _maxTok, name, false);
                  specialistResponses[name] = { text: response, usage: specUsage };
                  logTrace(`✓ ${name} responded. Tokens: ${specUsage?.total || '?'}`, false);
                  // If staff member produced a document, inject download card immediately
                  if (docReq.type) {
-                     const staffDoc = extractDocBlock(response);
-                     if (staffDoc) injectDownloadCard(staffDoc.docType || docReq.type, `${name.toLowerCase()}-${docReq.filename}`, staffDoc.rawBlock);
+                     const staffDoc = extractDocBlockRobust(response);
+                     if (staffDoc) {
+                         injectDownloadCard(staffDoc.docType || docReq.type, docReq.filename || `${name.toLowerCase()}.html`, staffDoc.rawBlock, docReq.isPdf ? 'pdf' : null);
+                         window._lastGeneratedDoc = { type: staffDoc.docType || docReq.type, filename: docReq.filename, rawBlock: staffDoc.rawBlock, topic: docReq.topic, isPdf: !!docReq.isPdf, ts: Date.now() };
+                     }
                  }
              } catch(e) {
                  setDotGray(key);
@@ -5537,8 +5377,20 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
          logAnim('all animations cleared — synthesis complete');
 
         if (docReq.type) {
-            const extracted = extractDocBlock(synthesis);
-            injectDownloadCard(extracted?.docType || docReq.type, docReq.filename, extracted?.rawBlock || synthesis);
+            // Try to extract from specialist responses first (engineering most likely produced it)
+            let _docExtracted = null;
+            for (const [_sName, _sResp] of Object.entries(specialistResponses)) {
+                const _tried = extractDocBlockRobust(_sResp?.text || '');
+                if (_tried) { _docExtracted = _tried; logTrace(`[Doc] Found in ${_sName} response`, true); break; }
+            }
+            // Fall back to synthesis
+            if (!_docExtracted) _docExtracted = extractDocBlockRobust(synthesis);
+            if (_docExtracted) {
+                injectDownloadCard(_docExtracted.docType || docReq.type, docReq.filename || 'document.html', _docExtracted.rawBlock, docReq.isPdf ? 'pdf' : null);
+                window._lastGeneratedDoc = { type: _docExtracted.docType || docReq.type, filename: docReq.filename, rawBlock: _docExtracted.rawBlock, topic: docReq.topic, isPdf: !!docReq.isPdf, ts: Date.now() };
+            } else {
+                logTrace('[Doc] ⚠ No document block found in any response', false);
+            }
         }
 
     } catch(error) {
