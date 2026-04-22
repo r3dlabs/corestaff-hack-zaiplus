@@ -2204,6 +2204,10 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
     const modelId = assignment?.model_id || assignment?.model;
     const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
 
+    const _online = isModelOnline(providerKey, modelId);
+    metaParts.push(_online
+        ? `<span style="color:#22c55e;font-weight:600;">🌐 Web Search</span>`
+        : `<span style="opacity:0.5;">📚 Training Knowledge</span>`);
     if (provLabel && modelId) {
         metaParts.push(`<span style="opacity:0.8;">${provLabel} · ${modelId}</span>`);
     }
@@ -2213,16 +2217,14 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
         metaParts.push(`<span title="Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}">⬡ ${usage.total.toLocaleString()} tokens</span>`);
     }
 
-    // URLs referred or internal training knowledge
+    // URLs / citations
     const urlList = urls ? urls.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')) : [];
     if (urlList.length > 0) {
         const urlLinks = urlList.map(u => {
             const short = u.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0, 50);
             return `<a href="${u}" target="_blank" rel="noopener" style="display:block;color:var(--text-secondary);text-decoration:none;margin-top:2px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">· ${short}</a>`;
         }).join('');
-        metaParts.push(`<span>🔗 Sources referred:<br>${urlLinks}</span>`);
-    } else {
-        metaParts.push(`<span style="opacity:0.6;">Internal Training Knowledge</span>`);
+        metaParts.push(`<span>🔗 Sources:<br>${urlLinks}</span>`);
     }
 
     if (metaParts.length > 0) {
@@ -3771,8 +3773,12 @@ function renderCustomizeCards() {
 
         // Status chip
         const assigned = window.staffAssignments?.[key];
+        const _assignedOnline = assigned?.provider && assigned?.model && isModelOnline(assigned.provider, assigned.model);
+        const _onlineBadgeCard = _assignedOnline
+            ? `<span style="font-size:9px;color:#22c55e;font-family:'Geist Mono',monospace;margin-left:6px;" title="This model can search the web">🌐 online</span>`
+            : '';
         const statusDot = assigned?.provider && assigned?.model
-            ? `<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px;"></span><span style="font-size:9px;color:#22c55e;font-family:'Geist Mono',monospace;">configured</span>`
+            ? `<span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:4px;"></span><span style="font-size:9px;color:#22c55e;font-family:'Geist Mono',monospace;">configured</span>${_onlineBadgeCard}`
             : `<span style="width:6px;height:6px;border-radius:50%;background:#6b7280;display:inline-block;margin-right:4px;"></span><span style="font-size:9px;color:var(--text-muted);font-family:'Geist Mono',monospace;">not set</span>`;
 
         // KB urls
@@ -3977,6 +3983,59 @@ function buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens) {
     return { url, options, isAnthropic, isGoogle, label: model + ' (' + PROVIDER_DEFS[providerKey].label + ')' };
 }
 
+// ─── BROWSING CAPABILITY MAP ─────────────────────────────────────────────────
+// Static lookup — which providers/models have live web search built in
+const BROWSING_CAPABLE = {
+    perplexity: { all: true },   // all sonar models search the web
+    xai:        { patterns: ['grok-3', 'grok-2'] }, // grok has live search
+    openai:     { patterns: ['search'] },            // gpt-4o-search-preview etc
+    google:     { patterns: ['gemini'] },            // gemini with grounding
+};
+
+function isModelOnline(providerKey, modelId) {
+    const cap = BROWSING_CAPABLE[providerKey];
+    if (!cap) return false;
+    if (cap.all) return true;
+    if (cap.patterns) return cap.patterns.some(p => (modelId || '').toLowerCase().includes(p));
+    return false;
+}
+
+// Extract citations from API response data — returns array of {url, title} or null
+function extractCitations(data, providerKey) {
+    try {
+        // Perplexity — data.citations is array of URL strings
+        if (providerKey === 'perplexity' && Array.isArray(data.citations) && data.citations.length > 0) {
+            return data.citations.map(u => ({ url: u, title: u.replace(/^https?:\/\//, '').split('/')[0] }));
+        }
+        // OpenAI search models — choices[0].message.annotations
+        if (providerKey === 'openai') {
+            const annotations = data.choices?.[0]?.message?.annotations;
+            if (Array.isArray(annotations) && annotations.length > 0) {
+                return annotations
+                    .filter(a => a.type === 'url_citation' && a.url_citation?.url)
+                    .map(a => ({ url: a.url_citation.url, title: a.url_citation.title || a.url_citation.url }));
+            }
+        }
+        // Google Gemini — groundingMetadata.groundingChunks
+        if (providerKey === 'google') {
+            const chunks = data.candidates?.[0]?.groundingMetadata?.groundingChunks;
+            if (Array.isArray(chunks) && chunks.length > 0) {
+                return chunks
+                    .filter(c => c.web?.uri)
+                    .map(c => ({ url: c.web.uri, title: c.web.title || c.web.uri }));
+            }
+        }
+        // xAI Grok — citations in choices[0].message.citations (if present)
+        if (providerKey === 'xai') {
+            const cits = data.choices?.[0]?.message?.citations;
+            if (Array.isArray(cits) && cits.length > 0) {
+                return cits.map(c => ({ url: c.url || c, title: c.title || (c.url || c).replace(/^https?:\/\//, '').split('/')[0] }));
+            }
+        }
+    } catch(e) {}
+    return null;
+}
+
 async function callStaffModel(staffKey, messages, systemPrompt, maxTokens = 1024) {
     const fetchOpts = buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens);
     if (!fetchOpts) throw new Error(`No provider configured for ${window.staffCustom?.[staffKey]?.name || staffKey}. Please assign a model in Customize Team.`);
@@ -4023,7 +4082,9 @@ async function callStaffModel(staffKey, messages, systemPrompt, maxTokens = 1024
         if (data.usage) usage = { prompt: data.usage.prompt_tokens, completion: data.usage.completion_tokens, total: data.usage.total_tokens };
     }
 
-    return { text, usage, label };
+    const citations = extractCitations(data, providerKey);
+    const online = isModelOnline(providerKey, model);
+    return { text, usage, label, citations, online };
 }
 
 // ── Copy button helper — added to every staff bubble ─────────────────────────
@@ -4152,7 +4213,7 @@ function createStreamingBubble(name, isSynthesis = false) {
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    function finalize(fullText, usage, urls) {
+    function finalize(fullText, usage, urls, citations, online) {
         cursor.remove();
         // Stop this staff member's animations when typing ends
         if (svgNode) svgNode.classList.remove('active');
@@ -4171,17 +4232,29 @@ function createStreamingBubble(name, isSynthesis = false) {
         const modelId = assignment?.model_id || assignment?.model;
         const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
         const metaParts = [];
+        // Online/offline badge
+        const _onlineBadge = online
+            ? `<span style="color:#22c55e;font-weight:600;">🌐 Web Search</span>`
+            : `<span style="opacity:0.5;">📚 Training Knowledge</span>`;
+        metaParts.push(_onlineBadge);
         if (provLabel && modelId) metaParts.push(`<span style="opacity:0.8;">${provLabel} &middot; ${modelId}</span>`);
         if (usage?.total) metaParts.push(`<span title="Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}">&block; ${usage.total.toLocaleString()} tokens</span>`);
-        const urlList = urls ? urls.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http')) : [];
-        if (urlList.length > 0) {
-            const urlLinks = urlList.map(u => {
-                const short = u.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0,50);
-                return `<a href="${u}" target="_blank" rel="noopener" style="display:block;color:var(--text-secondary);text-decoration:none;margin-top:2px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&middot; ${short}</a>`;
+        // Citations from web search (overrides KB urls)
+        if (citations && citations.length > 0) {
+            const citLinks = citations.slice(0,5).map(c => {
+                const short = (c.title || c.url).replace(/^https?:\/\//, '').slice(0,60);
+                return `<a href="${c.url}" target="_blank" rel="noopener" style="display:block;color:var(--text-secondary);text-decoration:none;margin-top:2px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&middot; ${short}</a>`;
             }).join('');
-            metaParts.push(`<span>Sources:<br>${urlLinks}</span>`);
+            metaParts.push(`<span>🔗 Sources:<br>${citLinks}</span>`);
         } else {
-            metaParts.push(`<span style="opacity:0.6;">Internal Training Knowledge</span>`);
+            const urlList = urls ? urls.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http')) : [];
+            if (urlList.length > 0) {
+                const urlLinks = urlList.map(u => {
+                    const short = u.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0,50);
+                    return `<a href="${u}" target="_blank" rel="noopener" style="display:block;color:var(--text-secondary);text-decoration:none;margin-top:2px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&middot; ${short}</a>`;
+                }).join('');
+                metaParts.push(`<span>🔗 Sources:<br>${urlLinks}</span>`);
+            }
         }
         if (metaParts.length > 0) {
             const meta = document.createElement('div');
@@ -4210,8 +4283,10 @@ async function streamStaffModel(staffKey, messages, systemPrompt, maxTokens, nam
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         const usage = data.usageMetadata ? { prompt: data.usageMetadata.promptTokenCount, completion: data.usageMetadata.candidatesTokenCount, total: data.usageMetadata.totalTokenCount } : null;
         for (const word of text.split(' ')) { onChunk(word + ' '); await new Promise(r=>setTimeout(r,10)); }
-        finalize(text, usage, window.staffKb?.[staffKey]?.urls || null);
-        return { text, usage, label };
+        const gCitations = extractCitations(data, providerKey);
+        const gOnline = isModelOnline(providerKey, model);
+        finalize(text, usage, window.staffKb?.[staffKey]?.urls || null, gCitations, gOnline);
+        return { text, usage, label, citations: gCitations, online: gOnline };
     }
 
     // Inject stream:true into request body
@@ -4235,6 +4310,7 @@ async function streamStaffModel(staffKey, messages, systemPrompt, maxTokens, nam
     let usageData = null;
     let buf = '';
     let inputTokens = 0;
+    let streamCitations = null;
 
     while (true) {
         const { done, value } = await reader.read();
@@ -4256,14 +4332,22 @@ async function streamStaffModel(staffKey, messages, systemPrompt, maxTokens, nam
                 } else {
                     chunk = p.choices?.[0]?.delta?.content || '';
                     if (p.usage) usageData = { prompt: p.usage.prompt_tokens||0, completion: p.usage.completion_tokens||0, total: p.usage.total_tokens||0 };
+                    // Perplexity sends citations in final chunk
+                    if (p.citations && !streamCitations) streamCitations = p.citations.map(u => ({ url: u, title: u.replace(/^https?:\/\//, '').split('/')[0] }));
+                    // xAI Grok
+                    if (p.choices?.[0]?.message?.citations && !streamCitations) {
+                        streamCitations = p.choices[0].message.citations.map(c => ({ url: c.url||c, title: c.title||(c.url||c).replace(/^https?:\/\//, '').split('/')[0] }));
+                    }
                 }
                 if (chunk) { fullText += chunk; onChunk(chunk); }
             } catch(e) {}
         }
     }
 
-    finalize(fullText, usageData, window.staffKb?.[staffKey]?.urls || null);
-    return { text: fullText, usage: usageData, label };
+    const kbUrls = window.staffKb?.[staffKey]?.urls || null;
+    const online = isModelOnline(providerKey, model);
+    finalize(fullText, usageData, kbUrls, streamCitations, online);
+    return { text: fullText, usage: usageData, label, citations: streamCitations, online };
 }
 
 
