@@ -732,13 +732,22 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/azure.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="azure" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Azure AI Foundry</span>
+                                <a href="https://ai.azure.com/nextgen" target="_blank" rel="noopener" title="Open Azure AI Foundry console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-azure" style="width:8px;height:8px;border-radius:50%;background:#0078d4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-azure" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-azure" onclick="testProvider('azure')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-azure" type="text" value="" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://YOUR-RESOURCE-NAME.openai.azure.com"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-azure" type="text" value="" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://YOUR-RESOURCE-NAME.openai.azure.com/openai/v1"></div>
                             <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-azure" type="password" placeholder="Azure API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Deployment Name <span style="font-size:9px;color:var(--text-muted);font-weight:400;">— your Azure deployment, e.g. gpt-4o-prod</span></div><input id="pdeployment-azure" type="text" placeholder="e.g. gpt-4o-prod" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
+                            <div id="pmodel-section-azure" style="margin-bottom:6px;">
+                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                                    <div class="staff-section-label" style="margin-bottom:0;">Model / Deployment</div>
+                                    <button onclick="fetchModelsForProvider('azure', document.getElementById('papikey-azure').value.trim(), document.getElementById('pendpoint-azure').value.trim())" style="font-size:10px;padding:2px 8px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist Mono',monospace;">Fetch Models</button>
+                                </div>
+                                <select id="pmodel-azure" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— fetch or type model name —</option></select>
+                                <input id="pdeployment-azure" type="text" placeholder="or type deployment name manually, e.g. gpt-4o" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;margin-top:4px;" oninput="if(this.value){document.getElementById('pmodel-azure').value='';}">
+                                <div style="font-size:9px;color:var(--text-muted);margin-top:3px;font-family:'Geist Mono',monospace;">Fetch models from your endpoint, or type a deployment name manually.</div>
+                            </div>
                             <div id="pstatus-msg-azure" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                         </div>
 <!-- bedrock -->
@@ -746,6 +755,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/bedrock.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="bedrock" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">AWS Bedrock</span>
+                                <a href="https://ap-southeast-2.console.aws.amazon.com/bedrock" target="_blank" rel="noopener" title="Open AWS Bedrock console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-bedrock" style="width:8px;height:8px;border-radius:50%;background:#f90;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-bedrock" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-bedrock" onclick="testProvider('bedrock')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -760,6 +770,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/google.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="google" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Google</span>
+                                <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener" title="Open Google console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-google" style="width:8px;height:8px;border-radius:50%;background:#4285f4;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-google" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-google" onclick="testProvider('google')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -775,6 +786,7 @@
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/alibabacloud.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="alibaba" class="prov-svg-icon" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                                 <div style="display:none;width:18px;height:18px;border-radius:4px;background:#ff6a00;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;">ALI</div>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Alibaba Cloud</span>
+                                <a href="https://modelstudio.console.alibabacloud.com/" target="_blank" rel="noopener" title="Open Alibaba Cloud console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-alibaba" style="width:8px;height:8px;border-radius:50%;background:#ff6a00;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-alibaba" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-alibaba" onclick="testProvider('alibaba')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -790,6 +802,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">GMI Cloud</span>
+                                <a href="https://console.gmicloud.ai/user-setting/api-keys" target="_blank" rel="noopener" title="Open GMI Cloud console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-gmi" style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-gmi" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-gmi" onclick="testProvider('gmi')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -804,6 +817,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="openai" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">OpenAI</span>
+                                <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" title="Open OpenAI console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-openai" style="width:8px;height:8px;border-radius:50%;background:#10a37f;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-openai" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-openai" onclick="testProvider('openai')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -818,6 +832,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/anthropic.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="anthropic" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Anthropic</span>
+                                <a href="https://platform.claude.com/settings/keys" target="_blank" rel="noopener" title="Open Anthropic console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-anthropic" style="width:8px;height:8px;border-radius:50%;background:#d4763b;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-anthropic" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-anthropic" onclick="testProvider('anthropic')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -832,6 +847,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/deepseek.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="deepseek" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">DeepSeek</span>
+                                <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener" title="Open DeepSeek console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-deepseek" style="width:8px;height:8px;border-radius:50%;background:#5b6ef5;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-deepseek" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-deepseek" onclick="testProvider('deepseek')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -846,6 +862,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/groq.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="groq" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Groq</span>
+                                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" title="Open Groq console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-groq" style="width:8px;height:8px;border-radius:50%;background:#f55036;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-groq" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-groq" onclick="testProvider('groq')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -860,6 +877,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/mistral.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="mistral" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Mistral</span>
+                                <a href="https://admin.mistral.ai/organization/api-keys" target="_blank" rel="noopener" title="Open Mistral console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-mistral" style="width:8px;height:8px;border-radius:50%;background:#ff7000;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-mistral" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-mistral" onclick="testProvider('mistral')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -874,6 +892,7 @@
                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/perplexity.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="perplexity" class="prov-svg-icon">
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">Perplexity</span>
+                                <a href="https://console.perplexity.ai/" target="_blank" rel="noopener" title="Open Perplexity console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-perplexity" style="width:8px;height:8px;border-radius:50%;background:#20b2aa;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-perplexity" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-perplexity" onclick="testProvider('perplexity')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -889,6 +908,7 @@
                                 <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/grok.svg" width="18" height="18" style="object-fit:contain;flex-shrink:0;" alt="xai" class="prov-svg-icon" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                                 <div style="display:none;width:18px;height:18px;border-radius:4px;background:#000;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;">X</div>
                                 <span style="font-size:12px;font-weight:600;color:var(--text-primary);">xAI Grok</span>
+                                <a href="https://console.x.ai/" target="_blank" rel="noopener" title="Open xAI Grok console" style="display:flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--text-muted);flex-shrink:0;opacity:0.6;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
                                 <div id="pstatus-xai" style="width:8px;height:8px;border-radius:50%;background:#000000;flex-shrink:0;margin-left:2px;" title="Connection status"></div>
                                 <div id="pconnect-badge-xai" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-xai" onclick="testProvider('xai')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
@@ -1197,6 +1217,9 @@
             <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
                 <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">Startup Staff Conversations</span>
                 <div style="display:flex;align-items:center;gap:4px;">
+                    <button onclick="saveChatToHtml()" title="Save conversation as HTML" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:color 0.15s,background 0.15s;" onmouseover="this.style.color='#22c55e';this.style.background='rgba(34,197,94,0.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='transparent'">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </button>
                     <button id="btn-clear" title="Clear conversations" style="background:transparent;border:none;cursor:pointer;color:var(--text-muted);width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:color 0.15s,background 0.15s;" onmouseover="this.style.color='#ef4444';this.style.background='rgba(239,68,68,0.08)'" onmouseout="this.style.color='var(--text-muted)';this.style.background='transparent'">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                     </button>
@@ -2319,6 +2342,12 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
         bubble.appendChild(meta2);
     }
 
+    // Timestamp
+    const _tsEl = document.createElement('div');
+    _tsEl.style.cssText = 'font-size:9px;color:var(--text-muted);font-family:"Geist Mono",monospace;margin-top:5px;opacity:0.5;text-align:right;';
+    _tsEl.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    bubble.appendChild(_tsEl);
+
     wrapper.appendChild(avatar);
     wrapper.appendChild(bubble);
     chatWindow.appendChild(wrapper);
@@ -3418,24 +3447,27 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 
     // ── Azure — uses api-key header, not Bearer ──
     if (key === 'azure') {
-        if (!endpoint) { setProviderStatus(key, 'Enter your endpoint URL first.', false); return; }
+        // Azure v1: fetch models from /openai/v1/models
         try {
-            const base = endpoint.replace(/\/$/, '');
-            const res = await fetch(base + '/models', {
-                headers: { 'api-key': apiKey, 'Content-Type': 'application/json' }
-            });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const data = await res.json();
-            const models = (data.data || data.models || []).map(m => m.id || m.name).filter(Boolean).sort();
-            if (models.length === 0) throw new Error('No models returned');
-            modelSelect.innerHTML = models.map(m =>
-                `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
-            ).join('');
-            setProviderStatus(key, `${models.length} models loaded.`, true);
-        } catch(e) {
-            modelSelect.innerHTML = `<option value="${def.preferred}" selected>${def.preferred}</option>`;
-            setProviderStatus(key, 'Could not fetch models — enter your deployment name manually. ' + e.message, null);
-        }
+            const base = (endpoint || '').replace(/\/$/, '');
+            const modelsUrl = base.endsWith('/openai/v1') ? base + '/models' : base + '/openai/v1/models';
+            const res = await fetch(modelsUrl, { headers: { 'api-key': apiKey, 'Content-Type': 'application/json' } });
+            if (res.ok) {
+                const data = await res.json();
+                const models = (data.data || []).map(m => m.id).sort();
+                if (models.length > 0) {
+                    const sel = document.getElementById('pmodel-azure');
+                    if (sel) {
+                        sel.innerHTML = '<option value="">— select model —</option>' + models.map(m => `<option value="${m}">${m}</option>`).join('');
+                        document.getElementById('pmodel-section-azure').style.display = 'block';
+                        setProviderStatus(key, `${models.length} models available`, true);
+                    }
+                    return;
+                }
+            }
+        } catch(e) {}
+        // Fallback — just show the manual input
+        setProviderStatus(key, 'Could not fetch models — type deployment name manually.', null);
         return;
     }
 
@@ -3506,7 +3538,7 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 async function testProvider(key) {
     const apiKey     = document.getElementById('papikey-' + key)?.value.trim();
     const endpoint   = document.getElementById('pendpoint-' + key)?.value.trim();
-    const deployment = key === 'azure' ? document.getElementById('pdeployment-azure')?.value.trim() : null;
+    const deployment = key === 'azure' ? (document.getElementById('pmodel-azure')?.value.trim() || document.getElementById('pdeployment-azure')?.value.trim() || '') : null;
 
     if (!apiKey) { setProviderStatus(key, 'Enter an API key first.', false); return; }
     if (key === 'azure' && !endpoint) { setProviderStatus(key, 'Enter your Azure endpoint URL first.', false); return; }
@@ -3517,21 +3549,27 @@ async function testProvider(key) {
     setProviderStatus(key, 'Testing...', null);
 
     if (key === 'azure') {
-        // Test Azure with a minimal chat completion to the deployment
+        // Test Azure — supports both Azure OpenAI and Azure AI Foundry endpoint formats
         try {
             const base = endpoint.replace(/\/$/, '');
-            const url  = `${base}/openai/deployments/${deployment}/chat/completions?api-version=2024-08-01-preview`;
+            const isV1 = /\/openai\/v1\/?$/.test(base);
+            let url;
+            if (isV1) {
+                url = base + '/chat/completions';
+            } else {
+                url = `${base}/openai/deployments/${deployment}/chat/completions?api-version=2024-08-01-preview`;
+            }
             const res  = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'api-key': apiKey },
-                body: JSON.stringify({ messages: [{ role:'user', content:'hi' }], max_tokens: 1 })
+                body: JSON.stringify({ model: deployment, messages: [{ role:'user', content:'hi' }], max_tokens: 5 })
             });
             const ok = res.status !== 401 && res.status !== 403 && res.status !== 404;
-            setProviderStatus(key, ok ? `Connected · ${deployment}` : `HTTP ${res.status} — check endpoint/key/deployment`, ok);
+            const format = isV1 ? 'Foundry v1' : 'Classic';
+            setProviderStatus(key, ok ? `Connected · ${deployment} · ${format}` : `HTTP ${res.status} — check endpoint/key/deployment`, ok);
             setProviderBadge(key, ok ? 'connected' : 'invalid');
             if (ok) {
-                // Store deployment name as the model
-                window.providerConfigs[key] = { apiKey, endpoint, model: deployment };
+                window.providerConfigs[key] = { apiKey, endpoint, model: deployment, isV1 };
             }
         } catch(e) {
             setProviderStatus(key, 'Network error — check endpoint URL. ' + e.message, false);
@@ -3605,7 +3643,15 @@ async function loadProviderConfigs() {
             if (key === 'azure') {
                 const deployEl = document.getElementById('pdeployment-azure');
                 if (deployEl && row.preferred_model) deployEl.value = row.preferred_model;
-                setProviderStatus(key, row.preferred_model ? `Deployment: ${row.preferred_model}` : 'Enter deployment name.', !!row.preferred_model);
+                // Also set the dropdown if it has a matching option
+                const modelSel = document.getElementById('pmodel-azure');
+                if (modelSel && row.preferred_model) {
+                    // Try to select, or add as option if not present
+                    let found = false;
+                    for (const opt of modelSel.options) { if (opt.value === row.preferred_model) { opt.selected = true; found = true; break; } }
+                    if (!found) { const opt = document.createElement('option'); opt.value = row.preferred_model; opt.textContent = row.preferred_model; opt.selected = true; modelSel.appendChild(opt); }
+                }
+                setProviderStatus(key, row.preferred_model ? `Model: ${row.preferred_model}` : 'Enter deployment name.', !!row.preferred_model);
                 continue;
             }
 
@@ -3640,10 +3686,15 @@ window.staffAssignments = {};
 
 function populateProviderDropdowns() {
     // Called when customize modal opens — fill provider dropdowns with configured providers
-    const configuredProviders = Object.keys(window.providerConfigs || {});
+    // Check both saved configs AND any API key currently typed in the Providers tab
+    const configuredProviders = new Set(Object.keys(window.providerConfigs || {}));
+    Object.keys(PROVIDER_DEFS).forEach(k => {
+        const keyEl = document.getElementById('papikey-' + k);
+        if (keyEl && keyEl.value.trim()) configuredProviders.add(k);
+    });
     const STAFF_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
-    if (configuredProviders.length === 0) {
+    if (configuredProviders.size === 0) {
         STAFF_KEYS.forEach(key => {
             const sel = document.getElementById('custom-provider-' + key);
             if (sel) sel.innerHTML = '<option value="">— configure providers first —</option>';
@@ -3657,7 +3708,7 @@ function populateProviderDropdowns() {
         const current = window.staffAssignments[key]?.provider || '';
         sel.innerHTML = '<option value="">— provider —</option>' +
             Object.entries(PROVIDER_DEFS)
-                .filter(([k]) => configuredProviders.includes(k))
+                .filter(([k]) => configuredProviders.has(k))
                 .map(([k, def]) => `<option value="${k}" ${k === current ? 'selected' : ''}>${def.label}</option>`)
                 .join('');
 
@@ -4049,15 +4100,28 @@ function buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens) {
             })
         };
     } else if (isAzure) {
-        // Azure: endpoint is base resource URL, deployment name is the model field
-        // URL: https://{resource}.openai.azure.com/openai/deployments/{deployment}/chat/completions?api-version=2024-08-01-preview
-        const deployment = model; // model field stores deployment name
-        url = endpoint + '/openai/deployments/' + deployment + '/chat/completions?api-version=2024-08-01-preview';
-        options = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'api-key': provConf.apiKey },
-            body: JSON.stringify({ messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
-        };
+        const deployment = model;
+        // Detect endpoint style:
+        // v1 GA API: endpoint ends with /openai/v1  → POST /chat/completions (model in body)
+        // Classic:   endpoint is base resource URL   → POST /openai/deployments/{name}/chat/completions
+        const isV1 = /\/openai\/v1\/?$/.test(endpoint);
+        if (isV1) {
+            // Azure AI Foundry v1 GA API — model passed in body, no deployment in URL
+            url = endpoint.replace(/\/$/, '') + '/chat/completions';
+            options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'api-key': provConf.apiKey },
+                body: JSON.stringify({ model: deployment, messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
+            };
+        } else {
+            // Classic Azure OpenAI — deployment name in URL path
+            url = endpoint + '/openai/deployments/' + deployment + '/chat/completions?api-version=2024-08-01-preview';
+            options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'api-key': provConf.apiKey },
+                body: JSON.stringify({ messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
+            };
+        }
     } else {
         // OpenAI-compatible (OpenAI, DeepSeek, Groq, Mistral, GMI, Bedrock, etc.)
         url = endpoint + '/chat/completions';
@@ -6396,6 +6460,52 @@ function openDiag() {
     runDiag();
 }
 
+
+
+function saveChatToHtml() {
+    const chatWindow = document.getElementById('chat-window');
+    if (!chatWindow || !chatWindow.children.length) {
+        alert('No conversation to save yet.'); return;
+    }
+    const brand = getBrandedDocTemplate('Startup Staff Conversation');
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const dateStr = new Date().toLocaleString('en-SG', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    const filename = 'startup-staff-' + new Date().toISOString().slice(0,10) + '.html';
+
+    // Clone chat window content — strip interactive buttons (copy, download etc.)
+    const clone = chatWindow.cloneNode(true);
+    // Remove copy buttons and download buttons from clone
+    clone.querySelectorAll('.copy-btn, .download-btn, button').forEach(el => el.remove());
+    // Make all links open in new tab
+    clone.querySelectorAll('a').forEach(a => a.setAttribute('target', '_blank'));
+
+    const html = `<!DOCTYPE html>
+<html lang="en" data-theme="${theme}">
+<head>
+<meta charset="UTF-8">
+<title>Startup Staff — Conversation ${dateStr}</title>
+<style>
+${brand.css}
+body { padding: 0; overflow-y: auto; height: auto; }
+.chat-export { max-width: 700px; margin: 0 auto; padding: 32px 24px 60px; display: flex; flex-direction: column; gap: 20px; }
+/* Preserve bubble styles from the live app */
+${Array.from(document.styleSheets).reduce((acc, ss) => {
+    try { return acc + Array.from(ss.cssRules).map(r => r.cssText).join('\n'); } catch(e) { return acc; }
+}, '')}
+</style>
+</head>
+<body>
+${brand.header}
+<div class="chat-export">
+${clone.innerHTML}
+</div>
+${brand.footer}
+</body>
+</html>`;
+
+    triggerDownload(new Blob([html], {type:'text/html'}), filename);
+    logTrace('Chat saved: ' + filename, true);
+}
 
 function showCitationsModal(staffName, citations) {
     const modal = document.getElementById('citations-modal');
