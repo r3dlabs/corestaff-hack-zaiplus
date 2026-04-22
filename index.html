@@ -2204,7 +2204,7 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
     const modelId = assignment?.model_id || assignment?.model;
     const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
 
-    const _online = isModelOnline(providerKey, modelId);
+    const _online = isModelOnline(providerKey, modelId, staffKey2);
     metaParts.push(_online
         ? `<span style="color:#22c55e;font-weight:600;">🌐 Web Search</span>`
         : `<span style="opacity:0.5;">📚 Training Knowledge</span>`);
@@ -3632,11 +3632,11 @@ async function loadStaffAssignments() {
             window.staffAssignments[row.staff_key] = { provider: row.provider, model: row.model_id };
         });
         logTrace('Staff model assignments loaded.', false);
-        // Snapshot for model-change handoff detection
         _prevAssignments = JSON.parse(JSON.stringify(window.staffAssignments));
-        // Run connection check immediately now that assignments are loaded
         initStatusDots();
         checkAllConnections();
+        // Silent online probe — runs in background, no UI impact
+        setTimeout(probeAllOnlineStatus, 2000);
     } catch(e) {
         console.warn('Failed to load staff assignments:', e);
     }
@@ -3661,6 +3661,8 @@ async function saveStaffAssignments() {
     if (upserts.length > 0) {
         const { error } = await sbClient.from('staff_assignments').upsert(upserts, { onConflict: 'user_id,staff_key' });
         if (error) { showSettingsStatus('Error saving assignments: ' + error.message, true); return; }
+        // Re-probe online status after assignment change
+        setTimeout(probeAllOnlineStatus, 1000);
     }
 }
 
@@ -3768,7 +3770,7 @@ function renderCustomizeCards() {
 
         // Status chip
         const assigned = window.staffAssignments?.[key];
-        const _assignedOnline = assigned?.provider && assigned?.model && isModelOnline(assigned.provider, assigned.model);
+        const _assignedOnline = assigned?.provider && assigned?.model && isModelOnline(assigned.provider, assigned.model, key);
         const _onlineBadgeCard = _assignedOnline
             ? `<span style="font-size:9px;color:#22c55e;font-family:'Geist Mono',monospace;margin-left:6px;" title="This model can search the web">🌐 online</span>`
             : '';
@@ -3978,6 +3980,67 @@ function buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens) {
     return { url, options, isAnthropic, isGoogle, label: model + ' (' + PROVIDER_DEFS[providerKey].label + ')' };
 }
 
+
+// ─── SILENT ONLINE PROBE ──────────────────────────────────────────────────────
+// Fires a tiny background request per staff member to determine if their model
+// has live internet access. Stores result in window.staffOnlineStatus[key].
+// Silent — no trace logs, no UI feedback, user never sees it.
+
+window.staffOnlineStatus = {}; // { cos: true/false/null, engineering: true/false/null, ... }
+
+async function probeModelOnline(staffKey) {
+    const assignment = window.staffAssignments?.[staffKey];
+    if (!assignment?.provider || !assignment?.model) return;
+
+    const provConf = window.providerConfigs?.[assignment.provider];
+    if (!provConf?.apiKey) return;
+
+    try {
+        const fetchOpts = buildStaffFetchOptions(staffKey,
+            [{ role: 'user', content: "What is today's exact date? Reply with ONLY the date in YYYY-MM-DD format, nothing else." }],
+            'You are a helpful assistant. Reply only with the requested information, nothing else.',
+            20
+        );
+        if (!fetchOpts) return;
+
+        const resp = await fetch(fetchOpts.url, { ...fetchOpts.options, signal: AbortSignal.timeout(12000) });
+        if (!resp.ok) return;
+
+        const data = await resp.json();
+        let reply = '';
+        if (fetchOpts.isAnthropic) reply = data.content?.[0]?.text || '';
+        else if (fetchOpts.isGoogle)  reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        else                          reply = data.choices?.[0]?.message?.content || '';
+
+        reply = reply.trim();
+
+        // Extract a date from the reply
+        const dateMatch = reply.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (!dateMatch) { window.staffOnlineStatus[staffKey] = false; return; }
+
+        const repliedDate = new Date(dateMatch[0]);
+        const today = new Date();
+        const diffDays = Math.abs((today - repliedDate) / (1000 * 60 * 60 * 24));
+
+        // If within 3 days of today → online. If more than 60 days off → offline.
+        window.staffOnlineStatus[staffKey] = diffDays <= 3;
+
+    } catch(e) {
+        // Timeout or error — can't determine, leave as null
+        window.staffOnlineStatus[staffKey] = null;
+    }
+}
+
+// Run probes for all assigned staff — silently in background
+async function probeAllOnlineStatus() {
+    const keys = ['cos','engineering','finance','marketing','legal','architecture','hr'];
+    // Stagger slightly to avoid hammering the API
+    for (const key of keys) {
+        probeModelOnline(key); // fire and forget — no await
+        await new Promise(r => setTimeout(r, 300));
+    }
+}
+
 // ─── BROWSING CAPABILITY MAP ─────────────────────────────────────────────────
 // Static lookup — which providers/models have live web search built in
 const BROWSING_CAPABLE = {
@@ -3987,7 +4050,12 @@ const BROWSING_CAPABLE = {
     google:     { patterns: ['gemini'] },            // gemini with grounding
 };
 
-function isModelOnline(providerKey, modelId) {
+function isModelOnline(providerKey, modelId, staffKey) {
+    // 1. Prefer live probe result if available for this staff member
+    if (staffKey && window.staffOnlineStatus?.[staffKey] !== undefined && window.staffOnlineStatus[staffKey] !== null) {
+        return window.staffOnlineStatus[staffKey];
+    }
+    // 2. Fall back to static lookup while probe is running or for unknown staff
     const cap = BROWSING_CAPABLE[providerKey];
     if (!cap) return false;
     if (cap.all) return true;
@@ -4078,7 +4146,7 @@ async function callStaffModel(staffKey, messages, systemPrompt, maxTokens = 1024
     }
 
     const citations = extractCitations(data, providerKey);
-    const online = isModelOnline(providerKey, model);
+    const online = isModelOnline(providerKey, model, staffKey);
     return { text, usage, label, citations, online };
 }
 
@@ -4275,7 +4343,7 @@ async function streamStaffModel(staffKey, messages, systemPrompt, maxTokens, nam
         const usage = data.usageMetadata ? { prompt: data.usageMetadata.promptTokenCount, completion: data.usageMetadata.candidatesTokenCount, total: data.usageMetadata.totalTokenCount } : null;
         for (const word of text.split(' ')) { onChunk(word + ' '); await new Promise(r=>setTimeout(r,10)); }
         const gCitations = extractCitations(data, providerKey);
-        const gOnline = isModelOnline(providerKey, model);
+        const gOnline = isModelOnline(providerKey, model, staffKey);
         finalize(text, usage, window.staffKb?.[staffKey]?.urls || null, gCitations, gOnline);
         return { text, usage, label, citations: gCitations, online: gOnline };
     }
@@ -4336,7 +4404,7 @@ async function streamStaffModel(staffKey, messages, systemPrompt, maxTokens, nam
     }
 
     const kbUrls = window.staffKb?.[staffKey]?.urls || null;
-    const online = isModelOnline(providerKey, model);
+    const online = isModelOnline(providerKey, model, staffKey);
     finalize(fullText, usageData, kbUrls, streamCitations, online);
     return { text: fullText, usage: usageData, label, citations: streamCitations, online };
 }
