@@ -1761,8 +1761,10 @@ Write a complete, self-contained, professional HTML page. Dark background prefer
 
 // ─── DOCX GENERATOR ─────────────────────────────────────────────────────────
 async function generateDocx(rawDocBlock, filename) {
+    logTrace('[DOC] generateDocx: parsing block…', false);
     const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
     const lines = rawDocBlock.split('\n');
+    logTrace(`[DOC] Block has ${lines.length} lines.`, false);
     const children = [];
     const titleLine = lines.find(l => l.startsWith('TITLE:'));
     const docTitle = titleLine ? titleLine.replace('TITLE:','').trim() : filename.replace('.docx','');
@@ -1793,8 +1795,11 @@ async function generateDocx(rawDocBlock, filename) {
         },
         sections: [{ properties:{ page:{ size:{width:12240,height:15840}, margin:{top:1440,right:1440,bottom:1440,left:1440} } }, children }]
     });
+    logTrace(`[DOC] Packing docx… (${children.length} paragraphs)`, false);
     const buffer = await Packer.toBlob(doc);
+    logTrace('[DOC] Packer.toBlob complete. Triggering download…', false);
     triggerDownload(buffer, filename, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    logTrace('[DOC] triggerDownload called.', false);
 }
 
 function generateXlsx(rawDocBlock, filename) {
@@ -1825,17 +1830,17 @@ function generateXlsx(rawDocBlock, filename) {
 }
 
 function generateHtml(rawDocBlock, filename) {
+    logTrace('[DOC] generateHtml: scanning for <!DOCTYPE html>…', false);
     const m = rawDocBlock.match(/(<!DOCTYPE html[\s\S]*?<\/html>)/i);
-    const content = m ? m[1] : `<!DOCTYPE html><html><head><title>Output</title></head><body>
-
-<div id="debug-panel" style="position:fixed;bottom:0;left:0;right:0;background:#000;color:#0f0;font-family:monospace;font-size:11px;padding:8px;z-index:9999;max-height:200px;overflow-y:auto;">
-  <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-    <strong>DEBUG PANEL</strong>
-    <div style="display:flex;gap:6px;">
-      <button onclick="runDebug()" style="background:#0a0;color:white;border:none;cursor:pointer;padding:2px 8px;">Refresh</button>
-      <button onclick="document.getElementById('debug-panel').style.display='none'" style="background:red;color:white;border:none;cursor:pointer;padding:2px 8px;">Close</button>
-<pre>${rawDocBlock}</pre></body></html>`;
-    triggerDownload(new Blob([content],{type:'text/html'}), filename);
+    if (m) {
+        logTrace('[DOC] Found complete HTML document in block.', false);
+        triggerDownload(new Blob([m[1]], {type:'text/html'}), filename);
+    } else {
+        // Fallback: wrap raw content in minimal HTML
+        logTrace('[DOC] No <!DOCTYPE html> found — wrapping raw content as fallback.', false);
+        const wrapped = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${filename}</title></head><body><pre style="font-family:sans-serif;padding:20px;white-space:pre-wrap;">${rawDocBlock.replace(/</g,'&lt;')}</pre></body></html>`;
+        triggerDownload(new Blob([wrapped], {type:'text/html'}), filename);
+    }
 }
 
 function triggerDownload(blob, filename) {
@@ -1871,12 +1876,36 @@ function injectDownloadCard(docType, filename, rawDocBlock) {
     card.querySelector('.download-btn').addEventListener('click', async () => {
         const btn = card.querySelector('.download-btn');
         btn.disabled = true; btn.textContent = 'Generating…';
+        logTrace(`[DOC] Starting ${docType.toUpperCase()} generation: ${filename}`, true);
+        logTrace(`[DOC] rawDocBlock length: ${rawDocBlock?.length || 0} chars`, false);
+        logTrace(`[DOC] rawDocBlock preview: ${(rawDocBlock||'').slice(0,120).replace(/\n/g,' ')}`, false);
         try {
-            if (docType==='docx') await generateDocx(rawDocBlock, filename);
-            else if (docType==='xlsx') generateXlsx(rawDocBlock, filename);
-            else if (docType==='html') generateHtml(rawDocBlock, filename);
+            if (docType==='docx') {
+                logTrace('[DOC] Checking docx library…', false);
+                if (typeof docx === 'undefined') throw new Error('docx library not loaded — check CDN script tag');
+                const { Document, Packer, Paragraph, TextRun } = docx;
+                if (!Document || !Packer) throw new Error('docx library incomplete — Document or Packer missing');
+                logTrace('[DOC] docx library OK. Building document…', false);
+                await generateDocx(rawDocBlock, filename);
+            } else if (docType==='xlsx') {
+                logTrace('[DOC] Checking XLSX library…', false);
+                if (typeof XLSX === 'undefined') throw new Error('XLSX library not loaded — check CDN script tag');
+                logTrace('[DOC] XLSX library OK. Building spreadsheet…', false);
+                generateXlsx(rawDocBlock, filename);
+            } else if (docType==='html') {
+                logTrace('[DOC] Generating HTML file…', false);
+                generateHtml(rawDocBlock, filename);
+            }
+            logTrace(`[DOC] ✓ ${docType.toUpperCase()} generated and download triggered.`, true);
             btn.textContent = '✓ Downloaded'; btn.style.opacity = '0.5';
-        } catch(e) { console.error(e); btn.textContent = '✗ Error'; btn.disabled = false; }
+        } catch(e) {
+            console.error('[DOC ERROR]', e);
+            logTrace(`[DOC] ✗ ERROR: ${e.message}`, false);
+            logTrace(`[DOC] Stack: ${e.stack?.split('\n')[1]?.trim() || 'N/A'}`, false);
+            btn.textContent = '✗ Error — check trace';
+            btn.style.background = '#ef4444';
+            btn.disabled = false;
+        }
     });
     const wrapper = document.createElement('div');
     wrapper.style.cssText = 'display:flex;justify-content:flex-start;';
