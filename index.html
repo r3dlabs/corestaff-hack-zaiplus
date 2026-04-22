@@ -1321,6 +1321,19 @@
         <div id="diag-output" style="flex:1;overflow-y:auto;padding:10px 12px;line-height:1.8;white-space:pre-wrap;word-break:break-all;color:#0f0;"></div>
     </div>
 
+    <!-- Citations Modal -->
+    <div id="citations-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:16px;">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:14px;padding:24px;width:100%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.3);animation:slideUp 0.2s ease;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:16px;">🌐</span>
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Web Sources</div>
+</script>
+
+                        <div id="citations-modal-name" style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:1px;"></div>
+                    </div>
+                </div>
 <script>
 
 // ─── STAFF DEFAULTS (must be first) ─────────────────────────────────────────
@@ -2194,41 +2207,47 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
     bubble.appendChild(contentEl);
     addCopyButton(bubble, () => text.replace(/\[DOCUMENT:[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
 
-    // ── Metadata footer ──────────────────────────────────────────────────────
-    const metaParts = [];
-
-    // Provider + model from staff assignment
+    // ── Metadata footer — pure DOM, no innerHTML for interactive elements ──
     const staffKey2 = getStaffKeyByName(name);
     const assignment = window.staffAssignments?.[staffKey2];
     const providerKey = assignment?.provider;
     const modelId = assignment?.model_id || assignment?.model;
     const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
-
     const _online = isModelOnline(providerKey, modelId, staffKey2);
     const _cutoff = getModelCutoff(staffKey2);
-    const _cutoffLabel = (!_online && _cutoff) ? ` · cutoff ${_cutoff}` : '';
-    metaParts.push(_online
-        ? `<span style="color:#22c55e;font-weight:600;">🌐 Web Search</span>`
-        : `<span style="opacity:0.5;">📚 Training Knowledge${_cutoffLabel}</span>`);
+    const _metaItems2 = [];
+    // Badge
+    const _badgeEl2 = document.createElement('span');
+    _badgeEl2.style.cssText = _online ? 'color:#22c55e;font-weight:600;' : 'opacity:0.5;';
+    _badgeEl2.textContent = _online ? '🌐 Web Search' : ('📚 Training Knowledge' + (!_online && _cutoff ? ` · cutoff ${_cutoff}` : ''));
+    _metaItems2.push(_badgeEl2);
+    // Provider · model
     if (provLabel && modelId) {
-        metaParts.push(`<span style="opacity:0.8;">${provLabel} · ${modelId}</span>`);
+        const _pmEl2 = document.createElement('span'); _pmEl2.style.cssText = 'opacity:0.8;';
+        _pmEl2.textContent = `${provLabel} · ${modelId}`; _metaItems2.push(_pmEl2);
     }
+    // Tokens
     if (usage?.total) {
-        metaParts.push(`<span title="Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}">⬡ ${usage.total.toLocaleString()} tokens</span>`);
+        const _tokEl2 = document.createElement('span');
+        _tokEl2.title = `Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}`;
+        _tokEl2.textContent = `⬡ ${usage.total.toLocaleString()} tokens`; _metaItems2.push(_tokEl2);
     }
+    // KB reference URLs
     const urlList = urls ? urls.split('\n').map(u => u.trim()).filter(u => u.startsWith('http')) : [];
     if (urlList.length > 0) {
-        const kbCits = urlList.map(u => ({ url: u, title: u.replace(/^https?:\/\//, '').split('/')[0] }));
-        const _kbJ = JSON.stringify(kbCits).replace(/'/g, "\\'");
-        const staffN = name.replace(/'/g, "\\'");
-        metaParts.push(`<span onclick="showCitationsModal('${staffN}', ${_kbJ})" style="cursor:pointer;text-decoration:underline;text-underline-offset:2px;opacity:0.7;">🔗 References</span>`);
+        const kbCits3 = urlList.map(u => ({ url: u, title: u.replace(/^https?:\/\//, '').split('/')[0] }));
+        const _refEl3 = document.createElement('span');
+        _refEl3.style.cssText = 'cursor:pointer;text-decoration:underline;text-underline-offset:2px;opacity:0.7;';
+        _refEl3.textContent = '🔗 References';
+        _refEl3.addEventListener('click', () => showCitationsModal(name, kbCits3));
+        _metaItems2.push(_refEl3);
     }
-
-    if (metaParts.length > 0) {
-        const meta = document.createElement('div');
-        meta.style.cssText = `margin-top:8px;padding-top:6px;border-top:1px solid ${bubble.dataset.metaBorder||'var(--border)'};display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.02em;`;
-        meta.innerHTML = metaParts.join('<span style="opacity:0.3;">·</span>');
-        bubble.appendChild(meta);
+    if (_metaItems2.length > 0) {
+        const meta2 = document.createElement('div');
+        meta2.style.cssText = `margin-top:8px;padding-top:6px;border-top:1px solid ${bubble.dataset.metaBorder||'var(--border)'};display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.02em;`;
+        const sep2 = () => { const s = document.createElement('span'); s.style.cssText='opacity:0.3;'; s.textContent='·'; return s; };
+        _metaItems2.forEach((el, i) => { if (i > 0) meta2.appendChild(sep2()); meta2.appendChild(el); });
+        bubble.appendChild(meta2);
     }
 
     wrapper.appendChild(avatar);
@@ -4301,34 +4320,59 @@ function createStreamingBubble(name, isSynthesis = false) {
         const providerKey = assignment?.provider;
         const modelId = assignment?.model_id || assignment?.model;
         const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
-        const metaParts = [];
-        // Online/offline badge — clickable if citations available
-        if (online && citations && citations.length > 0) {
-            const _citJson = JSON.stringify(citations).replace(/'/g, "\\'");
-            metaParts.push(`<span onclick="showCitationsModal('${name}', ${_citJson})" style="color:#22c55e;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px;" title="View ${citations.length} source(s)">🌐 Web Search · ${citations.length} source${citations.length > 1 ? 's' : ''}</span>`);
-        } else {
-            metaParts.push(online
-                ? `<span style="color:#22c55e;font-weight:600;">🌐 Web Search</span>`
-                : `<span style="opacity:0.5;">📚 Training Knowledge</span>`);
-        }
-        if (provLabel && modelId) metaParts.push(`<span style="opacity:0.8;">${provLabel} &middot; ${modelId}</span>`);
-        if (usage?.total) metaParts.push(`<span title="Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}">&block; ${usage.total.toLocaleString()} tokens</span>`);
-        // KB urls (when no live citations)
-        if (!citations || citations.length === 0) {
-            const urlList = urls ? urls.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http')) : [];
-            if (urlList.length > 0) {
-                const kbCitations = urlList.map(u => ({ url: u, title: u.replace(/^https?:\/\//, '').split('/')[0] }));
-                const _kbJson = JSON.stringify(kbCitations).replace(/'/g, "\\'");
-                metaParts.push(`<span onclick="showCitationsModal('${name}', ${_kbJson})" style="cursor:pointer;text-decoration:underline;text-underline-offset:2px;opacity:0.7;" title="View reference URLs">🔗 References</span>`);
-            }
-        }
-        if (metaParts.length > 0) {
-            const meta = document.createElement('div');
-            meta.style.cssText = `margin-top:8px;padding-top:6px;border-top:1px solid ${metaBorder};display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.02em;`;
-            meta.innerHTML = metaParts.join('<span style="opacity:0.3;">&middot;</span>');
-            bubble.appendChild(meta);
-        }
-        chatWindow.scrollTop = chatWindow.scrollHeight;
+         // ── Meta footer — built as DOM nodes so click handlers work reliably ──
+         const _metaItems = [];
+         // 1. Online badge
+         const _badgeEl = document.createElement('span');
+         if (online && citations && citations.length > 0) {
+             _badgeEl.style.cssText = 'color:#22c55e;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px;';
+             _badgeEl.title = `View ${citations.length} source(s)`;
+             _badgeEl.textContent = `🌐 Web Search · ${citations.length} source${citations.length > 1 ? 's' : ''}`;
+             _badgeEl.addEventListener('click', () => showCitationsModal(name, citations));
+         } else if (online) {
+             _badgeEl.style.cssText = 'color:#22c55e;font-weight:600;';
+             _badgeEl.textContent = '🌐 Web Search';
+         } else {
+             const _cutoff2 = getModelCutoff(staffKey2);
+             _badgeEl.style.cssText = 'opacity:0.5;';
+             _badgeEl.textContent = '📚 Training Knowledge' + (_cutoff2 ? ` · cutoff ${_cutoff2}` : '');
+         }
+         _metaItems.push(_badgeEl);
+         // 2. Provider · model
+         if (provLabel && modelId) {
+             const _pmEl = document.createElement('span');
+             _pmEl.style.cssText = 'opacity:0.8;';
+             _pmEl.textContent = `${provLabel} · ${modelId}`;
+             _metaItems.push(_pmEl);
+         }
+         // 3. Tokens
+         if (usage?.total) {
+             const _tokEl = document.createElement('span');
+             _tokEl.title = `Prompt: ${usage.prompt||0} + Completion: ${usage.completion||0}`;
+             _tokEl.textContent = `⬡ ${usage.total.toLocaleString()} tokens`;
+             _metaItems.push(_tokEl);
+         }
+         // 4. KB reference URLs (when no live citations)
+         if (!citations || citations.length === 0) {
+             const urlList = urls ? urls.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http')) : [];
+             if (urlList.length > 0) {
+                 const kbCits2 = urlList.map(u => ({ url: u, title: u.replace(/^https?:\/\//, '').split('/')[0] }));
+                 const _refEl2 = document.createElement('span');
+                 _refEl2.style.cssText = 'cursor:pointer;text-decoration:underline;text-underline-offset:2px;opacity:0.7;';
+                 _refEl2.title = 'View reference URLs';
+                 _refEl2.textContent = '🔗 References';
+                 _refEl2.addEventListener('click', () => showCitationsModal(name, kbCits2));
+                 _metaItems.push(_refEl2);
+             }
+         }
+         if (_metaItems.length > 0) {
+             const meta = document.createElement('div');
+             meta.style.cssText = `margin-top:8px;padding-top:6px;border-top:1px solid ${metaBorder};display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.02em;`;
+             const sep = () => { const s = document.createElement('span'); s.style.cssText = 'opacity:0.3;'; s.textContent = '·'; return s; };
+             _metaItems.forEach((el, i) => { if (i > 0) meta.appendChild(sep()); meta.appendChild(el); });
+             bubble.appendChild(meta);
+         }
+         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
     return { onChunk, finalize };
@@ -6287,19 +6331,6 @@ function showCitationsModal(staffName, citations) {
     modal.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
 }
 
-</script>
-
-    <!-- Citations Modal -->
-    <div id="citations-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:16px;">
-        <div style="background:var(--bg-surface);border:1px solid var(--border-strong);border-radius:14px;padding:24px;width:100%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.3);animation:slideUp 0.2s ease;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="font-size:16px;">🌐</span>
-                    <div>
-                        <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Web Sources</div>
-                        <div id="citations-modal-name" style="font-size:10px;color:var(--text-muted);font-family:'Geist Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;margin-top:1px;"></div>
-                    </div>
-                </div>
                 <button onclick="document.getElementById('citations-modal').style.display='none'" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;">×</button>
             </div>
             <div id="citations-modal-list" style="overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
