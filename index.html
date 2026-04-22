@@ -736,17 +736,9 @@
                                 <div id="pconnect-badge-azure" style="margin-left:auto;font-size:9px;font-family:'Geist Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg-base);color:var(--text-muted);">not configured</div>
                                 <button id="ptest-azure" onclick="testProvider('azure')" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist',sans-serif;">Test</button>
                             </div>
-                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-azure" type="text" value="" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://YOUR-RESOURCE-NAME.openai.azure.com/openai/v1"></div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Endpoint</div><input id="pendpoint-azure" type="text" value="" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;" placeholder="https://YOUR-RESOURCE-NAME.openai.azure.com"></div>
                             <div style="margin-bottom:6px;"><div class="staff-section-label">API Key</div><input id="papikey-azure" type="password" placeholder="Azure API key..." style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
-                            <div id="pmodel-section-azure" style="margin-bottom:6px;">
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-                                    <div class="staff-section-label" style="margin-bottom:0;">Model / Deployment</div>
-                                    <button onclick="fetchModelsForProvider('azure', document.getElementById('papikey-azure').value.trim(), document.getElementById('pendpoint-azure').value.trim())" style="font-size:10px;padding:2px 8px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Geist Mono',monospace;">Fetch Models</button>
-                                </div>
-                                <select id="pmodel-azure" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;cursor:pointer;"><option value="">— fetch or type model name —</option></select>
-                                <input id="pdeployment-azure" type="text" placeholder="or type deployment name manually, e.g. gpt-4o" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;margin-top:4px;" oninput="if(this.value){document.getElementById('pmodel-azure').value='';}">
-                                <div style="font-size:9px;color:var(--text-muted);margin-top:3px;font-family:'Geist Mono',monospace;">Fetch models from your endpoint, or type a deployment name manually.</div>
-                            </div>
+                            <div style="margin-bottom:6px;"><div class="staff-section-label">Deployment Name <span style="font-size:9px;color:var(--text-muted);font-weight:400;">— your Azure deployment, e.g. gpt-4o-prod</span></div><input id="pdeployment-azure" type="text" placeholder="e.g. gpt-4o-prod" style="width:100%;background:var(--bg-base);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text-primary);font-family:'Geist Mono',monospace;outline:none;"></div>
                             <div id="pstatus-msg-azure" style="font-size:10px;color:var(--text-muted);min-height:14px;font-family:'Geist Mono',monospace;"></div>
                         </div>
 <!-- bedrock -->
@@ -3426,27 +3418,24 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 
     // ── Azure — uses api-key header, not Bearer ──
     if (key === 'azure') {
-        // Azure v1: fetch models from /openai/v1/models
+        if (!endpoint) { setProviderStatus(key, 'Enter your endpoint URL first.', false); return; }
         try {
-            const base = (endpoint || '').replace(/\/$/, '');
-            const modelsUrl = base.endsWith('/openai/v1') ? base + '/models' : base + '/openai/v1/models';
-            const res = await fetch(modelsUrl, { headers: { 'api-key': apiKey, 'Content-Type': 'application/json' } });
-            if (res.ok) {
-                const data = await res.json();
-                const models = (data.data || []).map(m => m.id).sort();
-                if (models.length > 0) {
-                    const sel = document.getElementById('pmodel-azure');
-                    if (sel) {
-                        sel.innerHTML = '<option value="">— select model —</option>' + models.map(m => `<option value="${m}">${m}</option>`).join('');
-                        document.getElementById('pmodel-section-azure').style.display = 'block';
-                        setProviderStatus(key, `${models.length} models available`, true);
-                    }
-                    return;
-                }
-            }
-        } catch(e) {}
-        // Fallback — just show the manual input
-        setProviderStatus(key, 'Could not fetch models — type deployment name manually.', null);
+            const base = endpoint.replace(/\/$/, '');
+            const res = await fetch(base + '/models', {
+                headers: { 'api-key': apiKey, 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            const models = (data.data || data.models || []).map(m => m.id || m.name).filter(Boolean).sort();
+            if (models.length === 0) throw new Error('No models returned');
+            modelSelect.innerHTML = models.map(m =>
+                `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+            ).join('');
+            setProviderStatus(key, `${models.length} models loaded.`, true);
+        } catch(e) {
+            modelSelect.innerHTML = `<option value="${def.preferred}" selected>${def.preferred}</option>`;
+            setProviderStatus(key, 'Could not fetch models — enter your deployment name manually. ' + e.message, null);
+        }
         return;
     }
 
@@ -3517,7 +3506,7 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 async function testProvider(key) {
     const apiKey     = document.getElementById('papikey-' + key)?.value.trim();
     const endpoint   = document.getElementById('pendpoint-' + key)?.value.trim();
-    const deployment = key === 'azure' ? (document.getElementById('pmodel-azure')?.value.trim() || document.getElementById('pdeployment-azure')?.value.trim() || '') : null;
+    const deployment = key === 'azure' ? document.getElementById('pdeployment-azure')?.value.trim() : null;
 
     if (!apiKey) { setProviderStatus(key, 'Enter an API key first.', false); return; }
     if (key === 'azure' && !endpoint) { setProviderStatus(key, 'Enter your Azure endpoint URL first.', false); return; }
@@ -3528,27 +3517,21 @@ async function testProvider(key) {
     setProviderStatus(key, 'Testing...', null);
 
     if (key === 'azure') {
-        // Test Azure — supports both Azure OpenAI and Azure AI Foundry endpoint formats
+        // Test Azure with a minimal chat completion to the deployment
         try {
             const base = endpoint.replace(/\/$/, '');
-            const isV1 = /\/openai\/v1\/?$/.test(base);
-            let url;
-            if (isV1) {
-                url = base + '/chat/completions';
-            } else {
-                url = `${base}/openai/deployments/${deployment}/chat/completions?api-version=2024-08-01-preview`;
-            }
+            const url  = `${base}/openai/deployments/${deployment}/chat/completions?api-version=2024-08-01-preview`;
             const res  = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'api-key': apiKey },
-                body: JSON.stringify({ model: deployment, messages: [{ role:'user', content:'hi' }], max_tokens: 5 })
+                body: JSON.stringify({ messages: [{ role:'user', content:'hi' }], max_tokens: 1 })
             });
             const ok = res.status !== 401 && res.status !== 403 && res.status !== 404;
-            const format = isV1 ? 'Foundry v1' : 'Classic';
-            setProviderStatus(key, ok ? `Connected · ${deployment} · ${format}` : `HTTP ${res.status} — check endpoint/key/deployment`, ok);
+            setProviderStatus(key, ok ? `Connected · ${deployment}` : `HTTP ${res.status} — check endpoint/key/deployment`, ok);
             setProviderBadge(key, ok ? 'connected' : 'invalid');
             if (ok) {
-                window.providerConfigs[key] = { apiKey, endpoint, model: deployment, isV1 };
+                // Store deployment name as the model
+                window.providerConfigs[key] = { apiKey, endpoint, model: deployment };
             }
         } catch(e) {
             setProviderStatus(key, 'Network error — check endpoint URL. ' + e.message, false);
@@ -3622,15 +3605,7 @@ async function loadProviderConfigs() {
             if (key === 'azure') {
                 const deployEl = document.getElementById('pdeployment-azure');
                 if (deployEl && row.preferred_model) deployEl.value = row.preferred_model;
-                // Also set the dropdown if it has a matching option
-                const modelSel = document.getElementById('pmodel-azure');
-                if (modelSel && row.preferred_model) {
-                    // Try to select, or add as option if not present
-                    let found = false;
-                    for (const opt of modelSel.options) { if (opt.value === row.preferred_model) { opt.selected = true; found = true; break; } }
-                    if (!found) { const opt = document.createElement('option'); opt.value = row.preferred_model; opt.textContent = row.preferred_model; opt.selected = true; modelSel.appendChild(opt); }
-                }
-                setProviderStatus(key, row.preferred_model ? `Model: ${row.preferred_model}` : 'Enter deployment name.', !!row.preferred_model);
+                setProviderStatus(key, row.preferred_model ? `Deployment: ${row.preferred_model}` : 'Enter deployment name.', !!row.preferred_model);
                 continue;
             }
 
@@ -3665,15 +3640,10 @@ window.staffAssignments = {};
 
 function populateProviderDropdowns() {
     // Called when customize modal opens — fill provider dropdowns with configured providers
-    // Check both saved configs AND any API key currently typed in the Providers tab
-    const configuredProviders = new Set(Object.keys(window.providerConfigs || {}));
-    Object.keys(PROVIDER_DEFS).forEach(k => {
-        const keyEl = document.getElementById('papikey-' + k);
-        if (keyEl && keyEl.value.trim()) configuredProviders.add(k);
-    });
+    const configuredProviders = Object.keys(window.providerConfigs || {});
     const STAFF_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
-    if (configuredProviders.size === 0) {
+    if (configuredProviders.length === 0) {
         STAFF_KEYS.forEach(key => {
             const sel = document.getElementById('custom-provider-' + key);
             if (sel) sel.innerHTML = '<option value="">— configure providers first —</option>';
@@ -3687,7 +3657,7 @@ function populateProviderDropdowns() {
         const current = window.staffAssignments[key]?.provider || '';
         sel.innerHTML = '<option value="">— provider —</option>' +
             Object.entries(PROVIDER_DEFS)
-                .filter(([k]) => configuredProviders.has(k))
+                .filter(([k]) => configuredProviders.includes(k))
                 .map(([k, def]) => `<option value="${k}" ${k === current ? 'selected' : ''}>${def.label}</option>`)
                 .join('');
 
@@ -4079,28 +4049,15 @@ function buildStaffFetchOptions(staffKey, messages, systemPrompt, maxTokens) {
             })
         };
     } else if (isAzure) {
-        const deployment = model;
-        // Detect endpoint style:
-        // v1 GA API: endpoint ends with /openai/v1  → POST /chat/completions (model in body)
-        // Classic:   endpoint is base resource URL   → POST /openai/deployments/{name}/chat/completions
-        const isV1 = /\/openai\/v1\/?$/.test(endpoint);
-        if (isV1) {
-            // Azure AI Foundry v1 GA API — model passed in body, no deployment in URL
-            url = endpoint.replace(/\/$/, '') + '/chat/completions';
-            options = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'api-key': provConf.apiKey },
-                body: JSON.stringify({ model: deployment, messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
-            };
-        } else {
-            // Classic Azure OpenAI — deployment name in URL path
-            url = endpoint + '/openai/deployments/' + deployment + '/chat/completions?api-version=2024-08-01-preview';
-            options = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'api-key': provConf.apiKey },
-                body: JSON.stringify({ messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
-            };
-        }
+        // Azure: endpoint is base resource URL, deployment name is the model field
+        // URL: https://{resource}.openai.azure.com/openai/deployments/{deployment}/chat/completions?api-version=2024-08-01-preview
+        const deployment = model; // model field stores deployment name
+        url = endpoint + '/openai/deployments/' + deployment + '/chat/completions?api-version=2024-08-01-preview';
+        options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'api-key': provConf.apiKey },
+            body: JSON.stringify({ messages: [{ role:'system', content: systemPrompt }, ...messages], temperature: 0.7, max_tokens: maxTokens })
+        };
     } else {
         // OpenAI-compatible (OpenAI, DeepSeek, Groq, Mistral, GMI, Bedrock, etc.)
         url = endpoint + '/chat/completions';
