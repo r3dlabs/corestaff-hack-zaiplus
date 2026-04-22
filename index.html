@@ -1671,6 +1671,14 @@ function parseRequestIntent(text) {
         result.sendTelegram = true;
     }
 
+    // ── Detect "send last summary/synthesis" to Telegram ──────────────────
+    if (/\b(send|forward|push)\b.{0,30}\b(last|latest|previous|the)\b.{0,20}\b(summary|synthesis|recommendation|recap|output)\b.{0,20}\btelegram\b/i.test(text) ||
+        /\btelegram\b.{0,30}\b(last|latest|previous|the)\b.{0,20}\b(summary|synthesis|recommendation|recap|output)\b/i.test(text) ||
+        /\bsend\b.{0,10}\b(me\b.{0,10})?\b(the\b.{0,10})?\b(last|latest)\b.{0,10}\b(summary|synthesis|recap)\b/i.test(text)) {
+        result.sendTelegram = true;
+        result.sendLastSummary = true;
+    }
+
     // ── Detect "send previous/that/the doc on telegram" ─────────────────────
     // Matches: "send that on telegram", "send the html on telegram",
     //          "send previous document to telegram", "send it on telegram"
@@ -4707,6 +4715,34 @@ ${docHint}`
     }
 
 
+    // ── FAST PATH: send last synthesis/summary to Telegram ─────────────────
+    if (docReq.sendLastSummary && docReq.sendTelegram) {
+        btnSend.textContent = 'Sending…';
+        const cosName = window.staffCustom?.cos?.name || 'Helen';
+        try {
+            if (!window.toolConfigs?.telegram?.token) {
+                appendStaffBubble(cosName, 'Telegram not configured. Add your bot token and chat ID in Settings → Tools.', false, null, null);
+            } else if (!window._lastSynthesis || (Date.now() - window._lastSynthesis.ts) > 60 * 60 * 1000) {
+                appendStaffBubble(cosName, "No recent synthesis to send — ask the team a question first and I'll send you the summary.", false, null, null);
+            } else {
+                const s = window._lastSynthesis;
+                // Strip markdown bold/italic for cleaner Telegram rendering
+                const cleanText = s.text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').slice(0, 4000);
+                const msg = `📋 <b>Summary: ${s.topic}</b>\n\n${cleanText}${s.text.length > 4000 ? '\n\n[truncated]' : ''}`;
+                await window.sendTelegram(msg);
+                appendStaffBubble(cosName, 'Last summary sent to your Telegram ✓', false, null, null);
+                logTrace('Last synthesis sent to Telegram', true);
+            }
+        } catch(e) {
+            logTrace('Telegram send failed: ' + e.message, false);
+            appendStaffBubble(cosName, `Couldn't send to Telegram: ${e.message}`, false, null, null);
+        } finally {
+            btnSend.disabled = false;
+            btnSend.textContent = 'Execute';
+        }
+        return;
+    }
+
     // ── FAST PATH: send previous generated doc to Telegram ─────────────────
     if (docReq.sendPreviousDoc && docReq.sendTelegram) {
         btnSend.textContent = 'Sending…';
@@ -4949,6 +4985,8 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
          // ── Chief of Staff synthesis bubble — rendered after all specialists ─────────────────────────
          // synthesis bubble already rendered by streamStaffModel
          chatHistory.push({ role: 'assistant', content: synthesis });
+         // Store last synthesis for "send me the summary" follow-ups
+         window._lastSynthesis = { text: synthesis, topic: userText.slice(0, 80), ts: Date.now() };
 
 
          // ── NOW clear all animations — synthesis is on screen ─────────────────────────
