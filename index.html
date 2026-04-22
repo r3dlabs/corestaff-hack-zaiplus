@@ -1945,6 +1945,57 @@ function triggerDownload(blob, filename) {
     setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
 
+
+// ── Robust doc extraction — handles missing [END DOCUMENT] marker ─────────────
+function repairHtmlDoc(text) {
+    // Try to extract a complete HTML document even if [END DOCUMENT] is missing
+    const fullMatch = text.match(/<!DOCTYPE html[\s\S]*?<\/html>/i);
+    if (fullMatch) return fullMatch[0];
+
+    // Partial HTML — find the opening and try to close it gracefully
+    const startMatch = text.match(/<!DOCTYPE html[\s\S]*/i);
+    if (!startMatch) return null;
+    let partial = startMatch[0];
+
+    // Remove any trailing [END DOCUMENT] fragment or incomplete tags at the end
+    partial = partial.replace(/\[END DOCUMENT\][\s\S]*$/, '').trimEnd();
+
+    // Close any obviously open tags
+    if (!partial.includes('</body>')) {
+        partial += '
+</body>';
+    }
+    if (!partial.includes('</html>')) {
+        partial += '
+</html>';
+    }
+    return partial;
+}
+
+function extractDocBlockRobust(text) {
+    // 1. Normal extraction — [DOCUMENT: HTML]...[END DOCUMENT]
+    const normal = extractDocBlock(text);
+    if (normal) return normal;
+
+    // 2. [DOCUMENT: HTML] present but [END DOCUMENT] missing — stream cut off
+    const startMatch = text.match(/\[DOCUMENT:\s*HTML\]([\s\S]*)/i);
+    if (startMatch) {
+        const raw = startMatch[1].trim();
+        const repaired = repairHtmlDoc(raw) || raw;
+        logTrace('[DOC] ⚠ [END DOCUMENT] missing — using repaired partial HTML', false);
+        return { docType: 'html', rawBlock: repaired };
+    }
+
+    // 3. Raw HTML with no markers at all — model skipped the wrapper
+    const rawHtml = repairHtmlDoc(text);
+    if (rawHtml) {
+        logTrace('[DOC] ⚠ No [DOCUMENT] markers found — extracted raw HTML', false);
+        return { docType: 'html', rawBlock: rawHtml };
+    }
+
+    return null;
+}
+
 function extractDocBlock(text) {
     const m = text.match(/\[DOCUMENT:\s*(HTML)\]([\s\S]*?)\[END DOCUMENT\]/i);
     return m ? { docType: m[1].toLowerCase(), rawBlock: m[2].trim() } : null;
@@ -4793,9 +4844,9 @@ ${docHint}`
         const docNodeEl = document.getElementById('visual-' + { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' }[docStaffKey]);
         if (docNodeEl) docNodeEl.classList.add('active');
          try {
-             const { text: docResponse } = await streamStaffModel(docStaffKey, docMessages, docSystem, 4096, docStaffName, false);
+             const { text: docResponse } = await streamStaffModel(docStaffKey, docMessages, docSystem, 8192, docStaffName, false);
              chatHistory.push({ role: 'assistant', content: docResponse });
-             const extracted = extractDocBlock(docResponse);
+             const extracted = extractDocBlockRobust(docResponse);
              if (extracted) {
                  injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock, docReq.isPdf ? 'pdf' : null);
                  // Store for "send that" / "send previous" follow-up commands
@@ -4849,7 +4900,27 @@ ${docHint}`
                      }
                  }
              } else {
-                 logTrace('⚠ Model did not output document block — retrying may help', false);
+                 logTrace('⚠ First attempt yielded no document block — retrying once…', false);
+                 // Retry once with a stronger nudge
+                 try {
+                     const retryMessages = [...docMessages, 
+                         { role: 'assistant', content: docResponse.slice(0, 200) + '...' },
+                         { role: 'user', content: 'You stopped before completing the document. Continue from where you left off and output the COMPLETE [DOCUMENT: HTML]...[END DOCUMENT] block now. Do not repeat what you already wrote — just output the full document block.' }
+                     ];
+                     const { text: retryResponse } = await streamStaffModel(docStaffKey, retryMessages, docSystem, 8192, docStaffName, false);
+                     const retryExtracted = extractDocBlockRobust(retryResponse);
+                     if (retryExtracted) {
+                         logTrace('[DOC] Retry succeeded ✓', true);
+                         injectDownloadCard(retryExtracted.docType || docReq.type, docReq.filename, retryExtracted.rawBlock, docReq.isPdf ? 'pdf' : null);
+                         window._lastGeneratedDoc = { type: retryExtracted.docType || docReq.type, filename: docReq.filename, rawBlock: retryExtracted.rawBlock, topic: docReq.topic, isPdf: !!docReq.isPdf, ts: Date.now() };
+                     } else {
+                         logTrace('[DOC] ✗ Retry also failed — model may not support this output format', false);
+                         const cosNameFail = window.staffCustom?.cos?.name || 'Helen';
+                         appendStaffBubble(cosNameFail, 'The document generation didn\'t complete. Try rephrasing your request or switching to a more capable model.', false, null, null);
+                     }
+                 } catch(retryErr) {
+                     logTrace('[DOC] Retry error: ' + retryErr.message, false);
+                 }
              }
          } catch(e) {
              logTrace('Doc generation error: ' + e.message, false);
