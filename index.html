@@ -2210,7 +2210,7 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
     const staffKey2 = getStaffKeyByName(name);
     const assignment = window.staffAssignments?.[staffKey2];
     const providerKey = assignment?.provider;
-    const modelId = assignment?.model_id;
+    const modelId = assignment?.model_id || assignment?.model;
     const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
 
     if (provLabel && modelId) {
@@ -4177,7 +4177,7 @@ function createStreamingBubble(name, isSynthesis = false) {
         const staffKey2 = getStaffKeyByName(name);
         const assignment = window.staffAssignments?.[staffKey2];
         const providerKey = assignment?.provider;
-        const modelId = assignment?.model_id;
+        const modelId = assignment?.model_id || assignment?.model;
         const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
         const metaParts = [];
         if (provLabel && modelId) metaParts.push(`<span style="opacity:0.8;">${provLabel} &middot; ${modelId}</span>`);
