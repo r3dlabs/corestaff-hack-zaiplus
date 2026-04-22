@@ -3640,10 +3640,15 @@ window.staffAssignments = {};
 
 function populateProviderDropdowns() {
     // Called when customize modal opens — fill provider dropdowns with configured providers
-    const configuredProviders = Object.keys(window.providerConfigs || {});
+    // Check both saved configs AND any API key currently typed in the Providers tab
+    const configuredProviders = new Set(Object.keys(window.providerConfigs || {}));
+    Object.keys(PROVIDER_DEFS).forEach(k => {
+        const keyEl = document.getElementById('papikey-' + k);
+        if (keyEl && keyEl.value.trim()) configuredProviders.add(k);
+    });
     const STAFF_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
-    if (configuredProviders.length === 0) {
+    if (configuredProviders.size === 0) {
         STAFF_KEYS.forEach(key => {
             const sel = document.getElementById('custom-provider-' + key);
             if (sel) sel.innerHTML = '<option value="">— configure providers first —</option>';
@@ -3657,7 +3662,7 @@ function populateProviderDropdowns() {
         const current = window.staffAssignments[key]?.provider || '';
         sel.innerHTML = '<option value="">— provider —</option>' +
             Object.entries(PROVIDER_DEFS)
-                .filter(([k]) => configuredProviders.includes(k))
+                .filter(([k]) => configuredProviders.has(k))
                 .map(([k, def]) => `<option value="${k}" ${k === current ? 'selected' : ''}>${def.label}</option>`)
                 .join('');
 
