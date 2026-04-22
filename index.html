@@ -1684,6 +1684,12 @@ function parseRequestIntent(text) {
         const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-page';
         result.type = 'html'; result.topic = topic;
         result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.html';
+    } else if (/\b(generate|create|make|build|produce|write|need|want)\b.{0,60}\b(pdf|PDF)\b|\.pdf\b/i.test(text)) {
+        // PDF → rendered as print-ready HTML (user saves as PDF via browser print)
+        const m = text.match(/(?:pdf|PDF)[:\s]+([^,.\n]+)/i);
+        const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-document';
+        result.type = 'html'; result.topic = topic; result.isPdf = true;
+        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.html';
     }
 
     // ── Detect explicit subject / body hints ───────────────────────────────
@@ -1749,12 +1755,12 @@ Your response MUST contain a complete HTML file in this EXACT format. Do not des
 [DOCUMENT: HTML]
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>${topic}</title><style>/* your styles */</style></head>
+<head><meta charset="UTF-8"><title>${topic}</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:0 24px;color:#111;line-height:1.6;}h1,h2{color:#0a0a0a;}@media print{body{margin:0;}}</style></head>
 <body><!-- your full page content --></body>
 </html>
 [END DOCUMENT]
 
-Write a complete, self-contained, professional HTML page. Dark background preferred. Include real copy, real sections, real CTAs. The block will be automatically rendered and made available for download.`
+Write a complete, self-contained, professional HTML page. Use a light background (white/off-white) — this page may be printed or saved as PDF. Include real copy, real sections, real CTAs. The block will be automatically rendered and made available for download.`
     };
     return additions[docType] || '';
 }
@@ -1855,23 +1861,24 @@ function extractDocBlock(text) {
     return m ? { docType: m[1].toLowerCase(), rawBlock: m[2].trim() } : null;
 }
 
-function injectDownloadCard(docType, filename, rawDocBlock) {
-    const icons  = { docx:'📄', xlsx:'📊', html:'🌐' };
-    const labels = { docx:'Word Document (.docx)', xlsx:'Excel Spreadsheet (.xlsx)', html:'HTML Page (.html)' };
+function injectDownloadCard(docType, filename, rawDocBlock, displayType) {
+    const icons  = { docx:'📄', xlsx:'📊', html:'🌐', pdf:'📑' };
+    const labels = { docx:'Word Document (.docx)', xlsx:'Excel Spreadsheet (.xlsx)', html:'HTML Page (.html)', pdf:'PDF — open and print to save as PDF' };
+    const uiType = displayType || docType;
     const card = document.createElement('div');
     card.className = 'doc-card';
     card.innerHTML = `
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-            <span style="font-size:24px;">${icons[docType]}</span>
+            <span style="font-size:24px;">${icons[uiType] || icons[docType]}</span>
             <div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">${labels[docType]}</div>
+                <div style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Geist Mono',monospace;">${labels[uiType] || labels[docType]}</div>
                 <div style="font-size:13px;color:var(--text-primary);font-weight:500;margin-top:2px;">${filename}</div>
             </div>
         </div>
         <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">Your document is ready to download.</p>
         <button class="download-btn btn-primary" style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            Download ${docType.toUpperCase()}
+            Download ${(uiType).toUpperCase()}
         </button>`;
     card.querySelector('.download-btn').addEventListener('click', async () => {
         const btn = card.querySelector('.download-btn');
@@ -4327,7 +4334,7 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
 PLATFORM CONTEXT — critical facts about this environment:
 - You and your teammates are AI, not humans. You have no schedules, no timelines, no EOD deadlines. You can produce any output RIGHT NOW in this conversation.
 - NEVER assign future tasks like "Tony will do this by tomorrow" or "we'll have this ready in 48 hours." That is not how this works. If something needs to be done, do it now or confirm it is being done now.
-- File generation is already built in: the system can produce and download .docx (Word), .xlsx (Excel), and .html files natively. If the founder asks for a document, it gets generated immediately — not scheduled.
+- File generation is already built in: the system can produce and download .docx (Word), .xlsx (Excel), .html, and PDF files natively. PDF requests are generated as print-ready HTML — the founder can open it and use browser Print → Save as PDF. If the founder asks for a document, it gets generated immediately — not scheduled.
 - Each staff member streams responses directly into the chat in real time.
 - Do NOT use project management language (deliverables, timelines, sprints, EOD) unless the founder is explicitly asking you to help plan a project for their human team outside this system.
 - Email delivery is available: the founder can say "email it to x@y.com" and the generated file will be sent automatically via Resend.
@@ -4531,7 +4538,7 @@ ${docHint}`
              chatHistory.push({ role: 'assistant', content: docResponse });
              const extracted = extractDocBlock(docResponse);
              if (extracted) {
-                 injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock);
+                 injectDownloadCard(extracted.docType || docReq.type, docReq.filename, extracted.rawBlock, docReq.isPdf ? 'pdf' : null);
 
                  // ── Email action ──────────────────────────────────────────
                  if (docReq.email) {
@@ -4556,6 +4563,21 @@ ${docHint}`
                          logTrace(`Email failed: ${emailErr.message}`, false);
                          const cosName2 = window.staffCustom?.cos?.name || 'Helen';
                          appendStaffBubble(cosName2, `Couldn't send the email: ${emailErr.message}`, false, null, null);
+                     }
+                 }
+
+                 // ── Telegram action ───────────────────────────────────────
+                 if (docReq.sendTelegram) {
+                     try {
+                         const tgMsg = docReq.isPdf
+                             ? `📑 Your PDF (${docReq.topic || docReq.filename}) is ready. Open Startup Staff and download it, then print to save as PDF.`
+                             : `📄 Your ${(extracted?.docType || docReq.type || '').toUpperCase()} file (${docReq.topic || docReq.filename}) is ready. Open Startup Staff to download it.`;
+                         await window.sendTelegram(tgMsg);
+                         const cosName3 = window.staffCustom?.cos?.name || 'Helen';
+                         appendStaffBubble(cosName3, 'Telegram notification sent ✓', false, null, null);
+                         logTrace('Telegram notification sent', true);
+                     } catch(tgErr) {
+                         logTrace('Telegram notification failed: ' + tgErr.message, false);
                      }
                  }
              } else {
