@@ -2205,9 +2205,11 @@ function appendStaffBubble(name, text, isSynthesis = false, usage = null, urls =
     const provLabel = providerKey ? (PROVIDER_DEFS[providerKey]?.label || providerKey) : null;
 
     const _online = isModelOnline(providerKey, modelId, staffKey2);
+    const _cutoff = getModelCutoff(staffKey2);
+    const _cutoffLabel = (!_online && _cutoff) ? ` · cutoff ${_cutoff}` : '';
     metaParts.push(_online
         ? `<span style="color:#22c55e;font-weight:600;">🌐 Web Search</span>`
-        : `<span style="opacity:0.5;">📚 Training Knowledge</span>`);
+        : `<span style="opacity:0.5;">📚 Training Knowledge${_cutoffLabel}</span>`);
     if (provLabel && modelId) {
         metaParts.push(`<span style="opacity:0.8;">${provLabel} · ${modelId}</span>`);
     }
@@ -4016,14 +4018,16 @@ async function probeModelOnline(staffKey) {
 
         // Extract a date from the reply
         const dateMatch = reply.match(/(\d{4})-(\d{2})-(\d{2})/);
-        if (!dateMatch) { window.staffOnlineStatus[staffKey] = false; return; }
+        if (!dateMatch) { window.staffOnlineStatus[staffKey] = { online: false, cutoff: null }; return; }
 
         const repliedDate = new Date(dateMatch[0]);
         const today = new Date();
         const diffDays = Math.abs((today - repliedDate) / (1000 * 60 * 60 * 24));
 
         // If within 3 days of today → online. If more than 60 days off → offline.
-        window.staffOnlineStatus[staffKey] = diffDays <= 3;
+        const isOnline = diffDays <= 3;
+        const cutoff = isOnline ? null : `${dateMatch[1]}-${dateMatch[2]}`; // YYYY-MM
+        window.staffOnlineStatus[staffKey] = { online: isOnline, cutoff };
 
     } catch(e) {
         // Timeout or error — can't determine, leave as null
@@ -4051,16 +4055,19 @@ const BROWSING_CAPABLE = {
 };
 
 function isModelOnline(providerKey, modelId, staffKey) {
-    // 1. Prefer live probe result if available for this staff member
-    if (staffKey && window.staffOnlineStatus?.[staffKey] !== undefined && window.staffOnlineStatus[staffKey] !== null) {
-        return window.staffOnlineStatus[staffKey];
-    }
-    // 2. Fall back to static lookup while probe is running or for unknown staff
+    const probe = staffKey ? window.staffOnlineStatus?.[staffKey] : null;
+    if (probe !== undefined && probe !== null) return probe.online;
+    // Fall back to static lookup
     const cap = BROWSING_CAPABLE[providerKey];
     if (!cap) return false;
     if (cap.all) return true;
     if (cap.patterns) return cap.patterns.some(p => (modelId || '').toLowerCase().includes(p));
     return false;
+}
+
+function getModelCutoff(staffKey) {
+    const probe = staffKey ? window.staffOnlineStatus?.[staffKey] : null;
+    return (probe && !probe.online && probe.cutoff) ? probe.cutoff : null;
 }
 
 // Extract citations from API response data — returns array of {url, title} or null
