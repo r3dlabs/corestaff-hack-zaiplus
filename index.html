@@ -2398,6 +2398,11 @@ function appendMessage(sender, text) {
         const displayText = text.replace(/\[DOCUMENT:[\s\S]*?\[END DOCUMENT\]/gi,'').trim();
         bubble.innerHTML = parseSoleilResponse(displayText);
     }
+    // Timestamp
+    const _tsUser = document.createElement('div');
+    _tsUser.style.cssText = 'font-size:9px;color:var(--text-muted);font-family:"Geist Mono",monospace;margin-top:4px;opacity:0.45;text-align:right;';
+    _tsUser.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    bubble.appendChild(_tsUser);
     wrapper.appendChild(avatar); wrapper.appendChild(bubble);
     chatWindow.appendChild(wrapper);
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -4612,6 +4617,11 @@ function createStreamingBubble(name, isSynthesis = false) {
              _metaItems.forEach((el, i) => { if (i > 0) meta.appendChild(sep()); meta.appendChild(el); });
              bubble.appendChild(meta);
          }
+         // Timestamp
+         const _tsEl2 = document.createElement('div');
+         _tsEl2.style.cssText = 'font-size:9px;color:var(--text-muted);font-family:"Geist Mono",monospace;margin-top:5px;opacity:0.5;text-align:right;';
+         _tsEl2.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+         bubble.appendChild(_tsEl2);
          chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
