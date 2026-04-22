@@ -3536,50 +3536,129 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
 }
 
 async function testProvider(key) {
-    const apiKey     = document.getElementById('papikey-' + key)?.value.trim();
-    const endpoint   = document.getElementById('pendpoint-' + key)?.value.trim();
-    const deployment = key === 'azure' ? (document.getElementById('pmodel-azure')?.value.trim() || document.getElementById('pdeployment-azure')?.value.trim() || '') : null;
+    const apiKey   = document.getElementById('papikey-' + key)?.value.trim();
+    const endpoint = document.getElementById('pendpoint-' + key)?.value.trim() || PROVIDER_DEFS[key]?.endpoint || '';
+    const model    = key === 'azure'
+        ? (document.getElementById('pmodel-azure')?.value.trim() || document.getElementById('pdeployment-azure')?.value.trim() || '')
+        : (document.getElementById('pmodel-' + key)?.value.trim() || PROVIDER_DEFS[key]?.preferred || '');
 
     if (!apiKey) { setProviderStatus(key, 'Enter an API key first.', false); return; }
     if (key === 'azure' && !endpoint) { setProviderStatus(key, 'Enter your Azure endpoint URL first.', false); return; }
-    if (key === 'azure' && !deployment) { setProviderStatus(key, 'Enter your deployment name first.', false); return; }
+    if (key === 'azure' && !model) { setProviderStatus(key, 'Select or enter a deployment/model first.', false); return; }
 
     const btn = document.getElementById('ptest-' + key);
     if (btn) { btn.textContent = 'Testing...'; btn.disabled = true; }
-    setProviderStatus(key, 'Testing...', null);
+    setProviderStatus(key, 'Asking for today\u2019s date...', null);
 
-    if (key === 'azure') {
-        // Test Azure — supports both Azure OpenAI and Azure AI Foundry endpoint formats
-        try {
-            const base = endpoint.replace(/\/$/, '');
+    // ── Universal date probe — same logic as background probe ──────────────────
+    // "What is today's date?" → if response matches today = online, old date = offline+cutoff, error = config issue
+    const DATE_PROMPT = "What is today's exact date? Reply with ONLY the date in YYYY-MM-DD format, nothing else.";
+    const DATE_SYSTEM = "You are a helpful assistant. Reply only with the requested information.";
+
+    try {
+        let url, fetchOptions;
+        const base = endpoint.replace(/\/$/, '');
+
+        if (key === 'anthropic') {
+            url = base + '/v1/messages';
+            fetchOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+                body: JSON.stringify({ model, max_tokens: 20, system: DATE_SYSTEM, messages: [{ role:'user', content: DATE_PROMPT }] })
+            };
+        } else if (key === 'google') {
+            const gModel = model || 'gemini-1.5-pro';
+            url = `${base}/models/${gModel}:generateContent?key=${apiKey}`;
+            fetchOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: DATE_PROMPT }] }], generationConfig: { maxOutputTokens: 20 } })
+            };
+        } else if (key === 'azure') {
             const isV1 = /\/openai\/v1\/?$/.test(base);
-            let url;
-            if (isV1) {
-                url = base + '/chat/completions';
-            } else {
-                url = `${base}/openai/deployments/${deployment}/chat/completions?api-version=2024-08-01-preview`;
-            }
-            const res  = await fetch(url, {
+            url = isV1 ? base + '/chat/completions' : `${base}/openai/deployments/${model}/chat/completions?api-version=2024-08-01-preview`;
+            fetchOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'api-key': apiKey },
-                body: JSON.stringify({ model: deployment, messages: [{ role:'user', content:'hi' }], max_tokens: 5 })
-            });
-            const ok = res.status !== 401 && res.status !== 403 && res.status !== 404;
-            const format = isV1 ? 'Foundry v1' : 'Classic';
-            setProviderStatus(key, ok ? `Connected · ${deployment} · ${format}` : `HTTP ${res.status} — check endpoint/key/deployment`, ok);
-            setProviderBadge(key, ok ? 'connected' : 'invalid');
-            if (ok) {
-                window.providerConfigs[key] = { apiKey, endpoint, model: deployment, isV1 };
-            }
-        } catch(e) {
-            setProviderStatus(key, 'Network error — check endpoint URL. ' + e.message, false);
-            setProviderBadge(key, 'invalid');
+                body: JSON.stringify({ model, messages: [{ role:'system', content: DATE_SYSTEM }, { role:'user', content: DATE_PROMPT }], max_tokens: 20 })
+            };
+        } else {
+            // OpenAI-compatible: OpenAI, DeepSeek, Groq, Mistral, Perplexity, xAI, GMI, Bedrock, Alibaba
+            url = base + '/chat/completions';
+            fetchOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                body: JSON.stringify({ model, messages: [{ role:'system', content: DATE_SYSTEM }, { role:'user', content: DATE_PROMPT }], max_tokens: 20 })
+            };
         }
-        if (btn) { btn.textContent = 'Test'; btn.disabled = false; }
-        return;
+
+        const res = await fetch(url, { ...fetchOptions, signal: AbortSignal.timeout(15000) });
+
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            const errMsg = errData.error?.message || errData.message || res.statusText || '';
+            let hint = '';
+            if (res.status === 401 || res.status === 403) hint = 'Invalid API key.';
+            else if (res.status === 404) hint = 'Endpoint or model not found — check URL and model name.';
+            else if (res.status === 429) hint = 'Rate limit hit — try again shortly.';
+            else if (res.status === 400) hint = errMsg.slice(0, 80);
+            setProviderStatus(key, `HTTP ${res.status} — ${hint || errMsg.slice(0, 60) || 'check your config'}`, false);
+            setProviderBadge(key, 'invalid');
+            if (btn) { btn.textContent = 'Test'; btn.disabled = false; }
+            return;
+        }
+
+        const data = await res.json();
+
+        // Extract text response
+        let reply = '';
+        if (key === 'anthropic') reply = data.content?.[0]?.text || '';
+        else if (key === 'google')   reply = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        else                         reply = data.choices?.[0]?.message?.content || '';
+        reply = reply.trim();
+
+        // Parse date from response
+        const dateMatch = reply.match(/(\d{4})-(\d{2})-(\d{2})/);
+        const modelLabel = model ? ` · ${model.split('/').pop()}` : '';
+
+        if (!dateMatch) {
+            // Got a response but not a date — still connected, just can't determine online status
+            setProviderStatus(key, `Connected${modelLabel} · responded (date unclear)`, true);
+            setProviderBadge(key, 'connected');
+        } else {
+            const replied = new Date(dateMatch[0]);
+            const today = new Date();
+            const diffDays = Math.abs((today - replied) / (1000 * 60 * 60 * 24));
+            if (diffDays <= 3) {
+                // Online — knows today's date
+                setProviderStatus(key, `Connected${modelLabel} · 🌐 Online — knows today's date`, true);
+                setProviderBadge(key, 'connected');
+                // Update probe cache
+                if (!window.staffOnlineStatus) window.staffOnlineStatus = {};
+                // Mark all staff using this provider as online
+                Object.entries(window.staffAssignments || {}).forEach(([sk, a]) => {
+                    if (a.provider === key) window.staffOnlineStatus[sk] = { online: true, cutoff: null };
+                });
+            } else {
+                // Offline — returned a past date = training cutoff
+                const cutoff = `${dateMatch[1]}-${dateMatch[2]}`;
+                setProviderStatus(key, `Connected${modelLabel} · 📚 Offline · cutoff ${cutoff}`, true);
+                setProviderBadge(key, 'connected');
+                Object.entries(window.staffAssignments || {}).forEach(([sk, a]) => {
+                    if (a.provider === key) window.staffOnlineStatus[sk] = { online: false, cutoff };
+                });
+            }
+        }
+
+        // Save to providerConfigs on success
+        window.providerConfigs[key] = { apiKey, endpoint, model, ...(key === 'azure' && { isV1: /\/openai\/v1\/?$/.test(base) }) };
+
+    } catch(e) {
+        const msg = e.name === 'TimeoutError' ? 'Timed out — check endpoint URL.' : 'Network error — ' + e.message;
+        setProviderStatus(key, msg, false);
+        setProviderBadge(key, 'invalid');
     }
 
-    await fetchModelsForProvider(key, apiKey, endpoint);
     if (btn) { btn.textContent = 'Test'; btn.disabled = false; }
 }
 
