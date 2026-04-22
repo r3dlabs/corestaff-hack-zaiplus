@@ -4642,24 +4642,39 @@ ${docHint}`
             .map(([k, s]) => `${s.name || STAFF_DEFAULTS[k]?.name} (${STAFF_DEFAULTS[k]?.role || k})`)
             .join(', ');
 
+        // Build mandate map for routing context
+        const mandateMap = {
+            engineering:  'technical feasibility, code, build vs buy, timelines, infrastructure',
+            finance:      'money, budgets, costs, revenue, tax, accounting, financial modelling, unit economics, runway',
+            marketing:    'GTM, positioning, channels, campaigns, brand, growth, customer acquisition',
+            legal:        'compliance, contracts, regulation, IP, PDPA, GDPR, legal risk',
+            architecture: 'system design, scalability, API contracts, platform strategy, data models',
+            hr:           'hiring, people, culture, compensation, team dynamics, org structure'
+        };
+        const teamRosterWithMandates = Object.entries(window.staffCustom || STAFF_DEFAULTS)
+            .filter(([k]) => k !== 'cos')
+            .map(([k, s]) => `${s.name || STAFF_DEFAULTS[k]?.name} — ${mandateMap[k] || k}`)
+            .join('\n');
+
         const phase1System = `You are ${window.staffCustom?.cos?.name || 'Helen'}, Chief of Staff. Your ONLY job right now is ROUTING — deciding which specialists to consult.
 
-YOUR TEAM:
-${teamRoster}
+YOUR TEAM AND THEIR MANDATES:
+${teamRosterWithMandates}
 
 STRICT RULES:
-1. Output ONLY [CONSULT: FirstName] tags, one per line, for each specialist who should weigh in.
-2. Do NOT answer the question. Do NOT write any explanation, commentary, or summary.
-3. Do NOT roleplay or speak as yourself. Output tags only.
-4. If the question needs no specialists (pure greeting, simple factual), output exactly: [DIRECT]
+1. Output ONLY [CONSULT: FirstName] tags, one per line, for specialists whose mandate DIRECTLY covers the question.
+2. Be selective — only consult staff whose domain is genuinely relevant. Do NOT consult everyone.
+3. Do NOT answer the question. Do NOT write any explanation, commentary, or summary.
+4. Do NOT roleplay or speak as yourself. Output tags only.
+5. If the question needs no specialists (pure greeting, simple factual), output exactly: [DIRECT]
 
-Correct output example:
-[CONSULT: Descartes]
-[CONSULT: Thales]
-[CONSULT: Cicero]
+Examples:
+Q: "What are the tax deadlines in Singapore?" → [CONSULT: ${(window.staffCustom?.finance?.name || STAFF_DEFAULTS.finance?.name)}]
+Q: "Should we hire a CTO?" → [CONSULT: ${(window.staffCustom?.hr?.name || STAFF_DEFAULTS.hr?.name)}]
+Q: "What's our GTM strategy?" → [CONSULT: ${(window.staffCustom?.marketing?.name || STAFF_DEFAULTS.marketing?.name)}]
 
 Wrong output — NEVER do this:
-Sure, let me loop in the team... [CONSULT: Descartes] Great question...
+Sure, let me loop in the team... [CONSULT: Name] Great question...
 
 Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '');
 
@@ -4669,6 +4684,7 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
         setDotReady('cos');
         if (cosNodeEl) { cosNodeEl.classList.remove('active'); logAnim('■ visual-soleil → glow OFF (Phase 1 done)'); }
         logTrace(`Phase 1 tokens: ${phase1Usage?.total || '?'}`, false);
+        logTrace(`Phase 1 response: ${phase1Response.replace(/\n/g,' ').slice(0,120)}`, false);
 
         // Extract which staff were consulted
         const staffNames = Object.values(window.staffCustom || STAFF_DEFAULTS).map(s => s.name);
@@ -4716,7 +4732,8 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
              const staffSystem = buildStaffSystemPrompt(key, _shuffledOpeners[_openerIdx++ % _shuffledOpeners.length]);
              // Frame the question so the model responds only as this specific staff member
              const _docHint = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic) : '';
-             const staffMessages = [{ role: 'user', content: `The founder has asked: "${userText}"\n\nRespond ONLY as ${name}. Give your honest take from your specific domain. Do NOT speak for other team members, do NOT address them directly, and do NOT try to cover angles outside your mandate. Speak in first person as yourself.${_docHint}` }];
+             const _mandate = { engineering:'technical feasibility, code, timelines, infrastructure', finance:'money, costs, tax, accounting, financial modelling, unit economics', marketing:'GTM, positioning, channels, brand, growth', legal:'compliance, contracts, regulation, IP, legal risk', architecture:'system design, scalability, platform strategy', hr:'hiring, people, culture, compensation, org structure' }[key] || 'your domain';
+             const staffMessages = [{ role: 'user', content: `The founder has asked: "${userText}"\n\nYou are ${name}. Your mandate covers: ${_mandate}.\n\nIMPORTANT:\n- Answer ONLY from your mandate. Do not answer for other domains.\n- Do NOT repeat or paraphrase what another team member would say.\n- Do NOT produce a generic answer that anyone could give — give YOUR specific take.\n- Speak in first person as yourself only.${_docHint}` }];
 
              try {
                  // animation handled by createStreamingBubble
