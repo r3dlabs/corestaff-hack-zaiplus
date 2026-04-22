@@ -10,8 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root[data-theme="dark"] {
             --bg-base:       #0a0a0a;
@@ -1677,16 +1675,19 @@ function parseRequestIntent(text) {
     }
 
     // ── Detect doc type ─────────────────────────────────────────────────────
+    // docx/xlsx requests → redirected to HTML (print-to-PDF for docs, table layout for data)
     if (/\b(generate|create|make|write|produce|draft)\b.{0,60}\b(document|doc|word|report|brief|memo|proposal|plan)\b/i.test(text) || /\.docx\b/i.test(text)) {
         const m = text.match(/(?:document|doc|word|report|brief|memo|proposal|plan)[:\s]+([^,.\n]+)/i);
         const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-output';
-        result.type = 'docx'; result.topic = topic;
-        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.docx';
+        result.type = 'html'; result.topic = topic; result.isPdf = true;
+        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.html';
+        result.redirectedFrom = 'docx';
     } else if (/\b(generate|create|make|build|produce)\b.{0,60}\b(spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)\b/i.test(text) || /\.xlsx\b/i.test(text)) {
         const m = text.match(/(?:spreadsheet|excel|xlsx|table|model|budget|forecast|tracker)[:\s]+([^,.\n]+)/i);
         const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-data';
-        result.type = 'xlsx'; result.topic = topic;
-        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.xlsx';
+        result.type = 'html'; result.topic = topic;
+        result.filename = topic.replace(/\s+/g,'-').toLowerCase() + '.html';
+        result.redirectedFrom = 'xlsx';
     } else if (/\b(generate|create|make|build|produce|write)\b.{0,60}\b(html|webpage|web page|landing page|page|site)\b/i.test(text) || /\.html\b/i.test(text)) {
         const m = text.match(/(?:html|webpage|web page|landing page|page|site)[:\s]+([^,.\n]+)/i);
         const topic = m ? m[1].trim().replace(/[^a-zA-Z0-9 _-]/g,'') : 'boardroom-page';
@@ -1877,42 +1878,9 @@ function getBrandedDocTemplate(docTitle) {
     return { css, header, footer, colors, theme };
 }
 
-function getDocSystemAddition(docType, topic) {
-    const additions = {
-        docx: `
+function getDocSystemAddition(docType, topic, redirectedFrom) {
+    const additions = {}; // docx/xlsx removed — all redirected to HTML
 
-MANDATORY FILE OUTPUT — you MUST produce this or the task fails:
-Your response MUST contain a document block in this EXACT format. Do not describe it. Do not say you will produce it. OUTPUT IT NOW as part of your response:
-
-[DOCUMENT: DOCX]
-TITLE: ${topic}
-SECTION: Introduction
-Write the introduction here.
-SECTION: Key Points
-- Point one
-- Point two
-SECTION: Next Steps
-Write next steps here.
-[END DOCUMENT]
-
-Include 4-6 sections. Write real, substantive content. The block will be automatically converted to a .docx file.`,
-
-        xlsx: `
-
-MANDATORY FILE OUTPUT — you MUST produce this or the task fails:
-Your response MUST contain a spreadsheet block in this EXACT format. Do not describe it. OUTPUT IT NOW:
-
-[DOCUMENT: XLSX]
-TITLE: ${topic}
-SHEET: Data
-HEADERS: Column A | Column B | Column C
-ROW: value1 | value2 | value3
-ROW: value4 | value5 | value6
-[END DOCUMENT]
-
-Include 8-12 data rows. Use real values. The block will be automatically converted to a .xlsx file.`,
-
-    };
 
     // HTML hint is built dynamically to inject brand template
     if (docType === 'html') {
@@ -1934,81 +1902,17 @@ Include 8-12 data rows. Use real values. The block will be automatically convert
             `<div class=\"doc-body\">\n<!-- YOUR FULL PAGE CONTENT HERE -->\n</div>\n` +
             `${brand.footer}\n` +
             `</body>\n</html>\n[END DOCUMENT]\n\n` +
-            `Write complete, real content between the header and footer. Use the brand CSS classes (doc-body, highlight, h2, h3, p). Make it professional and publication-ready.`;
+            `Write complete, real content between the header and footer. Use the brand CSS classes (doc-body, highlight, h2, h3, p). Make it professional and publication-ready.` +
+            (redirectedFrom === 'xlsx' ? `\nThis was a spreadsheet request — use HTML tables with proper <table>, <thead>, <tbody>, <tr>, <th>, <td> elements. Style them to match the brand.` : '') +
+            (redirectedFrom === 'docx' ? `\nThis was a Word document request — structure it as a formal document with clear sections, headings, and paragraphs. Make it print-ready.` : '');
     }
 
     return additions[docType] || '';
 }
 
 // ─── DOCX GENERATOR ─────────────────────────────────────────────────────────
-async function generateDocx(rawDocBlock, filename) {
-    logTrace('[DOC] generateDocx: parsing block…', false);
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
-    const lines = rawDocBlock.split('\n');
-    logTrace(`[DOC] Block has ${lines.length} lines.`, false);
-    const children = [];
-    const titleLine = lines.find(l => l.startsWith('TITLE:'));
-    const docTitle = titleLine ? titleLine.replace('TITLE:','').trim() : filename.replace('.docx','');
-    children.push(new Paragraph({ text: docTitle, heading: HeadingLevel.TITLE, alignment: AlignmentType.CENTER, spacing: { after: 400 } }));
-    children.push(new Paragraph({ children: [new TextRun({ text: `Generated by Startup Staff  •  ${new Date().toLocaleDateString('en-SG',{year:'numeric',month:'long',day:'numeric'})}`, italics: true, color:'888888', size:20 })], alignment: AlignmentType.CENTER, spacing: { after: 600 } }));
-    let inSection = false;
-    for (const line of lines) {
-        if (line.startsWith('TITLE:')) continue;
-        if (line.startsWith('SECTION:')) {
-            children.push(new Paragraph({ text: line.replace('SECTION:','').trim(), heading: HeadingLevel.HEADING_1, spacing: { before:400, after:200 } }));
-            inSection = true; continue;
-        }
-        if (line.trim().startsWith('- ')) {
-            children.push(new Paragraph({ children: [new TextRun({ text: line.trim().replace(/^- /,''), size:24 })], bullet: { level:0 }, spacing: { after:100 } }));
-        } else if (line.trim() !== '' && inSection) {
-            children.push(new Paragraph({ children: [new TextRun({ text: line.trim(), size:24 })], spacing: { after:120 } }));
-        }
-    }
-    children.push(new Paragraph({ children: [new TextRun({ text:`— Confidential. Prepared by your Chief of Staff —`, italics:true, color:'999999', size:18 })], alignment: AlignmentType.CENTER, spacing: { before:600 } }));
-    const doc = new Document({
-        creator:'Startup Staff', title: docTitle,
-        styles: {
-            default: { document: { run: { font:'Arial', size:24 } } },
-            paragraphStyles: [
-                { id:'Title', name:'Title', basedOn:'Normal', run:{ size:52, bold:true, font:'Arial', color:'0a0a0a' }, paragraph:{ spacing:{before:0,after:400} } },
-                { id:'Heading1', name:'Heading 1', basedOn:'Normal', next:'Normal', run:{ size:32, bold:true, font:'Arial', color:'1a1a1a' }, paragraph:{ spacing:{before:360,after:180}, outlineLevel:0 } }
-            ]
-        },
-        sections: [{ properties:{ page:{ size:{width:12240,height:15840}, margin:{top:1440,right:1440,bottom:1440,left:1440} } }, children }]
-    });
-    logTrace(`[DOC] Packing docx… (${children.length} paragraphs)`, false);
-    const buffer = await Packer.toBlob(doc);
-    logTrace('[DOC] Packer.toBlob complete. Triggering download…', false);
-    triggerDownload(buffer, filename, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-    logTrace('[DOC] triggerDownload called.', false);
-}
+// generateDocx and generateXlsx removed — all doc requests now use HTML
 
-function generateXlsx(rawDocBlock, filename) {
-    const wb = XLSX.utils.book_new();
-    const lines = rawDocBlock.split('\n');
-    let currentSheetName = 'Sheet1', currentRows = [], headers = null;
-    function flushSheet() {
-        if (headers || currentRows.length > 0) {
-            const wsData = []; if (headers) wsData.push(headers);
-            currentRows.forEach(r => wsData.push(r));
-            const ws = XLSX.utils.aoa_to_sheet(wsData);
-            const maxCols = wsData.reduce((m,r) => Math.max(m,r.length),0);
-            ws['!cols'] = Array.from({length:maxCols},(_,i) => ({ wch: Math.min(wsData.reduce((m,r) => Math.max(m,r[i]?String(r[i]).length:0),10)+4,40) }));
-            XLSX.utils.book_append_sheet(wb, ws, currentSheetName.substring(0,31));
-            headers = null; currentRows = [];
-        }
-    }
-    for (const line of lines) {
-        if (line.startsWith('TITLE:')) continue;
-        if (line.startsWith('SHEET:')) { flushSheet(); currentSheetName = line.replace('SHEET:','').trim()||'Sheet1'; continue; }
-        if (line.startsWith('HEADERS:')) { headers = line.replace('HEADERS:','').trim().split('|').map(c=>c.trim()); continue; }
-        if (line.startsWith('ROW:')) { currentRows.push(line.replace('ROW:','').trim().split('|').map(c=>{ const v=c.trim(),n=parseFloat(v.replace(/[$,%]/g,'')); return (!isNaN(n)&&v!=='')?n:v; })); continue; }
-    }
-    flushSheet();
-    if (wb.SheetNames.length===0) { const ws=XLSX.utils.aoa_to_sheet([['No data']]); XLSX.utils.book_append_sheet(wb,ws,'Sheet1'); }
-    const wbout = XLSX.write(wb,{bookType:'xlsx',type:'array'});
-    triggerDownload(new Blob([wbout],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}), filename);
-}
 
 function generateHtml(rawDocBlock, filename) {
     logTrace('[DOC] generateHtml: scanning for <!DOCTYPE html>…', false);
@@ -2032,13 +1936,13 @@ function triggerDownload(blob, filename) {
 }
 
 function extractDocBlock(text) {
-    const m = text.match(/\[DOCUMENT:\s*(DOCX|XLSX|HTML)\]([\s\S]*?)\[END DOCUMENT\]/i);
+    const m = text.match(/\[DOCUMENT:\s*(HTML)\]([\s\S]*?)\[END DOCUMENT\]/i);
     return m ? { docType: m[1].toLowerCase(), rawBlock: m[2].trim() } : null;
 }
 
 function injectDownloadCard(docType, filename, rawDocBlock, displayType) {
-    const icons  = { docx:'📄', xlsx:'📊', html:'🌐', pdf:'📑' };
-    const labels = { docx:'Word Document (.docx)', xlsx:'Excel Spreadsheet (.xlsx)', html:'HTML Page (.html)', pdf:'PDF — open and print to save as PDF' };
+    const icons  = { html:'🌐', pdf:'📑' };
+    const labels = { html:'HTML Page', pdf:'PDF — open and print to save as PDF' };
     const uiType = displayType || docType;
     const card = document.createElement('div');
     card.className = 'doc-card';
@@ -2062,19 +1966,7 @@ function injectDownloadCard(docType, filename, rawDocBlock, displayType) {
         logTrace(`[DOC] rawDocBlock length: ${rawDocBlock?.length || 0} chars`, false);
         logTrace(`[DOC] rawDocBlock preview: ${(rawDocBlock||'').slice(0,120).replace(/\n/g,' ')}`, false);
         try {
-            if (docType==='docx') {
-                logTrace('[DOC] Checking docx library…', false);
-                if (typeof docx === 'undefined') throw new Error('docx library not loaded — check CDN script tag');
-                const { Document, Packer, Paragraph, TextRun } = docx;
-                if (!Document || !Packer) throw new Error('docx library incomplete — Document or Packer missing');
-                logTrace('[DOC] docx library OK. Building document…', false);
-                await generateDocx(rawDocBlock, filename);
-            } else if (docType==='xlsx') {
-                logTrace('[DOC] Checking XLSX library…', false);
-                if (typeof XLSX === 'undefined') throw new Error('XLSX library not loaded — check CDN script tag');
-                logTrace('[DOC] XLSX library OK. Building spreadsheet…', false);
-                generateXlsx(rawDocBlock, filename);
-            } else if (docType==='html') {
+            if (docType==='html') {
                 logTrace('[DOC] Generating HTML file…', false);
                 generateHtml(rawDocBlock, filename);
             }
@@ -4510,7 +4402,7 @@ Tone: Warm, perceptive, direct when it matters. Not soft — just human. Use fir
 PLATFORM CONTEXT — critical facts about this environment:
 - You and your teammates are AI, not humans. You have no schedules, no timelines, no EOD deadlines. You can produce any output RIGHT NOW in this conversation.
 - NEVER assign future tasks like "Tony will do this by tomorrow" or "we'll have this ready in 48 hours." That is not how this works. If something needs to be done, do it now or confirm it is being done now.
-- File generation is already built in: the system can produce and download .docx (Word), .xlsx (Excel), .html, and PDF files natively. All HTML/PDF outputs automatically use the Startup Staff brand design system (logo, fonts, colors) and match the current dark/light theme. The founder can say "make it dark" or "make it light" to control the theme.
+- File generation is built in: the system produces HTML pages and PDFs (print-ready HTML). All outputs use the Startup Staff brand design system (logo, fonts, colors) matching the current theme. If someone asks for a Word doc or spreadsheet, generate a well-structured HTML equivalent instead — document layout for reports, table layout for data. The founder can say "make it dark" or "make it light" to control the theme.
 - Each staff member streams responses directly into the chat in real time.
 - Do NOT use project management language (deliverables, timelines, sprints, EOD) unless the founder is explicitly asking you to help plan a project for their human team outside this system.
 - Email delivery is available: the founder can say "email it to x@y.com" and the generated file will be sent automatically via Resend.
@@ -4695,11 +4587,11 @@ async function sendChatAgentic() {
     if (docReq.type) {
         btnSend.textContent = 'Generating…';
         // Route by doc type: html→marketing, xlsx→finance, docx→cos
-        const docStaffMap = { html: 'marketing', xlsx: 'finance', docx: 'cos' };
+        const docStaffMap = { html: 'marketing' };
         const docStaffKey = docStaffMap[docReq.type] || 'cos';
         const docStaffName = window.staffCustom?.[docStaffKey]?.name || STAFF_DEFAULTS[docStaffKey]?.name;
         const docSystem = buildStaffSystemPrompt(docStaffKey);
-        const docHint = getDocSystemAddition(docReq.type, docReq.topic);
+        const docHint = getDocSystemAddition(docReq.type, docReq.topic, docReq.redirectedFrom);
         const docMessages = [{
             role: 'user',
             content: `${userText}
@@ -4971,7 +4863,7 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
 
              const staffSystem = buildStaffSystemPrompt(key, _shuffledOpeners[_openerIdx++ % _shuffledOpeners.length]);
              // Frame the question so the model responds only as this specific staff member
-             const _docHint = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic) : '';
+             const _docHint = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic, docReq.redirectedFrom) : '';
              const _mandate = { engineering:'technical feasibility, code, timelines, infrastructure', finance:'money, costs, tax, accounting, financial modelling, unit economics', marketing:'GTM, positioning, channels, brand, growth', legal:'compliance, contracts, regulation, IP, legal risk', architecture:'system design, scalability, platform strategy', hr:'hiring, people, culture, compensation, org structure' }[key] || 'your domain';
              const staffMessages = [{ role: 'user', content: `The founder has asked: "${userText}"\n\nYou are ${name}. Your mandate covers: ${_mandate}.\n\nIMPORTANT:\n- Answer ONLY from your mandate. Do not answer for other domains.\n- Do NOT repeat or paraphrase what another team member would say.\n- Do NOT produce a generic answer that anyone could give — give YOUR specific take.\n- Speak in first person as yourself only.${_docHint}` }];
 
