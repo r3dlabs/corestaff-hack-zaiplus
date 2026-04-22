@@ -3341,7 +3341,7 @@ const PROVIDER_DEFS = {
     groq:      { label:'Groq',              endpoint:'https://api.groq.com/openai/v1',                               modelsPath:'/models',  preferred:'llama-3.3-70b-versatile',                   color:'#f55036', auth:'bearer'    },
     mistral:   { label:'Mistral',           endpoint:'https://api.mistral.ai/v1',                                    modelsPath:'/models',  preferred:'mistral-large-latest',                      color:'#ff7000', auth:'bearer'    },
     perplexity:{ label:'Perplexity',        endpoint:'https://api.perplexity.ai',                                    modelsPath:'/models',  preferred:'sonar-pro',                                 color:'#20808d', auth:'bearer'    },
-    xai:       { label:'xAI Grok',          endpoint:'https://api.x.ai/v1',                                          modelsPath:'/models',  preferred:'grok-3',                                    color:'#000000', auth:'bearer'    },
+    xai:       { label:'xAI Grok',          endpoint:'https://api.x.ai/v1',                                          modelsPath:'/models',  preferred:'grok-4-1-fast-non-reasoning',                                    color:'#000000', auth:'bearer'    },
 };
 
 const ANTHROPIC_MODELS = [
@@ -3471,24 +3471,51 @@ async function fetchModelsForProvider(key, apiKey, endpoint) {
         return;
     }
 
-    // ── xAI Grok — hardcoded known models (CORS blocks /models from browser) ──
+    // ── xAI Grok — try live /models first, fall back to known list ──
     if (key === 'xai') {
-        const valid = apiKey.length > 20;
+        if (!apiKey || apiKey.length < 20) {
+            setProviderStatus(key, 'API key too short — check your xAI key.', false);
+            return;
+        }
+        // Try fetching live model list
+        try {
+            const res = await fetch('https://api.x.ai/v1/models', {
+                headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                const models = (data.data || [])
+                    .map(m => m.id)
+                    .filter(id => !id.includes('image') && !id.includes('vision') && !id.includes('imagine'))
+                    .sort();
+                if (models.length > 0) {
+                    modelSelect.innerHTML = models.map(m =>
+                        `<option value="${m}" ${m === def.preferred || m === 'grok-4-1-fast-non-reasoning' ? 'selected' : ''}>${m}</option>`
+                    ).join('');
+                    if (modelSection) modelSection.style.display = 'block';
+                    setProviderStatus(key, `${models.length} models loaded.`, true);
+                    return;
+                }
+            }
+        } catch(e) {}
+        // Fallback to known current models
         const grokModels = [
+            'grok-4.20-non-reasoning',
+            'grok-4.20-reasoning',
+            'grok-4-1-fast-non-reasoning',
+            'grok-4-1-fast-reasoning',
+            'grok-4',
+            'grok-4-fast',
             'grok-3',
             'grok-3-fast',
             'grok-3-mini',
             'grok-3-mini-fast',
-            'grok-2-1212',
-            'grok-2-vision-1212',
         ];
         modelSelect.innerHTML = grokModels.map(m =>
-            `<option value="${m}" ${m === def.preferred ? 'selected' : ''}>${m}</option>`
+            `<option value="${m}" ${m === 'grok-4-1-fast-non-reasoning' ? 'selected' : ''}>${m}</option>`
         ).join('');
-        const selectedModel = modelSelect.value;
-        const statusMsg = !valid ? 'API key too short — check your xAI key.'
-            : selectedModel ? `Connected · ${selectedModel}` : 'Key valid — select a model above.';
-        setProviderStatus(key, statusMsg, valid);
+        if (modelSection) modelSection.style.display = 'block';
+        setProviderStatus(key, 'Models loaded (offline list) — select one above.', true);
         return;
     }
 
