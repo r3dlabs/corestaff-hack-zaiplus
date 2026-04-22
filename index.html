@@ -1660,6 +1660,12 @@ function parseRequestIntent(text) {
     const emailMatch = text.match(/(?:email|send)(?:\s+it)?\s+to\s+([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/i);
     if (emailMatch) result.email = emailMatch[1].trim();
 
+    // ── Detect full-team / discussion request ──────────────────────────────
+    // "everyone's input", "full team", "team discussion", "i need everyone", etc.
+    if (/\b(everyone|everyone's|all staff|full team|whole team|the team|team discussion|team input|discuss(ion)?|weigh in|all perspectives|all angles|round table|roundtable)\b/i.test(text)) {
+        result.fullTeam = true;
+    }
+
     // ── Detect telegram send intent ─────────────────────────────────────────
     if (/\b(send|notify|message|ping)\b.{0,20}\btelegram\b|\btelegram\b.{0,20}\b(send|message|notify|ping)\b/i.test(text)) {
         result.sendTelegram = true;
@@ -4810,20 +4816,29 @@ Sure, let me loop in the team... [CONSULT: Name] Great question...
 
 Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '');
 
-        logTrace(`Phase 1: Routing to ${cosName}...`, true);
-        setDotActive('cos');
-        const { text: phase1Response, usage: phase1Usage } = await callStaffModel('cos', chatHistory, phase1System, 512);
-        setDotReady('cos');
-        if (cosNodeEl) { cosNodeEl.classList.remove('active'); logAnim('■ visual-soleil → glow OFF (Phase 1 done)'); }
-        logTrace(`Phase 1 tokens: ${phase1Usage?.total || '?'}`, false);
-        logTrace(`Phase 1 response: ${phase1Response.replace(/\n/g,' ').slice(0,120)}`, false);
-
-        // Extract which staff were consulted
+        // ── Full-team shortcut — skip Phase 1 model call, consult everyone ──
         const staffNames = Object.values(window.staffCustom || STAFF_DEFAULTS).map(s => s.name);
-        const consultRegexAgentic = new RegExp('\\[CONSULT:\\s*(' + staffNames.join('|') + ')\\]', 'gi');
-        const consultedNames = [...phase1Response.matchAll(consultRegexAgentic)].map(m => m[1]);
+        let consultedNames;
+        if (docReq.fullTeam) {
+            // Include all non-COS staff
+            consultedNames = Object.entries(window.staffCustom || STAFF_DEFAULTS)
+                .filter(([k]) => k !== 'cos')
+                .map(([, s]) => s.name);
+            if (cosNodeEl) { cosNodeEl.classList.remove('active'); logAnim('■ visual-soleil → glow OFF (full team mode)'); }
+            logTrace(`Full team mode — consulting all: ${consultedNames.join(', ')}`, true);
+        } else {
+            logTrace(`Phase 1: Routing to ${cosName}...`, true);
+            setDotActive('cos');
+            const { text: phase1Response, usage: phase1Usage } = await callStaffModel('cos', chatHistory, phase1System, 512);
+            setDotReady('cos');
+            if (cosNodeEl) { cosNodeEl.classList.remove('active'); logAnim('■ visual-soleil → glow OFF (Phase 1 done)'); }
+            logTrace(`Phase 1 tokens: ${phase1Usage?.total || '?'}`, false);
+            logTrace(`Phase 1 response: ${phase1Response.replace(/\n/g,' ').slice(0,120)}`, false);
+            const consultRegexAgentic = new RegExp('\\[CONSULT:\\s*(' + staffNames.join('|') + ')\\]', 'gi');
+            consultedNames = [...phase1Response.matchAll(consultRegexAgentic)].map(m => m[1]);
+        }
 
-        // Animate connections — staggered 800ms apart from the moment Chief of Staff decides
+        // Animate connections — staggered 800ms apart
         consultedNames.forEach((name, i) => animateConnection(name, i * 800));
 
         if (consultedNames.length === 0) {
@@ -4865,7 +4880,9 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
              // Frame the question so the model responds only as this specific staff member
              const _docHint = docReq.type ? getDocSystemAddition(docReq.type, docReq.topic, docReq.redirectedFrom) : '';
              const _mandate = { engineering:'technical feasibility, code, timelines, infrastructure', finance:'money, costs, tax, accounting, financial modelling, unit economics', marketing:'GTM, positioning, channels, brand, growth', legal:'compliance, contracts, regulation, IP, legal risk', architecture:'system design, scalability, platform strategy', hr:'hiring, people, culture, compensation, org structure' }[key] || 'your domain';
-             const staffMessages = [{ role: 'user', content: `The founder has asked: "${userText}"\n\nYou are ${name}. Your mandate covers: ${_mandate}.\n\nIMPORTANT:\n- Answer ONLY from your mandate. Do not answer for other domains.\n- Do NOT repeat or paraphrase what another team member would say.\n- Do NOT produce a generic answer that anyone could give — give YOUR specific take.\n- Speak in first person as yourself only.${_docHint}` }];
+             const staffMessages = docReq.fullTeam
+                 ? [{ role: 'user', content: `The founder wants the full team's input on: "${userText}"\n\nYou are ${name} (${_mandate}). Give your honest perspective from your domain. Be concise — other team members will also weigh in. Speak in first person as yourself.${_docHint}` }]
+                 : [{ role: 'user', content: `The founder has asked: "${userText}"\n\nYou are ${name}. Your mandate covers: ${_mandate}.\n\nIMPORTANT:\n- Answer ONLY from your mandate. Do not answer for other domains.\n- Do NOT repeat or paraphrase what another team member would say.\n- Do NOT produce a generic answer that anyone could give — give YOUR specific take.\n- Speak in first person as yourself only.${_docHint}` }];
 
              try {
                  // animation handled by createStreamingBubble
@@ -4895,11 +4912,34 @@ Output the tags only. Nothing else.` + (handoffBlock ? `\n\n${handoffBlock}` : '
              .map(([name, resp]) => `${name}:\n${resp?.text || resp}`)
              .join('\n\n');
 
+         // ── Determine lead voice based on topic ──────────────────────────────
+         const _leadVoiceMap = [
+             { keys: ['marketing','advertising','campaign','brand','gtm','go-to-market','launch','positioning','growth','channel','acquisition','content','messaging'], lead: 'marketing' },
+             { keys: ['legal','contract','compliance','regulation','gdpr','pdpa','ip','equity','terms','liability','risk','lawsuit','clause','agreement'], lead: 'legal' },
+             { keys: ['price','pricing','revenue','cost','budget','burn','runway','forecast','model','unit economics','cac','ltv','margin','p&l','financial','fundrais'], lead: 'finance' },
+             { keys: ['hire','hiring','team','culture','people','talent','onboard','performance','compensation','salary','burnout','org'], lead: 'hr' },
+             { keys: ['architect','infrastructure','scale','api','database','system design','platform','microservice','data model','backend','cloud'], lead: 'architecture' },
+             { keys: ['build','code','engineer','feature','sprint','tech debt','timeline','deploy','integration','stack','framework','bug'], lead: 'engineering' },
+         ];
+         const _userLower = userText.toLowerCase();
+         let _leadKey = null, _leadName = null;
+         for (const entry of _leadVoiceMap) {
+             if (entry.keys.some(k => _userLower.includes(k))) {
+                 _leadKey = entry.lead;
+                 _leadName = window.staffCustom?.[_leadKey]?.name || STAFF_DEFAULTS[_leadKey]?.name;
+                 break;
+             }
+         }
+         const _weightNote = _leadKey && _leadName && consultedKeys.includes(_leadKey)
+             ? `\n\nWEIGHTING: This question falls primarily within ${_leadName}'s domain (${_leadKey}). Give ${_leadName}'s input the most weight in your recommendation. Other team members' inputs are supporting context — acknowledge them briefly but let ${_leadName}'s expertise drive the conclusion.`
+             : '';
+         logTrace(_leadKey ? `Lead voice: ${_leadName} (${_leadKey})` : 'Lead voice: balanced (no dominant domain)', false);
+
          const phase3Messages = [
              ...chatHistory.slice(0, -1),
              { role: 'user', content: userText },
              { role: 'assistant', content: `I consulted the team. Here are their inputs:\n\n${specialistSummary}` },
-             { role: 'user', content: `Based on the team's input above, provide a clear, unified strategic recommendation. IMPORTANT: You and your team are AI — you can produce any output right now. Do NOT assign future tasks or timelines to team members. Do NOT say things like "Tony will do X by tomorrow" or "we'll have this ready in 48 hours." If a document or deliverable was requested, confirm it is being generated now. Close with a clear decision or next action the founder should take — not tasks for the AI team.` }
+             { role: 'user', content: `Based on the team's input above, provide a clear, unified strategic recommendation.${_weightNote} IMPORTANT: You and your team are AI — you can produce any output right now. Do NOT assign future tasks or timelines to team members. Close with a clear decision or next action the founder should take.` }
          ];
 
          const phase3System = buildStaffSystemPrompt('cos');
