@@ -5036,25 +5036,97 @@ async function sendChatAgentic() {
 
     btnSend.disabled = true;
 
-    // ── FAST PATH: doc requests skip routing and go directly to the right staff ──
+    // ── FAST PATH: doc requests — engineering builds, domain expert provides content, architecture guides design ──
     if (docReq.type) {
         btnSend.textContent = 'Generating…';
-        // Route by doc type: html→marketing, xlsx→finance, docx→cos
-        const docStaffMap = { html: 'marketing' };
-        const docStaffKey = docStaffMap[docReq.type] || 'cos';
-        const docStaffName = window.staffCustom?.[docStaffKey]?.name || STAFF_DEFAULTS[docStaffKey]?.name;
-        const docSystem = buildStaffSystemPrompt(docStaffKey);
+
+        // ── Detect content domain from topic keywords ──────────────────────────
+        const _topic = (docReq.topic + ' ' + userText).toLowerCase();
+        const _domainMap = [
+            { keys: ['contract','agreement','terms','privacy','gdpr','pdpa','compliance','legal','ip','nda','policy','liability','clause'], staff: 'legal' },
+            { keys: ['job','hire','hiring','description','jd','role','position','onboard','compensation','salary','culture','hr','people','team'], staff: 'hr' },
+            { keys: ['budget','financial','forecast','model','revenue','cost','pricing','p&l','cash','burn','runway','invoice','accounting'], staff: 'finance' },
+            { keys: ['pitch','gtm','marketing','campaign','landing','product','brand','value proposition','elevator','customer','acquisition','positioning'], staff: 'marketing' },
+        ];
+        let _contentStaffKey = 'cos'; // default to COS
+        for (const entry of _domainMap) {
+            if (entry.keys.some(k => _topic.includes(k))) { _contentStaffKey = entry.staff; break; }
+        }
+
+        const _engKey   = 'engineering';
+        const _archKey  = 'architecture';
+        const _engName  = window.staffCustom?.[_engKey]?.name  || STAFF_DEFAULTS[_engKey]?.name;
+        const _archName = window.staffCustom?.[_archKey]?.name || STAFF_DEFAULTS[_archKey]?.name;
+        const _cName    = window.staffCustom?.[_contentStaffKey]?.name || STAFF_DEFAULTS[_contentStaffKey]?.name;
+
+        logTrace(`Doc fast path: domain=${_contentStaffKey}(${_cName}) → arch(${_archName}) → eng(${_engName})`, true);
+
+        // Animate all three nodes
+        const _nodeMap = { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' };
+        const _engNode  = document.getElementById('visual-' + _nodeMap[_engKey]);
+        const _archNode = document.getElementById('visual-' + _nodeMap[_archKey]);
+        const _cNode    = document.getElementById('visual-' + _nodeMap[_contentStaffKey]);
+
+        // ── Phase A: Content expert provides brief (silent, no bubble) ─────────
+        btnSend.textContent = 'Getting content brief…';
+        if (_cNode) _cNode.classList.add('active');
+        let _contentBrief = '';
+        try {
+            const _cSystem = buildStaffSystemPrompt(_contentStaffKey);
+            const _cMessages = [{ role:'user', content:`The founder needs a ${docReq.type.toUpperCase()} document: "${userText}"
+
+Your role: Provide a concise content brief — key messages, required sections, tone, and any domain-specific requirements (legal clauses, HR compliance, financial accuracy etc). Do NOT write the full document. Just the content specification in bullet points. Max 300 words.` }];
+            const { text: _cText } = await callStaffModel(_contentStaffKey, _cMessages, _cSystem, 600);
+            _contentBrief = _cText;
+            logTrace(`${_cName} content brief: ${_cText.slice(0,80)}…`, false);
+        } catch(e) {
+            logTrace(`Content brief failed (${e.message}) — proceeding without`, false);
+        }
+        if (_cNode) _cNode.classList.remove('active');
+
+        // ── Phase B: Architecture provides design guidance (silent, no bubble) ──
+        btnSend.textContent = 'Getting design guidance…';
+        if (_archNode) _archNode.classList.add('active');
+        let _designBrief = '';
+        try {
+            const _archSystem = buildStaffSystemPrompt(_archKey);
+            const _archMessages = [{ role:'user', content:`The founder needs a ${docReq.type.toUpperCase()} document: "${userText}"
+
+Your role: Provide design and layout guidance for this document. Specify: visual structure, section hierarchy, use of whitespace, typography choices, color usage from the brand palette, and any UX considerations. Max 200 words.` }];
+            const { text: _archText } = await callStaffModel(_archKey, _archMessages, _archSystem, 400);
+            _designBrief = _archText;
+            logTrace(`${_archName} design brief: ${_archText.slice(0,80)}…`, false);
+        } catch(e) {
+            logTrace(`Design brief failed (${e.message}) — proceeding without`, false);
+        }
+        if (_archNode) _archNode.classList.remove('active');
+
+        // ── Phase C: Engineering generates the final HTML ──────────────────────
+        btnSend.textContent = 'Engineering generating…';
+        if (_engNode) _engNode.classList.add('active');
+
         const docHint = getDocSystemAddition(docReq.type, docReq.topic, docReq.redirectedFrom);
-        const docMessages = [{
+        const _contentSection = _contentBrief ? `
+
+CONTENT BRIEF FROM ${_cName.toUpperCase()} (${_contentStaffKey}):
+${_contentBrief}` : '';
+        const _designSection  = _designBrief  ? `
+
+DESIGN GUIDANCE FROM ${_archName.toUpperCase()}:
+${_designBrief}` : '';
+
+        const docStaffKey  = _engKey;
+        const docStaffName = _engName;
+        const docSystem    = buildStaffSystemPrompt(_engKey);
+        const docMessages  = [{
             role: 'user',
-            content: `${userText}
+            content: `${userText}${_contentSection}${_designSection}
 
 ${docHint}`
         }];
-        logTrace(`Doc fast path: ${docReq.type} → ${docStaffName}`, true);
-        const docNodeEl = document.getElementById('visual-' + { engineering:'elon', finance:'isaac', marketing:'marketing', legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' }[docStaffKey]);
-        if (docNodeEl) docNodeEl.classList.add('active');
-         try {
+
+        const docNodeEl = _engNode;
+        try {
              const { text: docResponse } = await streamStaffModel(docStaffKey, docMessages, docSystem, 8192, docStaffName, false);
              chatHistory.push({ role: 'assistant', content: docResponse });
              const extracted = extractDocBlockRobust(docResponse);
@@ -5140,6 +5212,8 @@ ${docHint}`
              btnSend.disabled = false;
              btnSend.textContent = 'Execute';
              if (docNodeEl) docNodeEl.classList.remove('active');
+             if (_archNode) _archNode.classList.remove('active');
+             if (_cNode) _cNode.classList.remove('active');
          }
          return;
     }
