@@ -1183,19 +1183,19 @@
 
                     <!-- ── STATUS DOTS ── -->
                     <circle id="status-border-engineering" cx="428.3" cy="178.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-engineering" cx="428.3" cy="178.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-dot-engineering" cx="428.3" cy="178.3" r="8" style="fill:#6b7280;transition:fill 0.3s;"/>
                     <circle id="status-border-finance" cx="644.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-finance" cx="644.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-dot-finance" cx="644.3" cy="303.3" r="8" style="fill:#6b7280;transition:fill 0.3s;"/>
                     <circle id="status-border-marketing" cx="644.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-marketing" cx="644.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-dot-marketing" cx="644.3" cy="553.3" r="8" style="fill:#6b7280;transition:fill 0.3s;"/>
                     <circle id="status-border-hr" cx="428.3" cy="678.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-hr" cx="428.3" cy="678.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-dot-hr" cx="428.3" cy="678.3" r="8" style="fill:#6b7280;transition:fill 0.3s;"/>
                     <circle id="status-border-legal" cx="212.3" cy="553.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-legal" cx="212.3" cy="553.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-dot-legal" cx="212.3" cy="553.3" r="8" style="fill:#6b7280;transition:fill 0.3s;"/>
                     <circle id="status-border-architecture" cx="212.3" cy="303.3" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-architecture" cx="212.3" cy="303.3" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-dot-architecture" cx="212.3" cy="303.3" r="8" style="fill:#6b7280;transition:fill 0.3s;"/>
                     <circle id="status-border-cos" cx="449.5" cy="449.5" r="10" fill="var(--bg-base)" opacity="1"/>
-                    <circle id="status-dot-cos" cx="449.5" cy="449.5" r="8" fill="#6b7280" style="transition:fill 0.3s;"/>
+                    <circle id="status-dot-cos" cx="449.5" cy="449.5" r="8" style="fill:#6b7280;transition:fill 0.3s;"/>
                 </svg>
             </div>
 
@@ -2736,7 +2736,7 @@ function typewriterBubble(name, text, isSynthesis = false, onDone = null) {
     chatWindow.appendChild(wrapper);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    // Sync SVG glow + line to typewriter
+    // Sync SVG glow + line + dot to typewriter
     const _twKeyToNode = { engineering:'elon', finance:'isaac', marketing:'marketing',
         legal:'legal', architecture:'architecture', hr:'donna', cos:'soleil' };
     const _twNodeName = _twKeyToNode[key] || key;
@@ -2747,6 +2747,7 @@ function typewriterBubble(name, text, isSynthesis = false, onDone = null) {
         _twSvgLine.classList.remove('active-consult');
         _twSvgLine.classList.add('active-response', 'staff-' + key);
     }
+    if (key) setDotActive(key);
 
     // Stream words with a small delay between each
     const words = text.split(' ');
@@ -2759,6 +2760,11 @@ function typewriterBubble(name, text, isSynthesis = false, onDone = null) {
             if (_twSvgNode) _twSvgNode.classList.remove('active');
             if (_twSvgLine && key !== 'cos') {
                 _twSvgLine.classList.remove('active-response', 'staff-' + key);
+            }
+            // Sync dot back to ready/gray
+            if (key) {
+                const hasCfg = window.staffAssignments?.[key]?.provider && window.staffAssignments?.[key]?.model;
+                hasCfg ? setDotReady(key) : setDotGray(key);
             }
             // Replace raw text with formatted HTML
             const contentEl = document.createElement('div');
@@ -2873,9 +2879,11 @@ function showBoardroomStateB() {
         }
     ];
 
-    intros.forEach(({ delay, name: n, msg }) => {
+    intros.forEach(({ delay, name: n, msg }, idx) => {
         setTimeout(() => {
-            typewriterBubble(n, msg);
+            // On last intro done, re-probe all dots so they reflect actual connection state
+            const isLast = idx === intros.length - 1;
+            typewriterBubble(n, msg, false, isLast ? () => checkAllConnections() : null);
         }, delay);
     });
 }
@@ -4553,9 +4561,11 @@ function createStreamingBubble(name, isSynthesis = false) {
         svgNode.classList.add('active');
         svgLine.classList.remove('active-consult');
         svgLine.classList.add('active-response', 'staff-' + key);
+        setDotActive(key);
     } else if (isSynthesis && svgNode) {
         // COS synthesising: node glows, all staff lines already animating
         svgNode.classList.add('active');
+        setDotActive(key);
     }
 
     function onChunk(chunk) {
@@ -4569,6 +4579,11 @@ function createStreamingBubble(name, isSynthesis = false) {
         if (svgNode) svgNode.classList.remove('active');
         if (svgLine && !isSynthesis) {
             svgLine.classList.remove('active-response', 'staff-' + key);
+        }
+        // Sync dot back to ready/gray now that glow is off
+        if (key) {
+            const hasCfg = window.staffAssignments?.[key]?.provider && window.staffAssignments?.[key]?.model;
+            hasCfg ? setDotReady(key) : setDotGray(key);
         }
         const contentEl = document.createElement('div');
         contentEl.innerHTML = formatTextToHtml(fullText.replace(/\[DOCUMENT[\s\S]*?\[END DOCUMENT\]/gi, '').trim());
@@ -6379,12 +6394,12 @@ const STATUS = { GRAY: '#6b7280', GREEN: '#22c55e', RED: '#ef4444' };
 const STAFF_KEYS = ['cos','engineering','finance','marketing','legal','architecture','hr'];
 
 function setStaffDot(key, color, title) {
-    // SVG dot
+    // SVG dot — use style.fill (not setAttribute) so CSS transition fires
     const dot = document.getElementById('status-dot-' + key);
-    if (dot) { dot.setAttribute('fill', color); dot.setAttribute('title', title||''); }
+    if (dot) { dot.style.fill = color; dot.setAttribute('title', title||''); }
     // Border adapts to theme
     const border = document.getElementById('status-border-' + key);
-    if (border) border.setAttribute('fill', 'var(--bg-base)');
+    if (border) border.style.fill = 'var(--bg-base)';
     // User avatar dot (for cos / chief of staff = the active session)
     if (key === 'cos') {
         const uDot = document.getElementById('user-status-dot');
