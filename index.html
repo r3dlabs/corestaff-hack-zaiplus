@@ -3041,8 +3041,15 @@ function applyStaffCustomizations(custom) {
         const initEl = document.getElementById((svgInits||{})[key]);
         const imgEl  = document.getElementById((svgImages||{})[key]);
         if (d.img) {
-            // Custom photo uploaded — show image, hide initials
-            if (imgEl)  { imgEl.setAttribute('href', d.img); imgEl.style.display = ''; }
+            // Custom photo — show image, hide initials; restore initials on load failure
+            if (imgEl) {
+                imgEl.setAttribute('href', d.img);
+                imgEl.style.display = '';
+                imgEl.onerror = () => {
+                    imgEl.style.display = 'none';
+                    if (initEl) { initEl.textContent = d.name.slice(0,2).toUpperCase(); initEl.style.display = ''; }
+                };
+            }
             if (initEl) initEl.style.display = 'none';
         } else {
             // No photo — show 2-letter initials
