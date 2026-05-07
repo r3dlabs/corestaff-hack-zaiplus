@@ -3080,7 +3080,7 @@ function applyStaffCustomizations(custom) {
         greetingAvatar.onerror = () => {
             const parent = greetingAvatar.parentElement;
             if (parent && parent.contains(greetingAvatar)) parent.removeChild(greetingAvatar);
-            if (parent) parent.textContent = (cos.name||'HE').slice(0,2).toUpperCase();
+            if (parent) parent.textContent = (cos.name||'IA').slice(0,2).toUpperCase();
         };
     }
 }
